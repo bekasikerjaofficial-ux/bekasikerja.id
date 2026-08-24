@@ -10,10 +10,10 @@ export default function AdminDashboard() {
     location: 'Cikarang',
     salary: '',
     type: 'Full-time',
-    logoUrl: '',
     description: ''
   });
 
+  const [imagePreview, setImagePreview] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
   // Proteksi Halaman Admin
@@ -24,13 +24,31 @@ export default function AdminDashboard() {
     }
   }, [router]);
 
+  // Handle Input Teks
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handle Upload File Gambar & Convert ke Preview
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Ukuran gambar terlalu besar! Maksimal 2 MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Loker Baru Disimpan:", formData);
+    const payload = { ...formData, image: imagePreview };
+    console.log("Loker Baru Disimpan:", payload);
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
   };
@@ -115,15 +133,33 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div>
-              <label className="font-bold text-slate-700 block mb-1">Link URL Gambar / Logo Perusahaan</label>
+            {/* FIELD UPLOAD GAMBAR DENGAN FILE INPUT */}
+            <div className="border border-dashed border-slate-300 p-4 rounded-xl bg-slate-50">
+              <label className="font-bold text-slate-700 block mb-1">Upload Gambar / Logo Perusahaan / Poster</label>
               <input
-                type="url"
-                name="logoUrl"
-                placeholder="https://domain.com/logo.png"
-                onChange={handleChange}
-                className="w-full p-2.5 border rounded-lg focus:outline-none focus:border-blue-900"
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-900 file:text-white hover:file:bg-blue-800 cursor-pointer"
               />
+              <span className="text-[10px] text-slate-400 mt-1 block">*Format JPG/PNG, maksimal 2MB</span>
+
+              {/* TAMPILAN PREVIEW GAMBAR */}
+              {imagePreview && (
+                <div className="mt-3 flex items-center gap-3 bg-white p-2 rounded-lg border border-slate-200">
+                  <img src={imagePreview} alt="Preview" className="w-16 h-16 object-contain rounded border" />
+                  <div>
+                    <span className="text-xs font-bold text-slate-800 block">Gambar Siap Diposting</span>
+                    <button
+                      type="button"
+                      onClick={() => setImagePreview(null)}
+                      className="text-[11px] text-red-600 hover:underline font-semibold"
+                    >
+                      Hapus Gambar
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
