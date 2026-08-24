@@ -1,41 +1,66 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function MemberRegister() {
   const router = useRouter();
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const saveAndRedirect = (name) => {
-    localStorage.setItem('isMemberLoggedIn', 'true');
-    localStorage.setItem('memberName', name);
-    setSubmitted(true);
-    
-    setTimeout(() => {
-      router.replace('/');
-    }, 800);
+    try {
+      // Pastikan string bersih dari spasi berlebih
+      const cleanName = name ? name.trim() : 'Pelamar';
+      localStorage.setItem('isMemberLoggedIn', 'true');
+      localStorage.setItem('memberName', cleanName);
+      setSubmitted(true);
+      
+      setTimeout(() => {
+        router.replace('/');
+        router.refresh();
+      }, 500);
+    } catch (error) {
+      console.error('Storage Error:', error);
+      alert('Gagal menyimpan sesi login. Pastikan browser tidak dalam Mode Privat/Incognito ketat.');
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Mengambil nama dari form input
-    saveAndRedirect(formData.name || 'Pelamar');
+    if (!formData.name.trim()) return;
+    saveAndRedirect(formData.name);
   };
 
   const handleGoogleRegister = () => {
-    // Meminta masukan email/nama agar tidak hardcode lagi
-    const userInput = prompt("Simulasi Google Sign-In:\nMasukkan Email/Nama Google Anda:", "budi.santoso@gmail.com");
+    const userInput = prompt("Simulasi Google Sign-In:\nMasukkan Email atau Nama Akun Google Anda:", "budi.santoso@gmail.com");
     
-    if (userInput) {
-      // Ambil bagian depan email (sebelum @) sebagai nama tampilan jika berupa email
-      const displayName = userInput.includes('@') 
-        ? userInput.split('@')[0].replace('.', ' ')
-        : userInput;
-      
-      saveAndRedirect(displayName);
+    // Cegah error jika user menekan 'Cancel'
+    if (userInput === null) return;
+
+    const trimmedInput = userInput.trim();
+    if (trimmedInput === '') {
+      saveAndRedirect('User Google');
+      return;
     }
+
+    // Ambil nama dari email (contoh: budi.santoso@gmail.com -> Budi Santoso)
+    let displayName = trimmedInput;
+    if (trimmedInput.includes('@')) {
+      displayName = trimmedInput.split('@')[0].replace(/[._]/g, ' ');
+    }
+    
+    // Kapitalisasi huruf pertama setiap kata
+    displayName = displayName.replace(/\b\w/g, (char) => char.toUpperCase());
+
+    saveAndRedirect(displayName);
   };
+
+  if (!isMounted) return null;
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans text-slate-800">
@@ -82,6 +107,7 @@ export default function MemberRegister() {
               type="text"
               required
               placeholder="Contoh: Budi Santoso"
+              value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-900 bg-slate-50 focus:bg-white transition"
             />
@@ -93,6 +119,7 @@ export default function MemberRegister() {
               type="email"
               required
               placeholder="nama@gmail.com"
+              value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-900 bg-slate-50 focus:bg-white transition"
             />
@@ -104,6 +131,7 @@ export default function MemberRegister() {
               type="password"
               required
               placeholder="••••••••"
+              value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-900 bg-slate-50 focus:bg-white transition"
             />
