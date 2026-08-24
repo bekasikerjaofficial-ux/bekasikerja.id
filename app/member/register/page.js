@@ -36,6 +36,7 @@ export default function MemberRegister() {
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans text-slate-800">
       <div className="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full border border-slate-200">
         
+        {/* Header Logo */}
         <div className="text-center mb-6">
           <Link href="/" className="bg-blue-900 text-white font-black px-3 py-1.5 rounded-lg text-xl tracking-widest inline-block mb-2 shadow">
             BK
@@ -50,13 +51,14 @@ export default function MemberRegister() {
           </div>
         )}
 
+        {/* Form Pendaftaran Manual */}
         <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           <div>
             <label className="font-bold text-slate-700 block mb-1">Nama Lengkap</label>
             <input
               type="text"
               required
-              placeholder="Masukkan nama Anda"
+              placeholder="Contoh: Budi Santoso"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-900 bg-slate-50 focus:bg-white transition"
