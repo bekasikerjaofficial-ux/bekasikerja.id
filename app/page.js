@@ -1,95 +1,96 @@
-import React from 'react';
+'use client';
+import React, { useState, useEffect } from 'react';
 
-const MOCK_JOBS = [
+// Data Lowongan Unggulan untuk Slider Banner
+const FEATURED_JOBS = [
   {
     id: 1,
-    title: "Staff Admin Operational & Customer Service",
+    title: "Management Trainee (MT) - Operational",
     company: "PT Central Bank Asia Tbk",
-    location: "Kota Bekasi",
-    type: "Full-time",
-    salary: "Rp 5.500.000 - Rp 6.800.000",
-    posted: "Hari ini",
-    badge: "Verified Corporate",
-    icon: "fa-building-columns",
-    category: "Banking & Admin"
+    location: "Kota Bekasi (KCP Juanda)",
+    salary: "Rp 7.500.000 - Rp 9.000.000",
+    tag: "URGENT HIRING",
+    bgGradient: "from-blue-950 via-blue-900 to-indigo-950",
+    deadline: "31 Agustus 2026"
   },
   {
     id: 2,
-    title: "Operator Produksi Assembly Line",
+    title: "Senior Operator Produksi & Technical Staff",
     company: "PT Astra Honda Motor",
     location: "Kawasan EJIP, Cikarang",
-    type: "Full-time",
-    salary: "Rp 5.200.000 - Rp 6.000.000",
-    posted: "2 jam lalu",
-    badge: "Popular",
-    icon: "fa-industry",
-    category: "Manufaktur"
+    salary: "Rp 5.800.000 - Rp 6.700.000",
+    tag: "REKRUTMEN MASSAL",
+    bgGradient: "from-slate-900 via-blue-950 to-slate-900",
+    deadline: "05 September 2026"
   },
   {
     id: 3,
-    title: "Quality Control (QC) Inspector",
+    title: "Quality Control (QC) & QA Specialist",
     company: "PT Mayora Indah Tbk",
     location: "Kawasan MM2100, Cibitung",
-    type: "Full-time",
-    salary: "Rp 5.000.000 - Rp 5.800.000",
-    posted: "1 hari lalu",
-    badge: "Urgent",
-    icon: "fa-vial",
-    category: "Quality Control"
+    salary: "Rp 5.500.000 - Rp 6.500.000",
+    tag: "FEATURED JOB",
+    bgGradient: "from-indigo-950 via-blue-900 to-blue-950",
+    deadline: "10 September 2026"
   }
 ];
 
-const MOCK_NEWS = [
+const REGULAR_JOBS = [
   {
-    id: 1,
-    title: "Panduan Lolos Interview & Psikotes Online Perusahaan Perbankan 2026",
-    category: "Tips Karir",
-    date: "24 Agu 2026",
-    readTime: "5 menit baca",
-    icon: "fa-newspaper"
+    id: 101,
+    title: "Staff Admin Gudang & Logistik",
+    company: "PT Logistik Maju Bersama",
+    location: "Bekasi Barat",
+    type: "Full-time",
+    salary: "Rp 4.800.000 - Rp 5.300.000",
+    posted: "3 jam lalu"
   },
   {
-    id: 2,
-    title: "Daftar Kawasan Industri Cikarang yang Buka Rekrutmen Massal",
-    category: "Info Industri",
-    date: "22 Agu 2026",
-    readTime: "4 menit baca",
-    icon: "fa-chart-line"
-  },
-  {
-    id: 3,
-    title: "Cara Membuat Format CV ATS-Friendly yang Disukai HRD",
-    category: "Panduan CV",
-    date: "20 Agu 2026",
-    readTime: "3 menit baca",
-    icon: "fa-file-lines"
+    id: 102,
+    title: "Teknisi Maintenance Mesin Industri",
+    company: "PT Hyundai Motor Manufacturing",
+    location: "GIIC Deltamas",
+    type: "Contract",
+    salary: "Rp 5.500.000 - Rp 7.000.000",
+    posted: "1 hari lalu"
   }
 ];
 
 export default function Home() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Auto slide setiap 5 detik
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % FEATURED_JOBS.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % FEATURED_JOBS.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? FEATURED_JOBS.length - 1 : prev - 1));
+
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
       
-      {/* Announcement Bar */}
+      {/* Top Bar */}
       <div className="bg-blue-950 text-blue-200 text-xs py-2 px-4 border-b border-blue-900 font-medium">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <span className="bg-blue-800 text-yellow-300 text-[10px] font-bold px-2 py-0.5 rounded">NEW</span>
-            <span>Fitur Pembuat CV ATS Gratis & Simulasi Tes Psikotes Online Telah Rilis!</span>
+            <span className="bg-yellow-500 text-blue-950 text-[10px] font-extrabold px-2 py-0.5 rounded">NEW</span>
+            <span>Akses Tes Psikotes & Generator CV ATS Gratis untuk Member!</span>
           </div>
-          <div className="hidden md:flex gap-4 text-xs">
-            <a href="#cv-builder" className="hover:text-white transition">Bikin CV Gratis</a>
-            <span className="text-blue-700">|</span>
-            <a href="#psikotes" className="text-yellow-400 font-semibold hover:underline">Member PRO (Psikotes)</a>
+          <div className="hidden md:flex gap-4">
+            <a href="#cv" className="hover:text-white">Bikin CV</a>
+            <span>|</span>
+            <a href="#psikotes" className="text-yellow-400 font-bold hover:underline">Member PRO</a>
           </div>
         </div>
       </div>
 
-      {/* Main Navbar - BCA Corporate Style */}
+      {/* Navbar */}
       <header className="bg-blue-900 text-white sticky top-0 z-50 shadow-md">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          
-          {/* Logo */}
           <div className="flex items-center gap-3">
             <div className="bg-white text-blue-900 font-black px-3 py-1.5 rounded-lg text-lg tracking-widest shadow">
               BK
@@ -100,261 +101,155 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-blue-100">
             <a href="#" className="text-white border-b-2 border-yellow-400 pb-1 font-semibold">Cari Loker</a>
-            <a href="#berita" className="hover:text-white transition">Artikel & Berita</a>
-            <a href="#cv-builder" className="hover:text-white transition">Buat CV (Free)</a>
-            <a href="#psikotes" className="text-yellow-300 hover:text-yellow-200 font-semibold transition flex items-center gap-1">
+            <a href="#berita" className="hover:text-white">Berita & Artikel</a>
+            <a href="#cv" className="hover:text-white">Buat CV (Free)</a>
+            <a href="#psikotes" className="text-yellow-300 font-semibold flex items-center gap-1">
               <i className="fa-solid fa-crown text-xs"></i> Tes Psikotes (PRO)
             </a>
           </nav>
 
-          {/* Auth Buttons */}
           <div className="flex items-center gap-2">
-            <button className="px-4 py-2 text-xs font-semibold text-blue-100 hover:text-white transition">
-              Masuk
-            </button>
-            <button className="px-4 py-2 text-xs font-bold bg-yellow-500 hover:bg-yellow-400 text-blue-950 rounded-lg shadow transition flex items-center gap-1.5">
-              <i className="fa-solid fa-user-plus text-xs"></i>
-              Daftar Member
-            </button>
+            <button className="px-4 py-2 text-xs font-semibold text-blue-100 hover:text-white">Masuk</button>
+            <button className="px-4 py-2 text-xs font-bold bg-yellow-500 hover:bg-yellow-400 text-blue-950 rounded-lg shadow">Daftar Member</button>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-950 text-white py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          <span className="inline-flex items-center gap-1.5 bg-blue-900/80 border border-blue-700 text-blue-200 px-3 py-1 rounded-full text-xs font-semibold">
-            <i className="fa-solid fa-shield-halved text-yellow-400"></i>
-            Portal Lowongan Kerja Terpercaya Wilayah Bekasi & Sekitarnya
-          </span>
+      {/* HERO SLIDER SECTION (LOKER TERBARU/UNGGULAN) */}
+      <section className="relative overflow-hidden bg-slate-950 text-white py-12 px-4 border-b border-blue-900">
+        <div className="max-w-6xl mx-auto relative z-10">
           
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
-            Temukan Karir Impian & Uji Kesiapan Kerja Anda
-          </h1>
-          
-          <p className="text-blue-100 text-sm md:text-base max-w-2xl mx-auto font-normal">
-            Akses lowongan industri terverifikasi, buat CV standar HRD secara gratis, dan ikuti simulasi Psikotes Online untuk meningkatkan peluang lolos rekrutmen.
-          </p>
+          {/* Header Slider */}
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+              <h2 className="text-xs font-bold uppercase tracking-wider text-blue-300">Lowongan Kerja Prioritas Minggu Ini</h2>
+            </div>
+            
+            {/* Navigasi Panah */}
+            <div className="flex gap-2">
+              <button onClick={prevSlide} className="w-8 h-8 rounded-full bg-blue-900/80 hover:bg-blue-800 border border-blue-700 flex items-center justify-center text-white transition">
+                <i className="fa-solid fa-chevron-left text-xs"></i>
+              </button>
+              <button onClick={nextSlide} className="w-8 h-8 rounded-full bg-blue-900/80 hover:bg-blue-800 border border-blue-700 flex items-center justify-center text-white transition">
+                <i className="fa-solid fa-chevron-right text-xs"></i>
+              </button>
+            </div>
+          </div>
 
-          {/* Corporate Search Bar */}
-          <div className="bg-white p-2.5 rounded-xl shadow-2xl flex flex-col md:flex-row gap-2 max-w-3xl mx-auto text-slate-800">
-            <div className="flex-1 flex items-center gap-2 px-3 bg-slate-50 rounded-lg border border-slate-200">
-              <i className="fa-solid fa-magnifying-glass text-slate-400 text-sm"></i>
-              <input
-                type="text"
-                placeholder="Posisi, kata kunci, atau nama perusahaan..."
-                className="w-full py-3 text-xs md:text-sm bg-transparent focus:outline-none"
+          {/* Card Slider Utama */}
+          <div className={`bg-gradient-to-r ${FEATURED_JOBS[currentSlide].bgGradient} border border-blue-800/80 rounded-2xl p-6 md:p-10 shadow-2xl transition-all duration-500`}>
+            <div className="flex flex-col md:flex-row justify-between md:items-center gap-6">
+              
+              <div className="space-y-4 max-w-2xl">
+                <span className="bg-yellow-400 text-blue-950 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                  {FEATURED_JOBS[currentSlide].tag}
+                </span>
+
+                <h1 className="text-2xl md:text-4xl font-extrabold leading-tight">
+                  {FEATURED_JOBS[currentSlide].title}
+                </h1>
+
+                <div className="space-y-1 text-blue-100 text-sm md:text-base">
+                  <p className="font-semibold text-white flex items-center gap-2">
+                    <i className="fa-solid fa-building text-blue-400"></i> {FEATURED_JOBS[currentSlide].company}
+                  </p>
+                  <p className="flex items-center gap-2 text-xs md:text-sm text-slate-300">
+                    <i className="fa-solid fa-location-dot text-red-400"></i> {FEATURED_JOBS[currentSlide].location}
+                    <span className="mx-2">|</span>
+                    <i className="fa-solid fa-wallet text-green-400"></i> {FEATURED_JOBS[currentSlide].salary}
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Side */}
+              <div className="flex flex-col gap-3 shrink-0 bg-blue-900/40 p-4 rounded-xl border border-blue-700/50 backdrop-blur-sm">
+                <span className="text-[11px] text-slate-300 text-center">
+                  Batas Lamaran: <strong className="text-yellow-300">{FEATURED_JOBS[currentSlide].deadline}</strong>
+                </span>
+                <button className="bg-yellow-500 hover:bg-yellow-400 text-blue-950 font-extrabold px-6 py-3 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">
+                  Lamar Sekarang <i className="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+                <button className="bg-blue-950 hover:bg-blue-900 border border-blue-700 text-white font-semibold px-6 py-2 rounded-xl text-xs transition">
+                  Simpan Loker
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Dots Indicator */}
+          <div className="flex justify-center gap-2 mt-4">
+            {FEATURED_JOBS.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`h-2 rounded-full transition-all ${
+                  currentSlide === index ? "w-8 bg-yellow-400" : "w-2 bg-slate-700"
+                }`}
               />
-            </div>
-
-            <div className="flex items-center gap-2 px-3 bg-slate-50 rounded-lg border border-slate-200">
-              <i className="fa-solid fa-location-dot text-slate-400 text-sm"></i>
-              <select className="py-3 text-xs md:text-sm bg-transparent text-slate-700 focus:outline-none cursor-pointer">
-                <option>Semua Lokasi</option>
-                <option>Cikarang / EJIP / Jababeka</option>
-                <option>Cibitung / MM2100</option>
-                <option>Kota Bekasi</option>
-                <option>Tambun & Summarecon</option>
-              </select>
-            </div>
-
-            <button className="bg-blue-900 hover:bg-blue-800 text-white font-bold px-6 py-3 rounded-lg text-xs md:text-sm transition shadow-md flex items-center justify-center gap-2 whitespace-nowrap">
-              Cari Kerja
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Membership Highlights */}
-      <section className="max-w-6xl mx-auto px-4 -mt-8 relative z-10 w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          
-          {/* Card Member Gratis */}
-          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-md hover:shadow-lg transition flex items-center justify-between">
-            <div className="space-y-2">
-              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-md uppercase tracking-wider">
-                Member Gratis
-              </span>
-              <h3 className="text-base font-bold text-slate-900">Buat CV ATS-Friendly</h3>
-              <p className="text-xs text-slate-500">Generator CV otomatis standar HRD perbankan & manufaktur.</p>
-            </div>
-            <button className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition whitespace-nowrap shadow">
-              Buat CV Gratis
-            </button>
-          </div>
-
-          {/* Card Member PRO (Berbayar) */}
-          <div className="bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 rounded-xl p-6 shadow-md hover:shadow-lg transition flex items-center justify-between">
-            <div className="space-y-2">
-              <span className="bg-slate-950 text-yellow-400 text-[10px] font-extrabold px-2.5 py-1 rounded-md uppercase tracking-wider flex items-center gap-1 w-fit">
-                <i className="fa-solid fa-crown text-[10px]"></i> Member PRO
-              </span>
-              <h3 className="text-base font-extrabold text-slate-950">Simulasi Tes Psikotes Online</h3>
-              <p className="text-xs font-medium text-slate-800">Tes Logika, Kraepelin, & Laporan Evaluasi Nilai.</p>
-            </div>
-            <button className="bg-slate-950 hover:bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition whitespace-nowrap shadow">
-              Akses Tes PRO
-            </button>
+            ))}
           </div>
 
         </div>
       </section>
 
-      {/* Main Content Layout */}
+      {/* QUICK SEARCH BAR */}
+      <section className="max-w-6xl mx-auto px-4 -mt-6 relative z-20 w-full">
+        <div className="bg-white p-3 rounded-xl shadow-xl border border-slate-200 flex flex-col md:flex-row gap-2">
+          <input
+            type="text"
+            placeholder="Cari posisi kerja (ex: Staff Admin, QC, Operator)..."
+            className="flex-1 px-4 py-3 text-xs md:text-sm bg-slate-50 rounded-lg focus:outline-none border border-slate-200"
+          />
+          <select className="px-4 py-3 text-xs md:text-sm bg-slate-50 rounded-lg text-slate-700 focus:outline-none border border-slate-200">
+            <option>Semua Kawasan</option>
+            <option>Cikarang / EJIP / Jababeka</option>
+            <option>Cibitung / MM2100</option>
+            <option>Kota Bekasi</option>
+          </select>
+          <button className="bg-blue-900 hover:bg-blue-800 text-white font-bold px-6 py-3 rounded-lg text-xs md:text-sm transition shadow">
+            Cari Loker
+          </button>
+        </div>
+      </section>
+
+      {/* REGULAR JOBS FEED */}
       <main className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-4 gap-8 w-full flex-1">
-        
-        {/* Sidebar Filters */}
-        <aside className="space-y-6 bg-white p-5 rounded-xl border border-slate-200 h-fit shadow-sm">
-          <div className="flex justify-between items-center border-b pb-3">
-            <h3 className="font-bold text-slate-900 text-sm">Filter Lowongan</h3>
-            <span className="text-[11px] text-blue-900 font-semibold cursor-pointer">Reset</span>
-          </div>
-          
-          <div className="space-y-3">
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Kategori</label>
-            <div className="space-y-2 text-xs text-slate-600">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="rounded text-blue-900 focus:ring-blue-900" defaultChecked /> Perbankan & Finance
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="rounded text-blue-900 focus:ring-blue-900" defaultChecked /> Manufaktur & Otomotif
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="rounded text-blue-900 focus:ring-blue-900" /> Logistik & Administrasi
-              </label>
-            </div>
+        <aside className="bg-white p-5 rounded-xl border border-slate-200 h-fit shadow-sm space-y-4">
+          <h3 className="font-bold text-slate-900 text-sm border-b pb-2">Filter Cepat</h3>
+          <div className="space-y-2 text-xs text-slate-600">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" defaultChecked /> Kawasan Industri Cikarang
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" defaultChecked /> Perbankan & Office Bekasi
+            </label>
           </div>
         </aside>
 
-        {/* Job Feed */}
         <section className="lg:col-span-3 space-y-4">
-          <div className="flex justify-between items-center border-b pb-3">
-            <div>
-              <h2 className="text-base font-bold text-slate-900">Lowongan Kerja Terverifikasi</h2>
-              <p className="text-xs text-slate-500">Update terbaru untuk kawasan Bekasi & Cikarang</p>
-            </div>
-            <span className="text-xs font-semibold text-blue-900">3 Loker Ditampilkan</span>
-          </div>
-
-          <div className="space-y-3">
-            {MOCK_JOBS.map((job) => (
-              <div key={job.id} className="bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-900 transition shadow-sm hover:shadow-md">
-                <div className="flex justify-between items-start gap-4">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-lg bg-blue-50 text-blue-900 flex items-center justify-center text-xl shrink-0">
-                      <i className={`fa-solid ${job.icon}`}></i>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-slate-900 text-base hover:text-blue-900 cursor-pointer">
-                          {job.title}
-                        </h3>
-                        <span className="px-2 py-0.5 text-[10px] font-bold bg-blue-100 text-blue-900 rounded">
-                          {job.badge}
-                        </span>
-                      </div>
-                      <p className="text-xs font-semibold text-slate-600 mt-0.5">{job.company}</p>
-                    </div>
-                  </div>
-
-                  <button className="bg-blue-900 hover:bg-blue-800 text-white font-bold px-4 py-2 rounded-lg text-xs transition shadow shrink-0">
-                    Lamar Sekarang
-                  </button>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-4 text-xs text-slate-500 border-t pt-3">
-                  <span className="flex items-center gap-1"><i className="fa-solid fa-location-dot text-slate-400"></i> {job.location}</span>
-                  <span className="flex items-center gap-1"><i className="fa-solid fa-briefcase text-slate-400"></i> {job.type}</span>
-                  <span className="flex items-center gap-1"><i className="fa-solid fa-money-bill-wave text-slate-400"></i> {job.salary}</span>
-                  <span className="ml-auto text-slate-400">{job.posted}</span>
-                </div>
+          <h2 className="text-base font-bold text-slate-900 border-b pb-2">Lowongan Terbaru Lainnya</h2>
+          {REGULAR_JOBS.map((job) => (
+            <div key={job.id} className="bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-900 transition shadow-sm flex justify-between items-center">
+              <div>
+                <h3 className="font-bold text-slate-900 text-base">{job.title}</h3>
+                <p className="text-xs text-slate-600">{job.company} — <span className="text-slate-400">{job.location}</span></p>
+                <p className="text-xs text-green-700 font-semibold mt-1">{job.salary}</p>
               </div>
-            ))}
-          </div>
+              <button className="bg-blue-900 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-blue-800">
+                Lamar
+              </button>
+            </div>
+          ))}
         </section>
-
       </main>
 
-      {/* News & Articles Section */}
-      <section id="berita" className="bg-white border-t border-slate-200 py-12 px-4">
-        <div className="max-w-6xl mx-auto space-y-6">
-          <div className="flex justify-between items-end border-b pb-4">
-            <div>
-              <span className="text-xs font-bold text-blue-900 uppercase tracking-wider">Pusat Edukasi & Informasi</span>
-              <h2 className="text-xl font-bold text-slate-900 mt-1">Berita & Tips Karir Terbaru</h2>
-            </div>
-            <a href="#" className="text-xs font-bold text-blue-900 hover:underline">Lihat Semua Berita →</a>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {MOCK_NEWS.map((article) => (
-              <div key={article.id} className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-blue-900 transition shadow-sm space-y-3">
-                <div className="w-10 h-10 rounded-lg bg-blue-900 text-white flex items-center justify-center">
-                  <i className={`fa-solid ${article.icon}`}></i>
-                </div>
-                <div className="flex justify-between text-[11px] text-slate-400">
-                  <span className="font-bold text-blue-900">{article.category}</span>
-                  <span>{article.date}</span>
-                </div>
-                <h3 className="font-bold text-slate-900 text-sm hover:text-blue-900 cursor-pointer line-clamp-2">
-                  {article.title}
-                </h3>
-                <p className="text-[11px] text-slate-400">{article.readTime}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Corporate Footer */}
-      <footer className="bg-blue-950 text-blue-200 border-t border-blue-900 py-10 px-4 text-xs">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="bg-white text-blue-900 font-black px-2 py-0.5 rounded text-sm">BK</div>
-              <span className="font-bold text-white text-base">BekasiKerja.id</span>
-            </div>
-            <p className="text-slate-400 leading-relaxed">
-              Platform layanan karir terpadu wilayah Bekasi. Menyediakan info loker terverifikasi, pembuatan CV gratis, dan simulasi psikotes online.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-white mb-3 text-sm">Pencari Kerja</h4>
-            <ul className="space-y-2 text-slate-400">
-              <li><a href="#" className="hover:text-white">Cari Lowongan</a></li>
-              <li><a href="#cv-builder" className="hover:text-white">Buat CV ATS Gratis</a></li>
-              <li><a href="#psikotes" className="hover:text-white">Tes Psikotes Online</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-white mb-3 text-sm">Perusahaan</h4>
-            <ul className="space-y-2 text-slate-400">
-              <li><a href="#" className="hover:text-white">Pasang Lowongan</a></li>
-              <li><a href="#" className="hover:text-white">Layanan Rekrutmen</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-white mb-3 text-sm">Kontak & Bantuan</h4>
-            <ul className="space-y-2 text-slate-400">
-              <li><i className="fa-regular fa-envelope mr-2"></i> support@bekasikerja.id</li>
-              <li><i className="fa-solid fa-location-dot mr-2"></i> Bekasi, Jawa Barat</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="max-w-6xl mx-auto border-t border-blue-900/60 pt-6 flex flex-col md:flex-row justify-between text-slate-400 text-[11px]">
-          <p>© 2026 BekasiKerja.id. All rights reserved.</p>
-          <div className="flex gap-4 mt-2 md:mt-0">
-            <a href="#" className="hover:text-white">Syarat & Ketentuan</a>
-            <a href="#" className="hover:text-white">Kebijakan Privasi</a>
-          </div>
-        </div>
+      {/* Footer */}
+      <footer className="bg-blue-950 text-blue-200 py-6 text-center text-xs">
+        <p>© 2026 BekasiKerja.id — Portal Lowongan Kerja Terpercaya Bekasi</p>
       </footer>
 
     </div>
