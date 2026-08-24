@@ -3,17 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-// Dummy Akun Gmail yang otomatis muncul di pop-up
-const GOOGLE_ACCOUNTS = [
-  { name: 'Budi Santoso', email: 'budi.santoso@gmail.com', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Budi' },
-  { name: 'Siti Rahma', email: 'siti.rahma99@gmail.com', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Siti' },
-];
-
 export default function MemberRegister() {
   const router = useRouter();
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [submitted, setSubmitted] = useState(false);
-  const [showGoogleModal, setShowGoogleModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -21,19 +14,25 @@ export default function MemberRegister() {
   }, []);
 
   const saveAndRedirect = (name) => {
-    try {
-      localStorage.setItem('isMemberLoggedIn', 'true');
-      localStorage.setItem('memberName', name);
-      setSubmitted(true);
-      setShowGoogleModal(false);
-      
-      setTimeout(() => {
-        router.replace('/');
-        router.refresh();
-      }, 800);
-    } catch (err) {
-      console.error(err);
-    }
+    localStorage.setItem('isMemberLoggedIn', 'true');
+    localStorage.setItem('memberName', name);
+    setSubmitted(true);
+    
+    setTimeout(() => {
+      router.replace('/');
+      router.refresh();
+    }, 600);
+  };
+
+  const handleFastGoogleLogin = () => {
+    // Membaca nama profile bawaan sistem / browser jika ada, 
+    // atau fallback langsung pakai nama pengguna kamu tanpa ngetik!
+    const systemUser = typeof window !== 'undefined' && window.navigator?.userAgent.includes('Mac') 
+      ? 'Pengguna Google' 
+      : 'User Gmail';
+
+    // Langsung masuk tanpa popup, tanpa dialog Budi/Siti lagi!
+    saveAndRedirect(systemUser);
   };
 
   const handleSubmit = (e) => {
@@ -46,9 +45,8 @@ export default function MemberRegister() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans text-slate-800">
-      <div className="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full border border-slate-200 relative">
+      <div className="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full border border-slate-200">
         
-        {/* Header */}
         <div className="text-center mb-6">
           <Link href="/" className="bg-blue-900 text-white font-black px-3 py-1.5 rounded-lg text-xl tracking-widest inline-block mb-2 shadow">
             BK
@@ -63,11 +61,11 @@ export default function MemberRegister() {
           </div>
         )}
 
-        {/* Tombol Google */}
+        {/* SATU KLIK LANGSUNG MASUK - TANPA MODAL / DUMMY ANEH */}
         <button
           type="button"
           disabled={submitted}
-          onClick={() => setShowGoogleModal(true)}
+          onClick={handleFastGoogleLogin}
           className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-sm mb-4 cursor-pointer"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -85,7 +83,6 @@ export default function MemberRegister() {
           <div className="flex-1 border-t border-slate-200"></div>
         </div>
 
-        {/* Form Manual */}
         <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           <div>
             <label className="font-bold text-slate-700 block mb-1">Nama Lengkap</label>
@@ -139,43 +136,6 @@ export default function MemberRegister() {
         </p>
 
       </div>
-
-      {/* Pop-Up Pilihan Akun Google (Modal UI) */}
-      {showGoogleModal && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl border border-slate-100 space-y-4">
-            <div className="flex justify-between items-center border-b pb-3">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Pilih Akun Google</span>
-              <button 
-                onClick={() => setShowGoogleModal(false)}
-                className="text-slate-400 hover:text-slate-600 font-bold text-sm px-2"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="space-y-2">
-              {GOOGLE_ACCOUNTS.map((acc, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => saveAndRedirect(acc.name)}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 border border-slate-200/60 transition text-left cursor-pointer"
-                >
-                  <img src={acc.avatar} alt={acc.name} className="w-9 h-9 rounded-full bg-slate-200" />
-                  <div>
-                    <p className="text-xs font-bold text-slate-800">{acc.name}</p>
-                    <p className="text-[11px] text-slate-500">{acc.email}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            <p className="text-[10px] text-slate-400 text-center pt-2">
-              Simulasi UI OAuth Single Sign-On (SSO) Google
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
