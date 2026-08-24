@@ -12,7 +12,6 @@ export default function MemberRegister() {
     localStorage.setItem('memberName', name);
     setSubmitted(true);
     
-    // Gunakan router.replace agar tidak memicu reload halaman dan navigasi lebih cepat
     setTimeout(() => {
       router.replace('/');
     }, 800);
@@ -20,11 +19,22 @@ export default function MemberRegister() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Mengambil nama dari form input
     saveAndRedirect(formData.name || 'Pelamar');
   };
 
   const handleGoogleRegister = () => {
-    saveAndRedirect('User Google');
+    // Meminta masukan email/nama agar tidak hardcode lagi
+    const userInput = prompt("Simulasi Google Sign-In:\nMasukkan Email/Nama Google Anda:", "budi.santoso@gmail.com");
+    
+    if (userInput) {
+      // Ambil bagian depan email (sebelum @) sebagai nama tampilan jika berupa email
+      const displayName = userInput.includes('@') 
+        ? userInput.split('@')[0].replace('.', ' ')
+        : userInput;
+      
+      saveAndRedirect(displayName);
+    }
   };
 
   return (
