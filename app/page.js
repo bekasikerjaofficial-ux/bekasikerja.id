@@ -45,13 +45,25 @@ const REGULAR_JOBS = [
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [member, setMember] = useState({ isLoggedIn: false, name: '' });
 
+  // Deteksi status login saat halaman dibuka
   useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isMemberLoggedIn') === 'true';
+    const name = localStorage.getItem('memberName') || 'Member';
+    setMember({ isLoggedIn, name });
+
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % FEATURED_JOBS.length);
     }, 5000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('isMemberLoggedIn');
+    localStorage.removeItem('memberName');
+    setMember({ isLoggedIn: false, name: '' });
+  };
 
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % FEATURED_JOBS.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? FEATURED_JOBS.length - 1 : prev - 1));
@@ -59,7 +71,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans text-slate-800">
       
-      {/* Top Bar - Clean Blue */}
+      {/* Top Bar */}
       <div className="bg-blue-900 text-blue-100 text-xs py-2 px-4 font-medium">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -74,7 +86,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Navbar - BCA Blue Style */}
+      {/* Navbar Dinamis (Deteksi Login) */}
       <header className="bg-white text-blue-900 sticky top-0 z-50 shadow-sm border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -96,22 +108,37 @@ export default function Home() {
             </a>
           </nav>
 
-          {/* Tombol Terhubung ke Halaman Member Login & Register */}
+          {/* Area Tombol Header Dinamis */}
           <div className="flex items-center gap-3">
-            <a href="/member/login" className="px-4 py-2 text-xs font-bold text-blue-900 hover:text-blue-700">
-              Masuk
-            </a>
-            <a href="/member/register" className="px-4 py-2 text-xs font-bold bg-blue-900 hover:bg-blue-800 text-white rounded-lg shadow">
-              Daftar Member
-            </a>
+            {member.isLoggedIn ? (
+              <div className="flex items-center gap-3 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                <span className="text-xs font-bold text-slate-800">
+                  👋 {member.name}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="text-[11px] bg-red-600 hover:bg-red-700 text-white font-bold px-2.5 py-1 rounded transition"
+                >
+                  Keluar
+                </button>
+              </div>
+            ) : (
+              <>
+                <a href="/member/login" className="px-4 py-2 text-xs font-bold text-blue-900 hover:text-blue-700">
+                  Masuk
+                </a>
+                <a href="/member/register" className="px-4 py-2 text-xs font-bold bg-blue-900 hover:bg-blue-800 text-white rounded-lg shadow">
+                  Daftar Member
+                </a>
+              </>
+            )}
           </div>
         </div>
       </header>
 
-      {/* HERO SLIDER SECTION - Clean Light Background with Blue Featured Card */}
+      {/* Hero Section */}
       <section className="bg-slate-100 py-10 px-4 border-b border-slate-200">
         <div className="max-w-6xl mx-auto">
-          
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
@@ -119,19 +146,17 @@ export default function Home() {
             </div>
             
             <div className="flex gap-2">
-              <button onClick={prevSlide} className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-700 shadow-sm transition">
+              <button onClick={prevSlide} className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-700 shadow-sm">
                 ❮
               </button>
-              <button onClick={nextSlide} className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-700 shadow-sm transition">
+              <button onClick={nextSlide} className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-700 shadow-sm">
                 ❯
               </button>
             </div>
           </div>
 
-          {/* Banner Hero Card - BCA Blue Banner */}
-          <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-2xl p-6 md:p-10 shadow-lg transition-all duration-500">
+          <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-2xl p-6 md:p-10 shadow-lg">
             <div className="flex flex-col md:flex-row justify-between md:items-center gap-6">
-              
               <div className="space-y-3 max-w-2xl">
                 <span className="bg-amber-400 text-blue-950 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
                   {FEATURED_JOBS[currentSlide].tag}
@@ -151,23 +176,20 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Action Side */}
               <div className="flex flex-col gap-2.5 shrink-0 bg-white/10 p-4 rounded-xl border border-white/20 backdrop-blur-sm">
                 <span className="text-[11px] text-blue-100 text-center">
                   Batas Lamaran: <strong className="text-amber-300">{FEATURED_JOBS[currentSlide].deadline}</strong>
                 </span>
-                <button className="bg-amber-400 hover:bg-amber-300 text-blue-950 font-extrabold px-6 py-2.5 rounded-lg text-xs transition shadow flex items-center justify-center gap-2">
+                <button className="bg-amber-400 hover:bg-amber-300 text-blue-950 font-extrabold px-6 py-2.5 rounded-lg text-xs transition shadow">
                   Lamar Sekarang ➔
                 </button>
                 <button className="bg-blue-950/60 hover:bg-blue-950 border border-white/30 text-white font-semibold px-6 py-2 rounded-lg text-xs transition">
                   Simpan Loker
                 </button>
               </div>
-
             </div>
           </div>
 
-          {/* Indicator */}
           <div className="flex justify-center gap-2 mt-4">
             {FEATURED_JOBS.map((_, index) => (
               <button
@@ -179,31 +201,10 @@ export default function Home() {
               />
             ))}
           </div>
-
         </div>
       </section>
 
-      {/* SEARCH BAR - Clean Floating */}
-      <section className="max-w-6xl mx-auto px-4 -mt-5 relative z-20 w-full">
-        <div className="bg-white p-3 rounded-xl shadow-md border border-slate-200 flex flex-col md:flex-row gap-2">
-          <input
-            type="text"
-            placeholder="Cari posisi kerja (ex: Staff Admin, QC, Operator)..."
-            className="flex-1 px-4 py-2.5 text-xs md:text-sm bg-slate-50 rounded-lg focus:outline-none border border-slate-200"
-          />
-          <select className="px-4 py-2.5 text-xs md:text-sm bg-slate-50 rounded-lg text-slate-700 focus:outline-none border border-slate-200">
-            <option>Semua Kawasan</option>
-            <option>Cikarang / EJIP / Jababeka</option>
-            <option>Cibitung / MM2100</option>
-            <option>Kota Bekasi</option>
-          </select>
-          <button className="bg-blue-900 hover:bg-blue-800 text-white font-bold px-6 py-2.5 rounded-lg text-xs md:text-sm transition shadow">
-            Cari Loker
-          </button>
-        </div>
-      </section>
-
-      {/* REGULAR JOBS FEED - White Background & High Contrast */}
+      {/* Feed & Footer */}
       <main className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-4 gap-8 w-full flex-1">
         <aside className="bg-white p-5 rounded-xl border border-slate-200 h-fit shadow-sm space-y-4">
           <h3 className="font-bold text-slate-900 text-sm border-b pb-2">Filter Cepat</h3>
@@ -237,7 +238,6 @@ export default function Home() {
       <footer className="bg-blue-950 text-blue-200 py-6 text-center text-xs">
         <p>© 2026 BekasiKerja.id — Portal Lowongan Kerja Terpercaya Bekasi</p>
       </footer>
-
     </div>
   );
 }
