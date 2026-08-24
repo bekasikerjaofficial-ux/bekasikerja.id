@@ -1,29 +1,33 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function MemberRegister() {
+  const router = useRouter();
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [submitted, setSubmitted] = useState(false);
 
-  // Simulasi Register via Form
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // Fungsi menyimpan status login ke LocalStorage & Pindah Halaman
+  const saveAndRedirect = (name) => {
     localStorage.setItem('isMemberLoggedIn', 'true');
-    localStorage.setItem('memberName', formData.name);
+    localStorage.setItem('memberName', name);
     setSubmitted(true);
+    
+    // Gunakan router.push agar navigasi Next.js lancar tanpa reload putus
     setTimeout(() => {
-      window.location.href = '/';
-    }, 1200);
+      router.push('/');
+    }, 1000);
   };
 
-  // Simulasi Single Sign-On (SSO) Google / Gmail
+  // Register via Form Biasa
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    saveAndRedirect(formData.name || 'Pelamar');
+  };
+
+  // Register via Tombol Google / Gmail
   const handleGoogleRegister = () => {
-    localStorage.setItem('isMemberLoggedIn', 'true');
-    localStorage.setItem('memberName', 'User Gmail');
-    setSubmitted(true);
-    setTimeout(() => {
-      window.location.href = '/';
-    }, 1000);
+    saveAndRedirect('User Google');
   };
 
   return (
@@ -49,7 +53,7 @@ export default function MemberRegister() {
         <button
           type="button"
           onClick={handleGoogleRegister}
-          className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-sm mb-4"
+          className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-sm mb-4 cursor-pointer"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
@@ -79,7 +83,7 @@ export default function MemberRegister() {
           <div className="flex-1 border-t border-slate-200"></div>
         </div>
 
-        {/* Form Pendaftaran Email & Password saja */}
+        {/* Form Pendaftaran Email & Password */}
         <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           <div>
             <label className="font-bold text-slate-700 block mb-1">Nama Lengkap</label>
