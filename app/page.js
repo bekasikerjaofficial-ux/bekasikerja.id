@@ -96,6 +96,7 @@ export default function Home() {
             </a>
           </nav>
 
+          {/* Tombol Terhubung ke Halaman Member Login & Register */}
           <div className="flex items-center gap-3">
             <a href="/member/login" className="px-4 py-2 text-xs font-bold text-blue-900 hover:text-blue-700">
               Masuk
