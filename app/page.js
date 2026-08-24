@@ -46,23 +46,44 @@ const REGULAR_JOBS = [
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [member, setMember] = useState({ isLoggedIn: false, name: '' });
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Deteksi status login saat halaman dibuka
+  // Ambil data status member saat komponen selesai dimuat di browser
+  const checkMemberStatus = () => {
+    try {
+      const isLoggedIn = localStorage.getItem('isMemberLoggedIn') === 'true';
+      const name = localStorage.getItem('memberName') || 'Member';
+      setMember({ isLoggedIn, name });
+    } catch (err) {
+      console.error('Failed reading localStorage', err);
+    }
+  };
+
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isMemberLoggedIn') === 'true';
-    const name = localStorage.getItem('memberName') || 'Member';
-    setMember({ isLoggedIn, name });
+    setIsMounted(true);
+    checkMemberStatus();
+
+    // Event listener untuk menangani Perubahan Login antar-tab browser
+    window.addEventListener('storage', checkMemberStatus);
 
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % FEATURED_JOBS.length);
     }, 5000);
-    return () => clearInterval(timer);
+
+    return () => {
+      window.removeEventListener('storage', checkMemberStatus);
+      clearInterval(timer);
+    };
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('isMemberLoggedIn');
-    localStorage.removeItem('memberName');
-    setMember({ isLoggedIn: false, name: '' });
+    try {
+      localStorage.removeItem('isMemberLoggedIn');
+      localStorage.removeItem('memberName');
+      setMember({ isLoggedIn: false, name: '' });
+    } catch (err) {
+      console.error('Failed clearing storage', err);
+    }
   };
 
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % FEATURED_JOBS.length);
@@ -86,7 +107,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Navbar Dinamis (Deteksi Login) */}
+      {/* Navbar */}
       <header className="bg-white text-blue-900 sticky top-0 z-50 shadow-sm border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -108,29 +129,31 @@ export default function Home() {
             </a>
           </nav>
 
-          {/* Area Tombol Header Dinamis */}
-          <div className="flex items-center gap-3">
-            {member.isLoggedIn ? (
-              <div className="flex items-center gap-3 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
-                <span className="text-xs font-bold text-slate-800">
-                  👋 {member.name}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="text-[11px] bg-red-600 hover:bg-red-700 text-white font-bold px-2.5 py-1 rounded transition"
-                >
-                  Keluar
-                </button>
-              </div>
-            ) : (
-              <>
-                <a href="/member/login" className="px-4 py-2 text-xs font-bold text-blue-900 hover:text-blue-700">
-                  Masuk
-                </a>
-                <a href="/member/register" className="px-4 py-2 text-xs font-bold bg-blue-900 hover:bg-blue-800 text-white rounded-lg shadow">
-                  Daftar Member
-                </a>
-              </>
+          {/* Area Dynamic Member UI */}
+          <div className="flex items-center gap-3 min-h-[36px]">
+            {isMounted && (
+              member.isLoggedIn ? (
+                <div className="flex items-center gap-3 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                  <span className="text-xs font-bold text-slate-800">
+                    👋 {member.name}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    className="text-[11px] bg-red-600 hover:bg-red-700 text-white font-bold px-2.5 py-1 rounded transition"
+                  >
+                    Keluar
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <a href="/member/login" className="px-4 py-2 text-xs font-bold text-blue-900 hover:text-blue-700">
+                    Masuk
+                  </a>
+                  <a href="/member/register" className="px-4 py-2 text-xs font-bold bg-blue-900 hover:bg-blue-800 text-white rounded-lg shadow">
+                    Daftar Member
+                  </a>
+                </>
+              )
             )}
           </div>
         </div>
@@ -204,7 +227,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Feed & Footer */}
+      {/* Main Feed */}
       <main className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-4 gap-8 w-full flex-1">
         <aside className="bg-white p-5 rounded-xl border border-slate-200 h-fit shadow-sm space-y-4">
           <h3 className="font-bold text-slate-900 text-sm border-b pb-2">Filter Cepat</h3>
