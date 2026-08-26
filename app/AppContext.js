@@ -3,86 +3,82 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AppContext = createContext();
 
+const initialJobs = [
+  {
+    id: 1,
+    title: 'Operator Produksi Assembly',
+    company: 'PT Astra Honda Motor',
+    location: 'Kawasan Industri MM2100, Cikarang',
+    salary: 'Rp 5.200.000 - Rp 5.800.000',
+    category: 'Manufaktur / Pabrik',
+    type: 'Full-time',
+    deadline: '30 Sep 2026',
+    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&auto=format&fit=crop&q=80',
+    desc: 'Melakukan perakitan komponen kendaraan sesuai standar SOP operasional.'
+  },
+  {
+    id: 2,
+    title: 'Staff Quality Control (QC)',
+    company: 'PT Mayora Indah Tbk',
+    location: 'Kawasan Industri KIIC, Karawang',
+    salary: 'Rp 5.500.000 - Rp 6.200.000',
+    category: 'Teknik & Engineering',
+    type: 'Full-time',
+    deadline: '15 Okt 2026',
+    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80',
+    desc: 'Memastikan standar mutu produk sesuai spesifikasi sebelum didistribusikan.'
+  }
+];
+
+const initialNews = [
+  {
+    id: 1,
+    title: 'Tips Lolos Interview User di Perusahaan Manufaktur Cikarang',
+    category: 'Tips Karir',
+    date: '26 Agt 2026',
+    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&auto=format&fit=crop&q=80',
+    content: 'Persiapkan mental dan pahami alur SOP teknis industri sebelum menghadapi interview user.'
+  },
+  {
+    id: 2,
+    title: 'Waspada Modus Penipuan Loker Berbayar di Kawasan Industri',
+    category: '#AwasModus',
+    date: '25 Agt 2026',
+    image: 'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=800&auto=format&fit=crop&q=80',
+    content: 'PT resmi tidak pernah memungut biaya apapun selama proses rekrutmen berlangsung.'
+  }
+];
+
 export function AppProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [jobs, setJobs] = useState(initialJobs);
+  const [news, setNews] = useState(initialNews);
 
-  // Data Bawaan (Default) Lowongan
-  const defaultJobs = [
-    { id: 1, title: 'Operator Produksi - PT Epson Indonesia', company: 'PT Epson Indonesia', location: 'Cikarang, Bekasi', deadline: '31 Agu 2026', type: 'Full-time', image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&auto=format&fit=crop&q=80', desc: 'Dibutuhkan segera operator produksi berpengalaman.' },
-    { id: 2, title: 'Staff QA / QC - PT Astra Honda Motor', company: 'PT AHM', location: 'Cibitung, Bekasi', deadline: '05 Sep 2026', type: 'Full-time', image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=600&auto=format&fit=crop&q=80', desc: 'Melakukan kontrol kualitas pada lini perakitan.' },
-    { id: 3, title: 'Admin Logistik - PT Mayora Indah', company: 'PT Mayora', location: 'Jababeka, Bekasi', deadline: '10 Sep 2026', type: 'Contract', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&auto=format&fit=crop&q=80', desc: 'Mengelola pencatatan gudang dan pengiriman barang.' },
-    { id: 4, title: 'Engineering Staff - PT LG Electronics', company: 'PT LG', location: 'MM2100, Bekasi', deadline: '15 Sep 2026', type: 'Full-time', image: 'https://images.unsplash.com/photo-1537462715879-363eeb61a3ad?w=600&auto=format&fit=crop&q=80', desc: 'Maintenance mesin produksi pabrik.' },
-  ];
-
-  // Data Bawaan (Default) Berita / Lifestyle
-  const defaultNews = [
-    { id: 1, title: 'Informasi Pembayaran Biaya Admin PDAM di Beberapa Wilayah', date: '24 Agt 2026', category: 'Lifestyle', hero: true, image: 'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=800&auto=format&fit=crop&q=80', content: 'Simak rincian tarif terbaru administrasi layanan air bersih.' },
-    { id: 2, title: 'Investasi Berbasis Syariah dengan Sukuk Ritel SR025', date: '21 Agt 2026', category: 'Edukasi', hero: false, image: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=400&auto=format&fit=crop&q=80', content: 'Pilihan instrumen investasi aman bagi pekerja.' },
-    { id: 3, title: 'Tips Menghadapi Wawancara Kerja di Kawasan Industri Cikarang', date: '20 Agt 2026', category: 'Tips Karir', hero: false, image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80', content: 'Kunci sukses lolos interview HRD dan user.' },
-    { id: 4, title: 'Waspada Modus Penipuan Lowongan Kerja Atas Nama PT Terkenal', date: '19 Agt 2026', category: '#AwasModus', hero: false, image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&auto=format&fit=crop&q=80', content: 'Kenali ciri-ciri rekrutmen palsu yang memungut biaya.' },
-  ];
-
-  const [jobs, setJobs] = useState(defaultJobs);
-  const [news, setNews] = useState(defaultNews);
-
-  // Load Data dari LocalStorage saat pertama kali aplikasi dibuka
   useEffect(() => {
-    const savedUser = localStorage.getItem('bk_user');
     const savedJobs = localStorage.getItem('bk_jobs');
     const savedNews = localStorage.getItem('bk_news');
-
-    if (savedUser) {
-      try { setUser(JSON.parse(savedUser)); } catch (e) { console.error(e); }
-    }
-    if (savedJobs) {
-      try { setJobs(JSON.parse(savedJobs)); } catch (e) { console.error(e); }
-    }
-    if (savedNews) {
-      try { setNews(JSON.parse(savedNews)); } catch (e) { console.error(e); }
-    }
+    if (savedJobs) setJobs(JSON.parse(savedJobs));
+    if (savedNews) setNews(JSON.parse(savedNews));
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem('bk_user', JSON.stringify(userData));
+  const addJob = (newJob) => {
+    const updated = [newJob, ...jobs];
+    setJobs(updated);
+    localStorage.setItem('bk_jobs', JSON.stringify(updated));
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('bk_user');
-  };
-
-  const unlockPremium = () => {
-    if (user) {
-      const updated = { ...user, isPremium: true };
-      setUser(updated);
-      localStorage.setItem('bk_user', JSON.stringify(updated));
-    }
-  };
-
-  // Tambah Job & Simpan ke LocalStorage Permanen
-  const addJob = (job) => {
-    setJobs((prev) => {
-      const updated = [job, ...prev];
-      localStorage.setItem('bk_jobs', JSON.stringify(updated));
-      return updated;
-    });
-  };
-
-  // Tambah News & Simpan ke LocalStorage Permanen
-  const addNews = (item) => {
-    setNews((prev) => {
-      const updated = [item, ...prev];
-      localStorage.setItem('bk_news', JSON.stringify(updated));
-      return updated;
-    });
+  const addNews = (newNews) => {
+    const updated = [newNews, ...news];
+    setNews(updated);
+    localStorage.setItem('bk_news', JSON.stringify(updated));
   };
 
   return (
-    <AppContext.Provider value={{ user, login, logout, unlockPremium, jobs, news, addJob, addNews }}>
+    <AppContext.Provider value={{ jobs, news, addJob, addNews }}>
       {children}
     </AppContext.Provider>
   );
 }
 
-export const useApp = () => useContext(AppContext);
+export function useApp() {
+  return useContext(AppContext);
+}
