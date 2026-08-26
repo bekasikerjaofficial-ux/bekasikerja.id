@@ -3,27 +3,22 @@ import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import { useApp } from './context/AppContext';
 
-// Memaksa Vercel agar selalu merender data terbaru secara dinamis (tanpa cache)
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 export default function Home() {
-  const { jobs, news } = useApp();
+  const { jobs = [], news = [] } = useApp() || {};
   const [selectedNewsCategory, setSelectedNewsCategory] = useState('Semua');
 
-  // Filter Berita Berdasarkan Kategori
   const filteredNews = selectedNewsCategory === 'Semua' 
-    ? (news || []) 
-    : (news || []).filter(item => item.category === selectedNewsCategory);
+    ? news 
+    : news.filter(item => item.category === selectedNewsCategory);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
       <Navbar />
 
-      {/* HERO / HEADER SECTION */}
-      <section className="bg-slate-900 text-white py-12 px-4 text-center relative overflow-hidden">
-        <div className="max-w-4xl mx-auto relative z-10">
-          <span className="bg-blue-600/30 text-blue-400 border border-blue-500/30 text-[10px] font-bold px-3 py-1 rounded-full inline-block mb-3 uppercase tracking-wider">
+      {/* HERO SECTION */}
+      <section className="bg-slate-900 text-white py-12 px-4 text-center">
+        <div className="max-w-4xl mx-auto">
+          <span className="bg-blue-600/30 text-blue-400 border border-blue-500/30 text-[10px] font-bold px-3 py-1 rounded-full inline-block mb-3 uppercase">
             Portal Lowongan Kerja Bekasi & Karawang
           </span>
           <h1 className="text-2xl md:text-4xl font-extrabold mb-3">
@@ -35,7 +30,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 1: GRID LOWONGAN KERJA (OTOMATIS BACA DATA ADMIN) */}
+      {/* LOKER SECTION */}
       <section className="max-w-6xl mx-auto px-4 py-10">
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -43,12 +38,12 @@ export default function Home() {
             <p className="text-xs text-slate-500">Lowongan terverifikasi di Bekasi, Cikarang, & Karawang</p>
           </div>
           <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
-            {jobs ? jobs.length : 0} Lowongan
+            {jobs.length} Lowongan
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {jobs && jobs.length > 0 ? (
+          {jobs.length > 0 ? (
             jobs.map((job) => (
               <div key={job.id} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
                 <div>
@@ -66,12 +61,10 @@ export default function Home() {
                       <p className="text-xs text-slate-500 font-medium">{job.company}</p>
                     </div>
                   </div>
-                  
                   <p className="text-xs text-slate-600 line-clamp-2 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                     {job.desc || 'Tidak ada deskripsi singkat.'}
                   </p>
                 </div>
-
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
                   <span>📍 {job.location}</span>
                   <span className="font-semibold text-rose-600">S/d: {job.deadline}</span>
@@ -79,22 +72,20 @@ export default function Home() {
               </div>
             ))
           ) : (
-            <div className="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300">
-              <p className="text-xs text-slate-500 font-medium">Belum ada postingan lowongan kerja.</p>
+            <div className="col-span-full text-center py-8 bg-white rounded-xl border border-dashed text-xs text-slate-400">
+              Belum ada lowongan diposting.
             </div>
           )}
         </div>
       </section>
 
-      {/* SECTION 2: BERITA & LIFESTYLE */}
+      {/* BERITA SECTION */}
       <section className="max-w-6xl mx-auto px-4 py-10 border-t border-slate-200">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
             <h2 className="text-lg font-extrabold text-slate-900">Berita & Informasi Karir</h2>
             <p className="text-xs text-slate-500">Tips, berita industri, dan panduan dunia kerja</p>
           </div>
-
-          {/* TAB FILTER KATEGORI BERITA */}
           <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 text-xs">
             {['Semua', 'Lifestyle', 'Edukasi', 'Tips Karir', '#AwasModus'].map((cat) => (
               <button
@@ -112,9 +103,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* GRID BERITA */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredNews && filteredNews.length > 0 ? (
+          {filteredNews.length > 0 ? (
             filteredNews.map((item) => (
               <div key={item.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition">
                 <img 
@@ -133,8 +123,8 @@ export default function Home() {
               </div>
             ))
           ) : (
-            <div className="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300">
-              <p className="text-xs text-slate-500 font-medium">Belum ada berita atau artikel dalam kategori ini.</p>
+            <div className="col-span-full text-center py-8 bg-white rounded-xl border border-dashed text-xs text-slate-400">
+              Belum ada artikel di kategori ini.
             </div>
           )}
         </div>
