@@ -6,6 +6,7 @@ import { useApp } from './context/AppContext';
 export const dynamic = 'force-dynamic';
 
 export default function Home() {
+  // Mengambil data jobs & news langsung dari AppContext (Postingan Admin)
   const { jobs, news } = useApp();
   const [selectedNewsCategory, setSelectedNewsCategory] = useState('Semua');
 
@@ -18,7 +19,7 @@ export default function Home() {
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
       <Navbar />
 
-      {/* HERO / SEARCH SECTION */}
+      {/* HERO SECTION */}
       <section className="bg-slate-900 text-white py-12 px-4 text-center relative overflow-hidden">
         <div className="max-w-4xl mx-auto relative z-10">
           <span className="bg-blue-600/30 text-blue-400 border border-blue-500/30 text-[10px] font-bold px-3 py-1 rounded-full inline-block mb-3 uppercase tracking-wider">
@@ -33,7 +34,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 1: GRID LOWONGAN KERJA (BERASAL DARI ADMIN / CONTEXT) */}
+      {/* SECTION 1: LOWONGAN KERJA (MEMBACA HASIL POSTING ADMIN) */}
       <section className="max-w-6xl mx-auto px-4 py-10">
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -41,12 +42,12 @@ export default function Home() {
             <p className="text-xs text-slate-500">Lowongan terverifikasi di Bekasi, Cikarang, & Karawang</p>
           </div>
           <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
-            {jobs.length} Lowongan
+            {jobs ? jobs.length : 0} Lowongan
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {jobs.map((job) => (
+          {jobs && jobs.map((job) => (
             <div key={job.id} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
               <div>
                 <div className="flex items-start gap-4 mb-4">
@@ -106,7 +107,7 @@ export default function Home() {
 
         {/* GRID BERITA */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredNews.map((item) => (
+          {filteredNews && filteredNews.map((item) => (
             <div key={item.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition">
               <img 
                 src={item.image} 
