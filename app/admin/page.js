@@ -1,13 +1,12 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar'; // sesuaikan path jika perlu
-import { useApp } from '../context/AppContext';
+import Navbar from '@/app/components/Navbar';
+import { useApp } from '@/app/context/AppContext';
 
 export default function AdminDashboard() {
-  const { user, jobs, news, addJob, addNews } = useApp();
-  const [activeTab, setActiveTab] = useState('create_job'); // 'create_job' | 'create_news' | 'manage_posts'
+  const { jobs = [], news = [], addJob, addNews } = useApp() || {};
+  const [activeTab, setActiveTab] = useState('create_job');
 
-  // State Form Loker
   const [jobForm, setJobForm] = useState({
     title: '',
     company: '',
@@ -20,7 +19,6 @@ export default function AdminDashboard() {
     desc: ''
   });
 
-  // State Form Berita / Lifestyle
   const [newsForm, setNewsForm] = useState({
     title: '',
     category: 'Lifestyle',
@@ -29,16 +27,14 @@ export default function AdminDashboard() {
     content: ''
   });
 
-  // State lokal untuk list postingan jika ingin edit/hapus langsung
   const [localJobs, setLocalJobs] = useState([]);
   const [localNews, setLocalNews] = useState([]);
 
   useEffect(() => {
-    setLocalJobs(jobs || []);
-    setLocalNews(news || []);
+    setLocalJobs(jobs);
+    setLocalNews(news);
   }, [jobs, news]);
 
-  // Handle Submit Loker
   const handleJobSubmit = (e) => {
     e.preventDefault();
     const newJob = {
@@ -46,7 +42,7 @@ export default function AdminDashboard() {
       ...jobForm,
       image: jobForm.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&auto=format&fit=crop&q=80'
     };
-    addJob(newJob);
+    if (addJob) addJob(newJob);
     alert('✅ Lowongan Kerja Berhasil Diposting!');
     setJobForm({
       title: '',
@@ -61,7 +57,6 @@ export default function AdminDashboard() {
     });
   };
 
-  // Handle Submit Berita/Lifestyle
   const handleNewsSubmit = (e) => {
     e.preventDefault();
     const newNews = {
@@ -69,7 +64,7 @@ export default function AdminDashboard() {
       ...newsForm,
       image: newsForm.image || 'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=800&auto=format&fit=crop&q=80'
     };
-    addNews(newNews);
+    if (addNews) addNews(newNews);
     alert('✅ Berita / Artikel Lifestyle Berhasil Diposting!');
     setNewsForm({
       title: '',
@@ -80,7 +75,6 @@ export default function AdminDashboard() {
     });
   };
 
-  // Fungsi Hapus Loker
   const handleDeleteJob = (id) => {
     if (confirm('Yakin ingin menghapus lowongan ini?')) {
       const updated = localJobs.filter(j => j.id !== id);
@@ -91,7 +85,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // Fungsi Hapus Berita
   const handleDeleteNews = (id) => {
     if (confirm('Yakin ingin menghapus artikel ini?')) {
       const updated = localNews.filter(n => n.id !== id);
@@ -104,19 +97,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800 pb-12">
-      {/* HEADER ADMIN */}
-      <header className="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-md">
-        <div className="flex items-center gap-3">
-          <span className="bg-amber-400 text-slate-900 font-extrabold text-xs px-2.5 py-1 rounded">ADMIN PANEL</span>
-          <h1 className="font-bold text-sm md:text-base">Dashboard BekasiKerja.id</h1>
-        </div>
-        <a href="/" className="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3 py-1.5 rounded transition">
-          Lihat Web
-        </a>
-      </header>
+      <Navbar />
 
       <div className="max-w-4xl mx-auto px-4 mt-6">
-        {/* NAVIGASI TAB ADMIN */}
         <div className="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
           <button
             onClick={() => setActiveTab('create_job')}
@@ -140,11 +123,10 @@ export default function AdminDashboard() {
               activeTab === 'manage_posts' ? 'bg-amber-500 text-white shadow' : 'text-slate-600 hover:bg-slate-50'
             }`}
           >
-            📋 Kelola & Lihat Postingan ({localJobs.length + localNews.length})
+            📋 Kelola Postingan ({localJobs.length + localNews.length})
           </button>
         </div>
 
-        {/* TAB 1: FORM POST LOKER */}
         {activeTab === 'create_job' && (
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
             <div>
@@ -218,7 +200,7 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="font-bold block mb-1">URL Gambar / Logo / Poster Loker</label>
+                <label className="font-bold block mb-1">URL Gambar / Logo Perusahaan</label>
                 <input
                   type="text"
                   placeholder="https://..."
@@ -250,7 +232,6 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* TAB 2: FORM POST BERITA / LIFESTYLE */}
         {activeTab === 'create_news' && (
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
             <div>
@@ -330,10 +311,8 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* TAB 3: DAFTAR KELOLA & LIHAT POSTINGAN */}
         {activeTab === 'manage_posts' && (
           <div className="space-y-6">
-            {/* DAFTAR LOKER */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
               <h3 className="font-extrabold text-sm text-slate-900 mb-4 pb-2 border-b">
                 Daftar Lowongan Kerja ({localJobs.length})
@@ -357,7 +336,6 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* DAFTAR BERITA */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
               <h3 className="font-extrabold text-sm text-slate-900 mb-4 pb-2 border-b">
                 Daftar Artikel & Berita ({localNews.length})
