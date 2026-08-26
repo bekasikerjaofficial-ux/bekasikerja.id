@@ -6,6 +6,7 @@ export default function AdminDashboard() {
   const { jobs = [], news = [], addJob, addNews } = useApp() || {};
   const [activeTab, setActiveTab] = useState('create_job');
 
+  // State Form Loker
   const [jobForm, setJobForm] = useState({
     title: '',
     company: '',
@@ -18,6 +19,7 @@ export default function AdminDashboard() {
     desc: ''
   });
 
+  // State Form Berita
   const [newsForm, setNewsForm] = useState({
     title: '',
     category: 'Lifestyle',
@@ -111,6 +113,7 @@ export default function AdminDashboard() {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 mt-6">
+        {/* TAB MENU DASHBOARD */}
         <div className="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
           <button
             onClick={() => setActiveTab('create_job')}
@@ -138,6 +141,7 @@ export default function AdminDashboard() {
           </button>
         </div>
 
+        {/* TAB 1: POST LOKER BARU */}
         {activeTab === 'create_job' && (
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
             <div>
@@ -243,6 +247,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* TAB 2: POST BERITA BARU */}
         {activeTab === 'create_news' && (
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
             <div>
@@ -322,6 +327,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* TAB 3: MANAJEMEN & KELOLA POSTINGAN LAMA */}
         {activeTab === 'manage_posts' && (
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
@@ -329,21 +335,25 @@ export default function AdminDashboard() {
                 Daftar Lowongan Kerja ({localJobs.length})
               </h3>
               <div className="space-y-3">
-                {localJobs.map(job => (
-                  <div key={job.id} className="flex justify-between items-center bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs">
-                    <div>
-                      <span className="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded mr-2">{job.category || 'Loker'}</span>
-                      <strong className="text-slate-900">{job.title}</strong>
-                      <p className="text-slate-500 text-[11px] mt-0.5">{job.company} • {job.location}</p>
+                {localJobs.length > 0 ? (
+                  localJobs.map(job => (
+                    <div key={job.id} className="flex justify-between items-center bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs">
+                      <div>
+                        <span className="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded mr-2">{job.category || 'Loker'}</span>
+                        <strong className="text-slate-900">{job.title}</strong>
+                        <p className="text-slate-500 text-[11px] mt-0.5">{job.company} • {job.location}</p>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteJob(job.id)}
+                        className="bg-rose-100 text-rose-700 hover:bg-rose-600 hover:text-white px-3 py-1.5 rounded-lg font-bold transition"
+                      >
+                        Hapus
+                      </button>
                     </div>
-                    <button
-                      onClick={() => handleDeleteJob(job.id)}
-                      className="bg-rose-100 text-rose-700 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-lg font-bold transition"
-                    >
-                      Hapus
-                    </button>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-xs text-slate-400 py-4 text-center">Belum ada lowongan tersimpan.</p>
+                )}
               </div>
             </div>
 
@@ -352,21 +362,25 @@ export default function AdminDashboard() {
                 Daftar Artikel & Berita ({localNews.length})
               </h3>
               <div className="space-y-3">
-                {localNews.map(item => (
-                  <div key={item.id} className="flex justify-between items-center bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs">
-                    <div>
-                      <span className="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded mr-2">{item.category}</span>
-                      <strong className="text-slate-900">{item.title}</strong>
-                      <p className="text-slate-500 text-[11px] mt-0.5">{item.date}</p>
+                {localNews.length > 0 ? (
+                  localNews.map(item => (
+                    <div key={item.id} className="flex justify-between items-center bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs">
+                      <div>
+                        <span className="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded mr-2">{item.category}</span>
+                        <strong className="text-slate-900">{item.title}</strong>
+                        <p className="text-slate-500 text-[11px] mt-0.5">{item.date}</p>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteNews(item.id)}
+                        className="bg-rose-100 text-rose-700 hover:bg-rose-600 hover:text-white px-3 py-1.5 rounded-lg font-bold transition"
+                      >
+                        Hapus
+                      </button>
                     </div>
-                    <button
-                      onClick={() => handleDeleteNews(item.id)}
-                      className="bg-rose-100 text-rose-700 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-lg font-bold transition"
-                    >
-                      Hapus
-                    </button>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-xs text-slate-400 py-4 text-center">Belum ada berita tersimpan.</p>
+                )}
               </div>
             </div>
           </div>
