@@ -6,7 +6,7 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
 
   // Password Login Admin kamu
-  const ADMIN_PASS = 'adminbekasikerja2026';
+  const ADMIN_PASS = 'adminkayaraya2026';
 
   const handleLogin = (e) => {
     e.preventDefault();
