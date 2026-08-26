@@ -3,23 +3,24 @@ import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import { useApp } from './context/AppContext';
 
+// Memaksa Vercel agar selalu merender data terbaru secara dinamis (tanpa cache)
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default function Home() {
-  // Mengambil data jobs & news langsung dari AppContext (Postingan Admin)
   const { jobs, news } = useApp();
   const [selectedNewsCategory, setSelectedNewsCategory] = useState('Semua');
 
   // Filter Berita Berdasarkan Kategori
   const filteredNews = selectedNewsCategory === 'Semua' 
-    ? news 
-    : news.filter(item => item.category === selectedNewsCategory);
+    ? (news || []) 
+    : (news || []).filter(item => item.category === selectedNewsCategory);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
       <Navbar />
 
-      {/* HERO SECTION */}
+      {/* HERO / HEADER SECTION */}
       <section className="bg-slate-900 text-white py-12 px-4 text-center relative overflow-hidden">
         <div className="max-w-4xl mx-auto relative z-10">
           <span className="bg-blue-600/30 text-blue-400 border border-blue-500/30 text-[10px] font-bold px-3 py-1 rounded-full inline-block mb-3 uppercase tracking-wider">
@@ -34,7 +35,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 1: LOWONGAN KERJA (MEMBACA HASIL POSTING ADMIN) */}
+      {/* SECTION 1: GRID LOWONGAN KERJA (OTOMATIS BACA DATA ADMIN) */}
       <section className="max-w-6xl mx-auto px-4 py-10">
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -47,35 +48,41 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {jobs && jobs.map((job) => (
-            <div key={job.id} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
-              <div>
-                <div className="flex items-start gap-4 mb-4">
-                  <img 
-                    src={job.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&auto=format&fit=crop&q=80'} 
-                    alt={job.title} 
-                    className="w-12 h-12 rounded-xl object-cover border flex-shrink-0"
-                  />
-                  <div>
-                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-                      {job.category || job.type || 'Full-time'}
-                    </span>
-                    <h3 className="font-bold text-sm text-slate-900 line-clamp-1 mt-1">{job.title}</h3>
-                    <p className="text-xs text-slate-500 font-medium">{job.company}</p>
+          {jobs && jobs.length > 0 ? (
+            jobs.map((job) => (
+              <div key={job.id} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                <div>
+                  <div className="flex items-start gap-4 mb-4">
+                    <img 
+                      src={job.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&auto=format&fit=crop&q=80'} 
+                      alt={job.title} 
+                      className="w-12 h-12 rounded-xl object-cover border flex-shrink-0"
+                    />
+                    <div>
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                        {job.category || job.type || 'Full-time'}
+                      </span>
+                      <h3 className="font-bold text-sm text-slate-900 line-clamp-1 mt-1">{job.title}</h3>
+                      <p className="text-xs text-slate-500 font-medium">{job.company}</p>
+                    </div>
                   </div>
+                  
+                  <p className="text-xs text-slate-600 line-clamp-2 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    {job.desc || 'Tidak ada deskripsi singkat.'}
+                  </p>
                 </div>
-                
-                <p className="text-xs text-slate-600 line-clamp-2 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                  {job.desc || 'Tidak ada deskripsi singkat.'}
-                </p>
-              </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                <span>📍 {job.location}</span>
-                <span className="font-semibold text-rose-600">S/d: {job.deadline}</span>
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                  <span>📍 {job.location}</span>
+                  <span className="font-semibold text-rose-600">S/d: {job.deadline}</span>
+                </div>
               </div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300">
+              <p className="text-xs text-slate-500 font-medium">Belum ada postingan lowongan kerja.</p>
             </div>
-          ))}
+          )}
         </div>
       </section>
 
@@ -107,23 +114,29 @@ export default function Home() {
 
         {/* GRID BERITA */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredNews && filteredNews.map((item) => (
-            <div key={item.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition">
-              <img 
-                src={item.image} 
-                alt={item.title} 
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-4">
-                <div className="flex items-center justify-between text-[10px] text-slate-400 mb-2">
-                  <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{item.category}</span>
-                  <span>{item.date}</span>
+          {filteredNews && filteredNews.length > 0 ? (
+            filteredNews.map((item) => (
+              <div key={item.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition">
+                <img 
+                  src={item.image || 'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=800&auto=format&fit=crop&q=80'} 
+                  alt={item.title} 
+                  className="w-full h-40 object-cover"
+                />
+                <div className="p-4">
+                  <div className="flex items-center justify-between text-[10px] text-slate-400 mb-2">
+                    <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{item.category}</span>
+                    <span>{item.date}</span>
+                  </div>
+                  <h3 className="font-bold text-xs text-slate-900 line-clamp-2 mb-2">{item.title}</h3>
+                  <p className="text-[11px] text-slate-500 line-clamp-2">{item.content}</p>
                 </div>
-                <h3 className="font-bold text-xs text-slate-900 line-clamp-2 mb-2">{item.title}</h3>
-                <p className="text-[11px] text-slate-500 line-clamp-2">{item.content}</p>
               </div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300">
+              <p className="text-xs text-slate-500 font-medium">Belum ada berita atau artikel dalam kategori ini.</p>
             </div>
-          ))}
+          )}
         </div>
       </section>
     </div>
