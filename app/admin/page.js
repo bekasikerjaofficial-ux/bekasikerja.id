@@ -4,6 +4,7 @@ import { useApp } from '../AppContext';
 
 export default function AdminDashboard() {
   const { siteSettings, updateSiteSettings, jobs = [], addJob, deleteJob } = useApp() || {};
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   const [settingsForm, setSettingsForm] = useState({
     brandName: '', badgeText: '', heroTitle: '', heroSubtitle: ''
@@ -14,8 +15,22 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
+    // Cek status login dari halaman /nyosor
+    const loggedIn = localStorage.getItem('bk_admin_logged_in');
+    if (loggedIn === 'true') {
+      setIsAuthorized(true);
+    } else {
+      // Jika belum login, tendang balik ke halaman login /nyosor
+      window.location.href = '/nyosor';
+    }
+
     if (siteSettings) setSettingsForm(siteSettings);
   }, [siteSettings]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('bk_admin_logged_in');
+    window.location.href = '/nyosor';
+  };
 
   const handleSettingsSubmit = (e) => {
     e.preventDefault();
@@ -25,14 +40,19 @@ export default function AdminDashboard() {
 
   const handleJobSubmit = (e) => {
     e.preventDefault();
-    const newJob = {
-      id: Date.now(),
-      ...jobForm
-    };
+    const newJob = { id: Date.now(), ...jobForm };
     if (addJob) addJob(newJob);
     alert('✅ Lowongan Baru Berhasil Diposting!');
     setJobForm({ title: '', company: '', location: 'Cikarang, Bekasi', category: 'Manufaktur / Pabrik', deadline: '30 Sep 2026', desc: '' });
   };
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 text-xs font-semibold text-slate-500">
+        Memeriksa hak akses admin...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800 pb-16">
@@ -41,7 +61,15 @@ export default function AdminDashboard() {
           <a href="/" className="font-extrabold text-lg tracking-tight text-slate-900">
             {settingsForm.brandName || 'BekasiKerja.id'} <span className="text-xs font-normal text-slate-400">(Admin Panel)</span>
           </a>
-          <a href="/" className="text-xs font-bold text-blue-600 hover:underline">← Lihat Web Utama</a>
+          <div className="flex items-center gap-4 text-xs font-semibold">
+            <a href="/" className="text-slate-600 hover:text-slate-900">Lihat Web Utama</a>
+            <button
+              onClick={handleLogout}
+              className="bg-rose-100 text-rose-700 hover:bg-rose-200 px-3 py-1.5 rounded-lg font-bold transition"
+            >
+              Keluar (Logout)
+            </button>
+          </div>
         </div>
       </header>
 
