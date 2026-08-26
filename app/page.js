@@ -1,267 +1,130 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-const FEATURED_JOBS = [
-  {
-    id: 1,
-    title: "Management Trainee (MT) - Operational",
-    company: "PT Central Bank Asia Tbk",
-    location: "Kota Bekasi (KCP Juanda)",
-    salary: "Rp 7.500.000 - Rp 9.000.000",
-    tag: "URGENT HIRING",
-    deadline: "31 Agustus 2026"
-  },
-  {
-    id: 2,
-    title: "Senior Operator Produksi & Technical Staff",
-    company: "PT Astra Honda Motor",
-    location: "Kawasan EJIP, Cikarang",
-    salary: "Rp 5.800.000 - Rp 6.700.000",
-    tag: "REKRUTMEN MASSAL",
-    deadline: "05 September 2026"
-  }
-];
+import React, { useState } from 'react';
+import Navbar from './components/Navbar';
+import { useApp } from './context/AppContext';
 
-const REGULAR_JOBS = [
-  {
-    id: 101,
-    title: "Staff Admin Gudang & Logistik",
-    company: "PT Logistik Maju Bersama",
-    location: "Bekasi Barat",
-    type: "Full-time",
-    salary: "Rp 4.800.000 - Rp 5.300.000",
-    posted: "3 jam lalu"
-  },
-  {
-    id: 102,
-    title: "Teknisi Maintenance Mesin Industri",
-    company: "PT Hyundai Motor Manufacturing",
-    location: "GIIC Deltamas",
-    type: "Contract",
-    salary: "Rp 5.500.000 - Rp 7.000.000",
-    posted: "1 hari lalu"
-  }
-];
+export const dynamic = 'force-dynamic';
 
 export default function Home() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [member, setMember] = useState({ isLoggedIn: false, name: '' });
-  const [isMounted, setIsMounted] = useState(false);
+  const { jobs, news } = useApp();
+  const [selectedNewsCategory, setSelectedNewsCategory] = useState('Semua');
 
-  // Ambil data status member saat komponen selesai dimuat di browser
-  const checkMemberStatus = () => {
-    try {
-      const isLoggedIn = localStorage.getItem('isMemberLoggedIn') === 'true';
-      const name = localStorage.getItem('memberName') || 'Member';
-      setMember({ isLoggedIn, name });
-    } catch (err) {
-      console.error('Failed reading localStorage', err);
-    }
-  };
-
-  useEffect(() => {
-    setIsMounted(true);
-    checkMemberStatus();
-
-    // Event listener untuk menangani Perubahan Login antar-tab browser
-    window.addEventListener('storage', checkMemberStatus);
-
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % FEATURED_JOBS.length);
-    }, 5000);
-
-    return () => {
-      window.removeEventListener('storage', checkMemberStatus);
-      clearInterval(timer);
-    };
-  }, []);
-
-  const handleLogout = () => {
-    try {
-      localStorage.removeItem('isMemberLoggedIn');
-      localStorage.removeItem('memberName');
-      setMember({ isLoggedIn: false, name: '' });
-    } catch (err) {
-      console.error('Failed clearing storage', err);
-    }
-  };
-
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % FEATURED_JOBS.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? FEATURED_JOBS.length - 1 : prev - 1));
+  // Filter Berita Berdasarkan Kategori
+  const filteredNews = selectedNewsCategory === 'Semua' 
+    ? news 
+    : news.filter(item => item.category === selectedNewsCategory);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 font-sans text-slate-800">
-      
-      {/* Top Bar */}
-      <div className="bg-blue-900 text-blue-100 text-xs py-2 px-4 font-medium">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <span className="bg-yellow-400 text-blue-950 text-[10px] font-extrabold px-2 py-0.5 rounded">NEW</span>
-            <span>Akses Tes Psikotes & Generator CV ATS Gratis untuk Member!</span>
-          </div>
-          <div className="hidden md:flex gap-4">
-            <a href="#cv" className="hover:text-white">Bikin CV</a>
-            <span>|</span>
-            <a href="#psikotes" className="text-yellow-300 font-bold hover:underline">Member PRO</a>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+      <Navbar />
 
-      {/* Navbar */}
-      <header className="bg-white text-blue-900 sticky top-0 z-50 shadow-sm border-b border-slate-200">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-blue-900 text-white font-black px-3 py-1.5 rounded-lg text-lg tracking-widest shadow">
-              BK
-            </div>
-            <div>
-              <span className="text-xl font-extrabold tracking-tight text-blue-900">BEKASI</span>
-              <span className="text-xl font-bold text-blue-600">KERJA</span>
-            </div>
-          </div>
-
-          <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600">
-            <a href="#" className="text-blue-900 border-b-2 border-blue-900 pb-1 font-bold">Cari Loker</a>
-            <a href="#berita" className="hover:text-blue-900">Berita & Artikel</a>
-            <a href="#cv" className="hover:text-blue-900">Buat CV (Free)</a>
-            <a href="#psikotes" className="text-amber-600 font-bold flex items-center gap-1">
-              Tes Psikotes (PRO)
-            </a>
-          </nav>
-
-          {/* Area Dynamic Member UI */}
-          <div className="flex items-center gap-3 min-h-[36px]">
-            {isMounted && (
-              member.isLoggedIn ? (
-                <div className="flex items-center gap-3 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
-                  <span className="text-xs font-bold text-slate-800">
-                    👋 {member.name}
-                  </span>
-                  <button
-                    onClick={handleLogout}
-                    className="text-[11px] bg-red-600 hover:bg-red-700 text-white font-bold px-2.5 py-1 rounded transition"
-                  >
-                    Keluar
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <a href="/member/login" className="px-4 py-2 text-xs font-bold text-blue-900 hover:text-blue-700">
-                    Masuk
-                  </a>
-                  <a href="/member/register" className="px-4 py-2 text-xs font-bold bg-blue-900 hover:bg-blue-800 text-white rounded-lg shadow">
-                    Daftar Member
-                  </a>
-                </>
-              )
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="bg-slate-100 py-10 px-4 border-b border-slate-200">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-600">Lowongan Kerja Prioritas Minggu Ini</h2>
-            </div>
-            
-            <div className="flex gap-2">
-              <button onClick={prevSlide} className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-700 shadow-sm">
-                ❮
-              </button>
-              <button onClick={nextSlide} className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-700 shadow-sm">
-                ❯
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-2xl p-6 md:p-10 shadow-lg">
-            <div className="flex flex-col md:flex-row justify-between md:items-center gap-6">
-              <div className="space-y-3 max-w-2xl">
-                <span className="bg-amber-400 text-blue-950 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                  {FEATURED_JOBS[currentSlide].tag}
-                </span>
-
-                <h1 className="text-2xl md:text-3xl font-extrabold leading-tight">
-                  {FEATURED_JOBS[currentSlide].title}
-                </h1>
-
-                <div className="space-y-1 text-blue-100 text-xs md:text-sm">
-                  <p className="font-semibold text-white">
-                    🏢 {FEATURED_JOBS[currentSlide].company}
-                  </p>
-                  <p className="text-slate-200">
-                    📍 {FEATURED_JOBS[currentSlide].location} <span className="mx-2">|</span> 💰 {FEATURED_JOBS[currentSlide].salary}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2.5 shrink-0 bg-white/10 p-4 rounded-xl border border-white/20 backdrop-blur-sm">
-                <span className="text-[11px] text-blue-100 text-center">
-                  Batas Lamaran: <strong className="text-amber-300">{FEATURED_JOBS[currentSlide].deadline}</strong>
-                </span>
-                <button className="bg-amber-400 hover:bg-amber-300 text-blue-950 font-extrabold px-6 py-2.5 rounded-lg text-xs transition shadow">
-                  Lamar Sekarang ➔
-                </button>
-                <button className="bg-blue-950/60 hover:bg-blue-950 border border-white/30 text-white font-semibold px-6 py-2 rounded-lg text-xs transition">
-                  Simpan Loker
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex justify-center gap-2 mt-4">
-            {FEATURED_JOBS.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`h-2 rounded-full transition-all ${
-                  currentSlide === index ? "w-8 bg-blue-900" : "w-2 bg-slate-300"
-                }`}
-              />
-            ))}
-          </div>
+      {/* HERO / SEARCH SECTION */}
+      <section className="bg-slate-900 text-white py-12 px-4 text-center relative overflow-hidden">
+        <div className="max-w-4xl mx-auto relative z-10">
+          <span className="bg-blue-600/30 text-blue-400 border border-blue-500/30 text-[10px] font-bold px-3 py-1 rounded-full inline-block mb-3 uppercase tracking-wider">
+            Portal Lowongan Kerja Bekasi & Karawang
+          </span>
+          <h1 className="text-2xl md:text-4xl font-extrabold mb-3">
+            Temukan Karir Impianmu di Kawasan Industri
+          </h1>
+          <p className="text-xs md:text-sm text-slate-400 mb-6 max-w-xl mx-auto">
+            Update lowongan kerja operator, admin, hingga engineering terpercaya setiap hari.
+          </p>
         </div>
       </section>
 
-      {/* Main Feed */}
-      <main className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-4 gap-8 w-full flex-1">
-        <aside className="bg-white p-5 rounded-xl border border-slate-200 h-fit shadow-sm space-y-4">
-          <h3 className="font-bold text-slate-900 text-sm border-b pb-2">Filter Cepat</h3>
-          <div className="space-y-2 text-xs text-slate-600">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" defaultChecked /> Kawasan Industri Cikarang
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" defaultChecked /> Perbankan & Office Bekasi
-            </label>
+      {/* SECTION 1: GRID LOWONGAN KERJA (BERASAL DARI ADMIN / CONTEXT) */}
+      <section className="max-w-6xl mx-auto px-4 py-10">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h2 className="text-lg font-extrabold text-slate-900">Lowongan Kerja Terbaru</h2>
+            <p className="text-xs text-slate-500">Lowongan terverifikasi di Bekasi, Cikarang, & Karawang</p>
           </div>
-        </aside>
+          <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+            {jobs.length} Lowongan
+          </span>
+        </div>
 
-        <section className="lg:col-span-3 space-y-4">
-          <h2 className="text-base font-bold text-slate-900 border-b pb-2">Lowongan Terbaru Lainnya</h2>
-          {REGULAR_JOBS.map((job) => (
-            <div key={job.id} className="bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-700 transition shadow-sm flex justify-between items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {jobs.map((job) => (
+            <div key={job.id} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
               <div>
-                <h3 className="font-bold text-slate-900 text-base">{job.title}</h3>
-                <p className="text-xs text-slate-600">{job.company} — <span className="text-slate-400">{job.location}</span></p>
-                <p className="text-xs text-emerald-700 font-bold mt-1">{job.salary}</p>
+                <div className="flex items-start gap-4 mb-4">
+                  <img 
+                    src={job.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&auto=format&fit=crop&q=80'} 
+                    alt={job.title} 
+                    className="w-12 h-12 rounded-xl object-cover border flex-shrink-0"
+                  />
+                  <div>
+                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                      {job.category || job.type || 'Full-time'}
+                    </span>
+                    <h3 className="font-bold text-sm text-slate-900 line-clamp-1 mt-1">{job.title}</h3>
+                    <p className="text-xs text-slate-500 font-medium">{job.company}</p>
+                  </div>
+                </div>
+                
+                <p className="text-xs text-slate-600 line-clamp-2 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                  {job.desc || 'Tidak ada deskripsi singkat.'}
+                </p>
               </div>
-              <button className="bg-blue-900 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-blue-800 shadow-sm">
-                Lamar
-              </button>
+
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                <span>📍 {job.location}</span>
+                <span className="font-semibold text-rose-600">S/d: {job.deadline}</span>
+              </div>
             </div>
           ))}
-        </section>
-      </main>
+        </div>
+      </section>
 
-      <footer className="bg-blue-950 text-blue-200 py-6 text-center text-xs">
-        <p>© 2026 BekasiKerja.id — Portal Lowongan Kerja Terpercaya Bekasi</p>
-      </footer>
+      {/* SECTION 2: BERITA & LIFESTYLE */}
+      <section className="max-w-6xl mx-auto px-4 py-10 border-t border-slate-200">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 className="text-lg font-extrabold text-slate-900">Berita & Informasi Karir</h2>
+            <p className="text-xs text-slate-500">Tips, berita industri, dan panduan dunia kerja</p>
+          </div>
+
+          {/* TAB FILTER KATEGORI BERITA */}
+          <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 text-xs">
+            {['Semua', 'Lifestyle', 'Edukasi', 'Tips Karir', '#AwasModus'].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedNewsCategory(cat)}
+                className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition ${
+                  selectedNewsCategory === cat 
+                    ? 'bg-slate-900 text-white' 
+                    : 'bg-white border text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* GRID BERITA */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filteredNews.map((item) => (
+            <div key={item.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition">
+              <img 
+                src={item.image} 
+                alt={item.title} 
+                className="w-full h-40 object-cover"
+              />
+              <div className="p-4">
+                <div className="flex items-center justify-between text-[10px] text-slate-400 mb-2">
+                  <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{item.category}</span>
+                  <span>{item.date}</span>
+                </div>
+                <h3 className="font-bold text-xs text-slate-900 line-clamp-2 mb-2">{item.title}</h3>
+                <p className="text-[11px] text-slate-500 line-clamp-2">{item.content}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
