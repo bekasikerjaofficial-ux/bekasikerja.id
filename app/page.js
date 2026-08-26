@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import Navbar from '@/app/components/Navbar';
-import { useApp } from '@/app/context/AppContext';
+import { useApp } from './AppContext';
 
 export default function Home() {
   const { jobs = [], news = [] } = useApp() || {};
@@ -13,7 +12,19 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
-      <Navbar />
+      {/* HEADER SIMPLE */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+          <a href="/" className="font-extrabold text-lg tracking-tight text-slate-900">
+            Bekasi<span className="text-blue-600">Karawang</span>
+          </a>
+          <nav className="flex items-center gap-4 text-xs font-semibold">
+            <a href="/" className="text-blue-600">Beranda</a>
+            <a href="/admin" className="text-slate-600 hover:text-slate-900">Admin</a>
+            <a href="/cv-builder" className="text-slate-600 hover:text-slate-900">CV Builder</a>
+          </nav>
+        </div>
+      </header>
 
       {/* HERO SECTION */}
       <section className="bg-slate-900 text-white py-12 px-4 text-center">
