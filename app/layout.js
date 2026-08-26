@@ -1,10 +1,9 @@
-// app/layout.js
 import './globals.css';
-import { AppProvider } from './context/AppContext';
+import { AppProvider } from './AppContext';
 
 export const metadata = {
-  title: 'BekasiKerja - Portal Loker & Karir Bekasi',
-  description: 'Portal Lowongan Kerja, Tes Skill, dan Lifestyle Karir',
+  title: 'Portal Lowongan Kerja Bekasi & Karawang',
+  description: 'Informasi lowongan kerja kawasan industri Bekasi, Cikarang, dan Karawang.',
 };
 
 export default function RootLayout({ children }) {
