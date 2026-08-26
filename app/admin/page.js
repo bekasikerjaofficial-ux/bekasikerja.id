@@ -1,7 +1,6 @@
 'use client';
-import { useState, useEffect } from 'react';
-import Navbar from '@/app/components/Navbar';
-import { useApp } from '@/app/context/AppContext';
+import React, { useState, useEffect } from 'react';
+import { useApp } from '../AppContext';
 
 export default function AdminDashboard() {
   const { jobs = [], news = [], addJob, addNews } = useApp() || {};
@@ -97,7 +96,19 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800 pb-12">
-      <Navbar />
+      {/* HEADER SIMPLE */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+          <a href="/" className="font-extrabold text-lg tracking-tight text-slate-900">
+            Bekasi<span className="text-blue-600">Karawang</span>
+          </a>
+          <nav className="flex items-center gap-4 text-xs font-semibold">
+            <a href="/" className="text-slate-600 hover:text-slate-900">Beranda</a>
+            <a href="/admin" className="text-blue-600">Admin</a>
+            <a href="/cv-builder" className="text-slate-600 hover:text-slate-900">CV Builder</a>
+          </nav>
+        </div>
+      </header>
 
       <div className="max-w-4xl mx-auto px-4 mt-6">
         <div className="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
