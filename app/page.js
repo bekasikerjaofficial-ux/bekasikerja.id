@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import Navbar from './components/Navbar';
-import { useApp } from './context/AppContext';
+import Navbar from '@/app/components/Navbar';
+import { useApp } from '@/app/context/AppContext';
 
 export default function Home() {
   const { jobs = [], news = [] } = useApp() || {};
