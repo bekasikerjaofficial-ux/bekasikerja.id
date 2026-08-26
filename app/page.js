@@ -29,42 +29,66 @@ export default function HomePage() {
 
     if (allPosts) {
       setSliderPosts(allPosts.slice(0, 3));
-      setJobs(allPosts.filter((p) => p.type === 'job').slice(0, 5));
-      setNews(allPosts.filter((p) => p.type === 'news').slice(0, 5));
+      setJobs(allPosts.filter((p) => p.type === 'job').slice(0, 6));
+      setNews(allPosts.filter((p) => p.type === 'news').slice(0, 6));
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+      
+      {/* HEADER NAVIGASI LENGKAP UTAMA */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <a href="/" className="font-extrabold text-xl tracking-tight text-blue-900">
-            {settings?.brand_name || 'BekasiKerja.id'}
+          
+          {/* LOGO BRAND */}
+          <a href="/" className="font-extrabold text-xl tracking-tight text-blue-900 flex items-center gap-2">
+            <span>💼</span> {settings?.brand_name || 'BekasiKerja.id'}
           </a>
-          <nav className="flex items-center gap-4 text-xs font-semibold">
-            <a href="/" className="text-blue-600">Beranda</a>
-            <a href="/cv-builder" className="text-slate-600 hover:text-slate-900">CV Builder (Free)</a>
-            <a href="/tes-online" className="bg-amber-400 text-slate-900 px-3 py-1.5 rounded-full font-bold">Tes VIP (Premium)</a>
-            <a href="/login" className="border border-slate-300 text-slate-700 px-3 py-1.5 rounded-full">Login</a>
+
+          {/* MENU NAVIGASI PENGUNJUNG / MEMBER */}
+          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-600">
+            <a href="/" className="text-blue-600 font-bold">Beranda</a>
+            <a href="#lowongan" className="hover:text-blue-600 transition">Lowongan</a>
+            <a href="#lifestyle" className="hover:text-blue-600 transition">Lifestyle</a>
+            <a href="/tentang-kami" className="hover:text-blue-600 transition">Tentang Kami</a>
           </nav>
+
+          {/* TOMBOL MEMBER */}
+          <div className="flex items-center gap-2.5 text-xs font-bold">
+            <a 
+              href="/register-member" 
+              className="bg-slate-100 hover:bg-slate-200 text-slate-800 px-3.5 py-2 rounded-xl transition border border-slate-200"
+            >
+              Daftar Member
+            </a>
+            <a 
+              href="/login-member" 
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition shadow-sm"
+            >
+              Login Member
+            </a>
+          </div>
+
         </div>
       </header>
 
+      {/* HERO BANNER */}
       <section className="bg-slate-900 text-white py-10 px-4 text-center">
         <div className="max-w-3xl mx-auto space-y-3">
           <span className="inline-block bg-blue-600/30 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">
-            {settings?.badge_text}
+            {settings?.badge_text || 'PORTAL KARIR TERVERIFIKASI'}
           </span>
           <h1 className="text-2xl md:text-4xl font-extrabold leading-tight">
-            {settings?.hero_title}
+            {settings?.hero_title || 'Temukan Pekerjaan Impianmu di Bekasi & Cikarang'}
           </h1>
           <p className="text-xs md:text-sm text-slate-300 max-w-xl mx-auto">
-            {settings?.hero_subtitle}
+            {settings?.hero_subtitle || 'Info lowongan kerja industri manufaktur terupdate dan tips karir harian.'}
           </p>
         </div>
       </section>
 
-      {/* AUTO SLIDER (3 POSTINGAN TERBARU HASIL POSTING ADMIN) */}
+      {/* AUTO SLIDER (HEADLINE) */}
       {sliderPosts.length > 0 && (
         <section className="max-w-5xl mx-auto px-4 -mt-6">
           <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl border border-slate-200 bg-slate-800">
@@ -93,14 +117,14 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* DUAL GRID */}
+      {/* DUAL GRID CONTENT */}
       <main className="max-w-5xl mx-auto px-4 py-12 space-y-12">
         
-        {/* GRID LOWONGAN KERJA (5 TERBARU) */}
-        <section className="space-y-4">
+        {/* GRID LOWONGAN KERJA */}
+        <section id="lowongan" className="space-y-4 scroll-mt-20">
           <div className="flex justify-between items-center border-b pb-3">
             <div>
-              <h2 className="text-lg font-extrabold text-slate-900">💼 Lowongan Kerja Industri</h2>
+              <h2 className="text-lg font-extrabold text-slate-900">💼 Lowongan Kerja Terbaru</h2>
               <p className="text-xs text-slate-500">Info loker terverifikasi kawasan Bekasi, Cikarang, & Karawang</p>
             </div>
           </div>
@@ -128,8 +152,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* GRID LIFESTYLE (5 TERBARU) */}
-        <section className="space-y-4">
+        {/* GRID LIFESTYLE & TIPS KARIR */}
+        <section id="lifestyle" className="space-y-4 scroll-mt-20">
           <div className="flex justify-between items-center border-b pb-3">
             <div>
               <h2 className="text-lg font-extrabold text-slate-900">📰 Lifestyle & Tips Karir</h2>
