@@ -1,70 +1,47 @@
 'use client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
-export default function AdminLogin() {
-  const [username, setUsername] = useState('');
+export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const router = useRouter();
+
+  // Password Login Admin kamu
+  const ADMIN_PASS = 'adminbekasikerja2026';
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (username === 'admin' && password === 'bekasi2026') {
-      localStorage.setItem('isAdminLoggedIn', 'true');
-      router.push('/nyosor/dashboard');
+    if (password === ADMIN_PASS) {
+      localStorage.setItem('bk_admin_auth', 'true');
+      window.location.href = '/admin';
     } else {
-      setError('Username atau Password Admin salah!');
+      setError('Password akses admin tidak valid!');
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 font-sans">
-      <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full border border-slate-200">
-        <div className="text-center mb-6">
-          <div className="bg-blue-900 text-white font-black px-3 py-1.5 rounded-lg text-xl tracking-widest inline-block mb-2">
-            BK
-          </div>
-          <h1 className="text-xl font-bold text-slate-900">Portal Keamanan BekasiKerja</h1>
-          <p className="text-xs text-slate-500">Masuk untuk mengelola postingan lowongan kerja</p>
+    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans text-slate-100">
+      <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 max-w-sm w-full space-y-5">
+        <div className="text-center space-y-1">
+          <h1 className="text-xl font-extrabold text-white">Nyosor Portal Access</h1>
+          <p className="text-xs text-slate-400">Restricted Admin Authentication</p>
         </div>
 
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 text-xs p-3 rounded-lg mb-4 text-center font-medium">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-4 text-xs">
           <div>
-            <label className="text-xs font-semibold text-slate-600 uppercase block mb-1">Username</label>
-            <input
-              type="text"
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username Admin"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-900"
-            />
-          </div>
-
-          <div>
-            <label className="text-xs font-semibold text-slate-600 uppercase block mb-1">Password</label>
+            <label className="font-bold block mb-1 text-slate-300">Secret Key / Password</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-900"
+              className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-blue-500"
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-2.5 rounded-lg text-sm transition shadow"
-          >
-            Masuk ke Panel
+          {error && <p className="text-rose-400 text-xs font-bold text-center">{error}</p>}
+
+          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 font-extrabold py-2.5 rounded-xl transition text-white">
+            Enter Dashboard
           </button>
         </form>
       </div>
