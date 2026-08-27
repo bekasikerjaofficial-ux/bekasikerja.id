@@ -4,6 +4,8 @@ import { supabase } from '../../lib/supabase';
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingPostImg, setUploadingPostImg] = useState(false);
   const [posts, setPosts] = useState([]);
 
   const [settings, setSettings] = useState({ 
@@ -31,6 +33,47 @@ export default function AdminDashboard() {
     const { data: ps } = await supabase.from('posts').select('*').order('created_at', { ascending: false });
     if (ps) setPosts(ps);
     setLoading(false);
+  };
+
+  // HELPER UPLOAD GAMBAR KE SUPABASE STORAGE
+  const uploadImage = async (file) => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from('images').getPublicUrl(filePath);
+      return data.publicUrl;
+    } catch (error) {
+      alert('Gagal upload file. Pastikan bucket "images" di Supabase sudah dibuat & di-set PUBLIC! Error: ' + error.message);
+      return null;
+    }
+  };
+
+  // UPLOAD LOGO
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadingLogo(true);
+    const publicUrl = await uploadImage(file);
+    if (publicUrl) setSettings({ ...settings, logo_url: publicUrl });
+    setUploadingLogo(false);
+  };
+
+  // UPLOAD GAMBAR POSTINGAN
+  const handlePostImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadingPostImg(true);
+    const publicUrl = await uploadImage(file);
+    if (publicUrl) setPostForm({ ...postForm, image_url: publicUrl });
+    setUploadingPostImg(false);
   };
 
   const handleSaveSettings = async (e) => {
@@ -75,7 +118,7 @@ export default function AdminDashboard() {
           <h2 className="font-extrabold text-sm text-slate-900 pb-2 border-b">⚙️ Identity & Branding Situs (Ganti Logo & Teks)</h2>
           
           <form onSubmit={handleSaveSettings} className="space-y-4 text-xs">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="font-bold block mb-1">Nama Website / Brand</label>
                 <input 
@@ -87,10 +130,21 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="font-bold block mb-1">URL Logo Website (Link Gambar PNG/SVG)</label>
+                <label className="font-bold block mb-1">Upload File Logo (Dari HP/PC)</label>
                 <input 
-                  type="url" 
-                  placeholder="https://... (Link Gambar Logo)" 
+                  type="file" 
+                  accept="image/*"
+                  onChange={handleLogoUpload} 
+                  className="w-full px-3 py-1.5 border rounded-xl bg-slate-50 cursor-pointer" 
+                />
+                {uploadingLogo && <p className="text-[10px] text-blue-600 font-bold mt-1">Mengunggah logo...</p>}
+              </div>
+
+              <div>
+                <label className="font-bold block mb-1">Atau Link URL Logo (Web/ImgBB)</label>
+                <input 
+                  type="text" 
+                  placeholder="https://..."
                   value={settings.logo_url || ''} 
                   onChange={(e) => setSettings({ ...settings, logo_url: e.target.value })} 
                   className="w-full px-3 py-2 border rounded-xl" 
@@ -98,9 +152,10 @@ export default function AdminDashboard() {
               </div>
             </div>
 
+            {/* PREVIEW LOGO */}
             {settings.logo_url && (
               <div className="p-3 bg-slate-50 border rounded-xl flex items-center gap-3">
-                <span className="text-[11px] font-bold text-slate-500">Preview Logo:</span>
+                <span className="text-[11px] font-bold text-slate-500">Preview Logo Terpasang:</span>
                 <img src={settings.logo_url} alt="Preview Logo" className="h-8 w-auto object-contain" />
               </div>
             )}
@@ -176,15 +231,49 @@ export default function AdminDashboard() {
                 </>
               )}
 
-              <div>
-                <label className="font-bold block mb-1">URL Gambar / Logo PT (Thumbnail)</label>
-                <input type="url" placeholder="https://..." value={postForm.image_url} onChange={(e) => setPostForm({ ...postForm, image_url: e.target.value })} className="w-full px-3 py-2 border rounded-xl" />
+              {/* OPSI GAMBAR: UPLOAD FILE & URL LINK */}
+              <div className="p-3 bg-slate-50 border rounded-xl space-y-2">
+                <span className="font-bold text-slate-700 block text-[11px]">🖼️ Pilih Gambar / Logo PT:</span>
+                <div>
+                  <label className="text-[10px] text-slate-500 block mb-1">Opsi A: Upload File dari HP/PC</label>
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={handlePostImageUpload} 
+                    className="w-full px-2 py-1 border rounded-lg bg-white cursor-pointer text-[11px]" 
+                  />
+                  {uploadingPostImg && <p className="text-[10px] text-blue-600 font-bold mt-1">Mengunggah gambar...</p>}
+                </div>
+                <div>
+                  <label className="text-[10px] text-slate-500 block mb-1">Opsi B: Atau Tempel Link URL Gambar</label>
+                  <input 
+                    type="text" 
+                    placeholder="https://..."
+                    value={postForm.image_url} 
+                    onChange={(e) => setPostForm({ ...postForm, image_url: e.target.value })} 
+                    className="w-full px-3 py-1.5 border rounded-lg bg-white text-[11px]" 
+                  />
+                </div>
+                {postForm.image_url && (
+                  <div className="pt-1 border-t">
+                    <span className="text-[9px] text-slate-400 block mb-1">Preview Gambar:</span>
+                    <img src={postForm.image_url} alt="Preview Post" className="h-16 w-auto rounded-lg border object-cover" />
+                  </div>
+                )}
               </div>
+
               <div>
                 <label className="font-bold block mb-1">Deskripsi / Konten Lengkap</label>
                 <textarea rows="4" required value={postForm.content} onChange={(e) => setPostForm({ ...postForm, content: e.target.value })} className="w-full px-3 py-2 border rounded-xl"></textarea>
               </div>
-              <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-2.5 rounded-xl">Publish Postingan</button>
+              
+              <button 
+                type="submit" 
+                disabled={uploadingPostImg}
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-extrabold py-2.5 rounded-xl"
+              >
+                {uploadingPostImg ? 'Tunggu Upload...' : 'Publish Postingan'}
+              </button>
             </form>
           </div>
 
