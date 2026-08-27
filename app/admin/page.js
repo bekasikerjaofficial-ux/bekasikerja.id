@@ -6,7 +6,9 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
 
-  const [settings, setSettings] = useState({ brand_name: '', badge_text: '', hero_title: '', hero_subtitle: '' });
+  const [settings, setSettings] = useState({ 
+    brand_name: '', logo_url: '', badge_text: '', hero_title: '', hero_subtitle: '' 
+  });
 
   const [postForm, setPostForm] = useState({
     type: 'job', title: '', company: '', location: '', category: 'Manufaktur', deadline: '', image_url: '', content: ''
@@ -34,7 +36,7 @@ export default function AdminDashboard() {
   const handleSaveSettings = async (e) => {
     e.preventDefault();
     await supabase.from('site_settings').update(settings).eq('id', 1);
-    alert('✅ Settings website berhasil diubah!');
+    alert('✅ Settings & Logo Website berhasil diperbarui!');
   };
 
   const handleCreatePost = async (e) => {
@@ -58,36 +60,86 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800 pb-16">
       <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <h1 className="font-extrabold text-slate-900 text-lg">{settings.brand_name} <span className="text-xs font-normal text-slate-400">(Admin Panel)</span></h1>
+          <h1 className="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+            {settings.logo_url && <img src={settings.logo_url} alt="Logo" className="h-6 w-auto" />}
+            {settings.brand_name || 'Admin Dashboard'}
+          </h1>
           <button onClick={() => { localStorage.removeItem('bk_admin_auth'); window.location.href = '/nyosor/login'; }} className="bg-rose-100 text-rose-700 font-bold text-xs px-3 py-1.5 rounded-lg">Logout</button>
         </div>
       </header>
 
       <div className="max-w-6xl mx-auto px-4 mt-8 space-y-8">
         
-        {/* EDIT BANNER & BRANDING */}
+        {/* EDIT BRANDING & LOGO (WORDPRESS SITE IDENTITY) */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-4">
-          <h2 className="font-extrabold text-sm text-slate-900 pb-2 border-b">⚙️ Branding & Banner Header</h2>
-          <form onSubmit={handleSaveSettings} className="space-y-3 text-xs">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <h2 className="font-extrabold text-sm text-slate-900 pb-2 border-b">⚙️ Identity & Branding Situs (Ganti Logo & Teks)</h2>
+          
+          <form onSubmit={handleSaveSettings} className="space-y-4 text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="font-bold block mb-1">Nama Brand Website</label>
-                <input type="text" value={settings.brand_name} onChange={(e) => setSettings({ ...settings, brand_name: e.target.value })} className="w-full px-3 py-2 border rounded-xl" />
+                <label className="font-bold block mb-1">Nama Website / Brand</label>
+                <input 
+                  type="text" 
+                  value={settings.brand_name || ''} 
+                  onChange={(e) => setSettings({ ...settings, brand_name: e.target.value })} 
+                  className="w-full px-3 py-2 border rounded-xl" 
+                />
+              </div>
+
+              <div>
+                <label className="font-bold block mb-1">URL Logo Website (Link Gambar PNG/SVG)</label>
+                <input 
+                  type="url" 
+                  placeholder="https://... (Link Gambar Logo)" 
+                  value={settings.logo_url || ''} 
+                  onChange={(e) => setSettings({ ...settings, logo_url: e.target.value })} 
+                  className="w-full px-3 py-2 border rounded-xl" 
+                />
+              </div>
+            </div>
+
+            {/* PREVIEW LOGO */}
+            {settings.logo_url && (
+              <div className="p-3 bg-slate-50 border rounded-xl flex items-center gap-3">
+                <span className="text-[11px] font-bold text-slate-500">Preview Logo:</span>
+                <img src={settings.logo_url} alt="Preview Logo" className="h-8 w-auto object-contain" />
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="font-bold block mb-1">Badge Teks Header (Kecil Atas)</label>
+                <input 
+                  type="text" 
+                  value={settings.badge_text || ''} 
+                  onChange={(e) => setSettings({ ...settings, badge_text: e.target.value })} 
+                  className="w-full px-3 py-2 border rounded-xl" 
+                />
               </div>
               <div>
-                <label className="font-bold block mb-1">Badge Text (Kecil Atas)</label>
-                <input type="text" value={settings.badge_text} onChange={(e) => setSettings({ ...settings, badge_text: e.target.value })} className="w-full px-3 py-2 border rounded-xl" />
+                <label className="font-bold block mb-1">Judul Utama Hero Banner</label>
+                <input 
+                  type="text" 
+                  value={settings.hero_title || ''} 
+                  onChange={(e) => setSettings({ ...settings, hero_title: e.target.value })} 
+                  className="w-full px-3 py-2 border rounded-xl" 
+                />
               </div>
             </div>
+
             <div>
-              <label className="font-bold block mb-1">Judul Utama Banner</label>
-              <input type="text" value={settings.hero_title} onChange={(e) => setSettings({ ...settings, hero_title: e.target.value })} className="w-full px-3 py-2 border rounded-xl" />
+              <label className="font-bold block mb-1">Sub-Judul / Deskripsi Banner</label>
+              <textarea 
+                rows="2" 
+                value={settings.hero_subtitle || ''} 
+                onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })} 
+                className="w-full px-3 py-2 border rounded-xl"
+              ></textarea>
             </div>
-            <div>
-              <label className="font-bold block mb-1">Sub-judul Banner</label>
-              <textarea rows="2" value={settings.hero_subtitle} onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })} className="w-full px-3 py-2 border rounded-xl"></textarea>
-            </div>
-            <button type="submit" className="bg-slate-900 text-white font-bold px-5 py-2 rounded-xl">Simpan Teks Banner</button>
+
+            <button type="submit" className="bg-slate-900 hover:bg-slate-800 text-white font-extrabold px-6 py-2.5 rounded-xl transition">
+              💾 Simpan Pengaturan Situs
+            </button>
           </form>
         </div>
 
