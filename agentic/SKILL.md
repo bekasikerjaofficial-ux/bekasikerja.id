@@ -63,7 +63,14 @@ npm run start          # produksi lokal
   hero_subtitle.
 - Storage bucket `images` → Public.
 
-### 7. Commit
+### 7. E2E (verifikasi opsional tapi direkomendasikan)
+```bash
+npm install -D playwright@1.47.2 && npx playwright install chromium
+npm run build && (npm run start &) && sleep 4
+node e2e-check.mjs          # EXIT 0 = semua route + guard auth PASS
+```
+
+### 8. Commit
 ```bash
 git add -A
 git -c user.name="𝕧𝕒𝕝𝕒𝕣𝕚𝕠𝕟" \
@@ -85,6 +92,7 @@ Root `AGENTS.md` merujuk ke folder ini.
 ## Pitfalls
 
 - `app/tests/page.js` ada di `app/tests/`, jadi import Supabase = `../../lib/supabase`.
-- `/admin` hanya membaca `bk_admin_auth`; pastikan login admin menulis key yang sama.
+- `app/nyosor/login` & `app/nyosor/dashboard` ada di kedalaman 3, import Supabase = `../../../lib/supabase`.
+- Auth admin = Supabase Auth (guard `getUser`), bukan `localStorage`. Jangan kembalikan ke localStorage.
 - Jangan hardcode anon key (regresi lama: `'eyJhbG...sInR...'` placeholder mati).
 - Build butuh `node_modules`; jalankan `npm install` dulu di environment fresh.

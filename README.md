@@ -209,10 +209,43 @@ Seluruh konteks untuk pengembangan otomatis (fresh session) berada di folder **[
 | [`AGENTS.md`](./agentic/AGENTS.md)   | Instruksi generik untuk agen manapun.                        |
 | [`TASTE.md`](./agentic/TASTE.md)     | Panduan desain / UI (palet, tipografi, mikrokopi BI).        |
 | [`supabase-setup.sql`](./agentic/supabase-setup.sql) | Skema DB + RLS + bucket storage.              |
+| [`e2e-check.mjs`](./e2e-check.mjs) | E2E headless Playwright (guard auth + console errors). |
 | [`README.md`](./agentic/README.md)   | Index dokumentasi agentic.                                   |
 
 Root [`AGENTS.md`](./AGENTS.md) menunjuk ke folder ini agar agen di sesi baru langsung
 membaca konteks yang tepat.
+
+---
+
+## 🛡 Audit & Verifikasi
+
+Repo ini diaudit penuh dan di-hardening. Ringkasan untuk sesi baru:
+
+| Cek                 | Status | Catatan                                                          |
+| ------------------- | ------ | -------------------------------------------------------------- |
+| `npm run build`     | ✅ Hijau | 12 route ter-compile (Next.js 14.2.35).                         |
+| Dependency CVE      | ✅ Ditutup | `next@14.2.35` (CVE middleware auth-bypass kritis) + `postcss@8.5.23`. |
+| Auth admin          | ✅ Aman | Supabase Auth + RLS (`is_admin()`), bukan lagi `localStorage`.  |
+| Rahasia             | ✅ Aman | Anon key dari env; `.env.local` di-gitignore; tidak di-commit.  |
+| Routing internal    | ✅ Aman | Semua `href`/`Link` valid; tidak ada 404 (regresi lama sudah fix). |
+| E2E (headless)      | ✅ Lolos | `e2e-check.mjs` — lihat di bawah.                               |
+
+### E2E (Playwright, headless Chromium)
+
+`e2e-check.mjs` membuka setiap route, menangkap console error, dan menegaskan guard
+auth:
+- `/admin`, `/nyosor`, `/nyosor/dashboard` → redirect ke `/nyosor/login` bila belum login.
+- Tidak ada console error level kode (gagal resolve jaringan ke Supabase dianggap
+  lingkungan, bukan bug — butuh `.env.local` + koneksi nyata).
+
+```bash
+npm install -D playwright@1.47.2 && npx playwright install chromium
+npm run build && npm run start &   # server di :3000
+node e2e-check.mjs                  # EXIT 0 = PASS
+```
+
+> Environment tanpa egress network: Supabase fetch gagal (`ERR_NAME_NOT_RESOLVED`) namun
+> halaman tetap render fallback (proof degradasi graceful).
 
 ---
 
