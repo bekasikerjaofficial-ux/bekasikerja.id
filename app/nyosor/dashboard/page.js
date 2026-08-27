@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '../../../lib/supabase';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -16,12 +17,18 @@ export default function AdminDashboard() {
   const [imagePreview, setImagePreview] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
-  // Proteksi Halaman Admin
+  // Proteksi Halaman Admin — hanya user Supabase yang login
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
-    if (!isLoggedIn) {
-      router.push('/nyosor/login');
-    }
+    let active = true;
+    const guard = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!active) return;
+      if (!data.user) {
+        router.replace('/nyosor/login');
+      }
+    };
+    guard();
+    return () => { active = false; };
   }, [router]);
 
   // Handle Input Teks
@@ -48,14 +55,13 @@ export default function AdminDashboard() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const payload = { ...formData, image: imagePreview };
-    console.log("Loker Baru Disimpan:", payload);
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAdminLoggedIn');
-    router.push('/nyosor/login');
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.replace('/nyosor/login');
   };
 
   return (
@@ -65,7 +71,7 @@ export default function AdminDashboard() {
           <span className="bg-yellow-500 text-blue-950 font-black px-2 py-0.5 rounded text-xs">ADMIN PANEL</span>
           <span className="font-bold text-sm">Dashboard BekasiKerja.id</span>
         </div>
-        <button onClick={handleLogout} className="text-xs bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded text-white font-semibold">
+        <button onClick={() => handleLogout()} className="text-xs bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded text-white font-semibold">
           Logout
         </button>
       </header>

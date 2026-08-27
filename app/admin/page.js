@@ -8,8 +8,8 @@ export default function AdminDashboard() {
   const [uploadingPostImg, setUploadingPostImg] = useState(false);
   const [posts, setPosts] = useState([]);
 
-  const [settings, setSettings] = useState({ 
-    brand_name: '', logo_url: '', badge_text: '', hero_title: '', hero_subtitle: '' 
+  const [settings, setSettings] = useState({
+    brand_name: '', logo_url: '', badge_text: '', hero_title: '', hero_subtitle: ''
   });
 
   const [postForm, setPostForm] = useState({
@@ -17,12 +17,17 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
-    const auth = localStorage.getItem('bk_admin_auth');
-    if (auth !== 'true') {
-      window.location.href = '/nyosor/login';
-      return;
-    }
-    fetchData();
+    let active = true;
+    const guard = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) {
+        window.location.href = '/nyosor/login';
+        return;
+      }
+      if (active) await fetchData();
+    };
+    guard();
+    return () => { active = false; };
   }, []);
 
   const fetchData = async () => {
@@ -107,7 +112,7 @@ export default function AdminDashboard() {
             {settings.logo_url && <img src={settings.logo_url} alt="Logo" className="h-6 w-auto" />}
             {settings.brand_name || 'Admin Dashboard'}
           </h1>
-          <button onClick={() => { localStorage.removeItem('bk_admin_auth'); window.location.href = '/nyosor/login'; }} className="bg-rose-100 text-rose-700 font-bold text-xs px-3 py-1.5 rounded-lg">Logout</button>
+          <button onClick={async () => { await supabase.auth.signOut(); window.location.href = '/nyosor/login'; }} className="bg-rose-100 text-rose-700 font-bold text-xs px-3 py-1.5 rounded-lg">Logout</button>
         </div>
       </header>
 
