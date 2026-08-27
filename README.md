@@ -139,6 +139,19 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=paste_anon_key_asli_disini
 
 </details>
 
+## 🚀 Deployment (Vercel)
+
+Build selalu hijau meskipun env belum disetel (client Supabase tidak me-throw saat import).
+Namun untuk data nyata, set env di **Vercel → Project → Settings → Environment Variables**:
+
+| Key                              | Value                                  |
+| -------------------------------- | -------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`       | `https://tbmdjqnshyogunoisrn.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | anon key asli dari project Supabase    |
+
+Tanpa keduanya, halaman tetap ter-build & ter-render, tapi konten Supabase kosong
+(graceful fallback). Pastikan `agentic/supabase-setup.sql` sudah dijalankan dan RLS aktif.
+
 ---
 
 ## 🗄 Konfigurasi Supabase
