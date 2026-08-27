@@ -18,7 +18,7 @@ export default function AdminDashboard() {
 
   // Proteksi Halaman Admin
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+    const isLoggedIn = localStorage.getItem('bk_admin_auth');
     if (!isLoggedIn) {
       router.push('/nyosor/login');
     }
@@ -54,7 +54,7 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('isAdminLoggedIn');
+    localStorage.removeItem('bk_admin_auth');
     router.push('/nyosor/login');
   };
 

@@ -54,14 +54,14 @@ export default function HomePage() {
             <a href="/" className="text-blue-600 font-bold">Beranda</a>
             <a href="#lowongan" className="hover:text-blue-600 transition">Lowongan</a>
             <a href="#lifestyle" className="hover:text-blue-600 transition">Lifestyle</a>
-            <a href="/tentang-kami" className="hover:text-blue-600 transition">Tentang Kami</a>
+
           </nav>
 
           <div className="flex items-center gap-2.5 text-xs font-bold">
-            <a href="/register-member" className="bg-slate-100 text-slate-800 px-3.5 py-2 rounded-xl border border-slate-200">
+            <a href="/member/register" className="bg-slate-100 text-slate-800 px-3.5 py-2 rounded-xl border border-slate-200">
               Daftar Member
             </a>
-            <a href="/login-member" className="bg-blue-600 text-white px-4 py-2 rounded-xl shadow-sm">
+            <a href="/member/login" className="bg-blue-600 text-white px-4 py-2 rounded-xl shadow-sm">
               Login Member
             </a>
           </div>

@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 
-const ADMIN_PASSWORD = '123456'; // Ganti password kamu di sini
+const ADMIN_PASSWORD = 'adminkayaraya2026'; // Ganti password kamu di sini
 
 export default function NyosorLoginPage() {
   const [password, setPassword] = useState('');
@@ -10,7 +10,7 @@ export default function NyosorLoginPage() {
   const handleLogin = (e) => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
-      localStorage.setItem('bk_admin_logged_in', 'true');
+      localStorage.setItem('bk_admin_auth', 'true');
       window.location.href = '/admin';
     } else {
       setError('Password salah!');

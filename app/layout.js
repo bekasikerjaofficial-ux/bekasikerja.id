@@ -1,5 +1,4 @@
 import './globals.css';
-import { AppProvider } from './AppContext';
 
 export const metadata = {
   title: 'Portal Lowongan Kerja Bekasi & Karawang',
@@ -10,11 +9,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="id">
-      <body>
-        <AppProvider>
-          {children}
-        </AppProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
