@@ -31,7 +31,7 @@ npm run lint       # next lint
 - `app/page.js` — Beranda. Fetch `site_settings` (id=1) + `posts` (order created_at desc).
   Slider = 3 postingan teratas; `jobs` = filter `type='job'` (6); `news` = `type='news'` (6).
 - `app/admin/page.js` — Dashboard admin. CRUD `posts`, upload ke bucket `images`.
-- `app/nyosor/*` — Alias login admin. Password: `adminkayaraya2026`. Set `localStorage.bk_admin_auth='true'`.
+- `app/nyosor/*` — Login admin (`/nyosor` redirect ke `/nyosor/login`). Supabase Auth.
 - `app/member/*` — Register/Login member. **Cosmetic** (`localStorage` only, belum Supabase Auth).
 - `app/cv-builder/page.js` — Generator CV statis.
 - `app/tests/page.js` — Hitung `posts` via `count: 'exact', head: true`.
@@ -49,10 +49,14 @@ npm run lint       # next lint
 
 ## 6. Auth Model (PENTING)
 
-- Admin: `localStorage.bk_admin_auth === 'true'`. BUKAN Supabase Auth. Prototyping only.
-- Password admin: `adminkayaraya2026` (di `/nyosor` dan `/nyosor/login`).
-- Member: `localStorage.isMemberLoggedIn` — cosmetic.
-- Jangan anggap ini aman untuk produksi. Jika diminta hardened, migrasi ke Supabase Auth + RLS.
+- **Admin = Supabase Auth** (aman). Login via `supabase.auth.signInWithPassword`
+  (`email` + `password`) di `/nyosor/login`. Guard di `/admin` & `/nyosor/dashboard`
+  memanggil `supabase.auth.getUser()`; jika null -> redirect `/nyosor/login`.
+- **Tulis data (posts / site_settings / storage)** dilindungi **RLS** via fungsi
+  `is_admin()` (email di-whitelist di `admin_emails()`, default `admin@bekasikerja.id`).
+  Public hanya punya akses read. Skema + RLS ada di `agentic/supabase-setup.sql`.
+- **Member**: `localStorage.isMemberLoggedIn` — masih **cosmetic** (belum Supabase Auth).
+- JANGAN kembalikan ke `localStorage` auth (regresi keamanan).
 
 ## 7. Conventions
 

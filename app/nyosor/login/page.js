@@ -1,21 +1,26 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '../../../lib/supabase';
 
 export default function AdminLoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
 
-  // Password Login Admin kamu
-  const ADMIN_PASS = 'adminkayaraya2026';
-
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (password === ADMIN_PASS) {
-      localStorage.setItem('bk_admin_auth', 'true');
-      window.location.href = '/admin';
-    } else {
-      setError('Password akses admin tidak valid!');
+    setBusy(true);
+    setError('');
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setBusy(false);
+    if (error) {
+      setError('Login gagal: ' + error.message);
+      return;
     }
+    router.replace('/admin');
   };
 
   return (
@@ -28,7 +33,18 @@ export default function AdminLoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4 text-xs">
           <div>
-            <label className="font-bold block mb-1 text-slate-300">Secret Key / Password</label>
+            <label className="font-bold block mb-1 text-slate-300">Email Admin</label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@bekasikerja.id"
+              className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label className="font-bold block mb-1 text-slate-300">Password</label>
             <input
               type="password"
               required
@@ -40,8 +56,12 @@ export default function AdminLoginPage() {
 
           {error && <p className="text-rose-400 text-xs font-bold text-center">{error}</p>}
 
-          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 font-extrabold py-2.5 rounded-xl transition text-white">
-            Enter Dashboard
+          <button
+            type="submit"
+            disabled={busy}
+            className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-500 font-extrabold py-2.5 rounded-xl transition text-white"
+          >
+            {busy ? 'Memproses...' : 'Enter Dashboard'}
           </button>
         </form>
       </div>

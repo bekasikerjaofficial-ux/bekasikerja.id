@@ -21,8 +21,9 @@ npm run dev                    # lokal :3000
 - **Secrets:** anon key dari env, `.env.local` di-gitignore, jangan commit.
 - **Bahasa UI:** Bahasa Indonesia profesional; istilah teknis Inggris.
 - **Desain:** ikuti `TASTE.md`.
-- **Auth:** admin = `localStorage.bk_admin_auth` (password `adminkayaraya2026`); member
-  cosmetic. Belum Supabase Auth → prototyping, bukan produksi.
+- **Auth:** admin = **Supabase Auth** (`signInWithPassword`, guard `getUser`) + RLS
+  (`is_admin()`, email whitelist). Bukan lagi `localStorage`. Member masih cosmetic.
+  Skema + RLS: `agentic/supabase-setup.sql`.
 
 ## Map cepat
 

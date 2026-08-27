@@ -42,9 +42,11 @@ konten dari satu tabel Supabase:
 Konten dikelola melalui dashboard admin (`/admin`), branding situs dikelola melalui
 `tables site_settings` (baris `id = 1`).
 
-> ⚠️ **Catatan keamanan:** autentikasi admin saat ini menggunakan `localStorage`
-> (`bk_admin_auth`) — bukan Supabase Auth. Ini cocok untuk prototyping, tetapi **belum
-> aman untuk produksi**. Lihat [Known Issues](#roadmap--known-issues).
+> ✅ **Keamanan:** autentikasi admin menggunakan **Supabase Auth**
+> (`signInWithPassword`) + **Row Level Security (RLS)**. Tabel `posts` & `site_settings`
+> dapat dibaca publik, namun hanya user admin (email di-whitelist via fungsi
+> `is_admin()`) yang boleh menulis. Skema & RLS ada di
+> [`agentic/supabase-setup.sql`](./agentic/supabase-setup.sql).
 
 ---
 
@@ -85,7 +87,7 @@ bekasikerja.id/
 │   ├── member/
 │   │   ├── login/page.js     # Login member (cosmetic / localStorage)
 │   │   └── register/page.js  # Register member (cosmetic / localStorage)
-│   ├── nyosor/               # Alias login admin (password adminkayaraya2026)
+│   ├── nyosor/               # Login admin (Supabase Auth) — /nyosor -> /nyosor/login
 │   │   ├── page.js
 │   │   ├── login/page.js
 │   │   └── dashboard/page.js
@@ -141,7 +143,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=paste_anon_key_asli_disini
 
 ## 🗄 Konfigurasi Supabase
 
-Buat tabel berikut di project Supabase kamu:
+1. Jalankan [`agentic/supabase-setup.sql`](./agentic/supabase-setup.sql) di Supabase SQL Editor
+   (membuat tabel `posts`, `site_settings`, bucket `images` Public, dan **RLS**).
+2. Buat user admin di **Authentication → Users** dengan email yang di-whitelist di
+   fungsi `admin_emails()` (default: `admin@bekasikerja.id`).
 
 <details>
 <summary>📊 Tabel <code>posts</code></summary>
@@ -181,14 +186,15 @@ Buat tabel berikut di project Supabase kamu:
 
 ## 🔐 Model Autentikasi
 
-| Akses            | Mekanisme                                            | Status     |
-| ---------------- | ---------------------------------------------------- | ---------- |
-| Admin (`/admin`) | `localStorage.bk_admin_auth === 'true'`              | Prototype  |
-| Login admin      | password `adminkayaraya2026` di `/nyosor` atau `/nyosor/login` | Prototype  |
-| Member           | `localStorage.isMemberLoggedIn` (cosmetic)           | Scaffold   |
+| Akses            | Mekanisme                                                       | Status     |
+| ---------------- | -------------------------------------------------------------- | ---------- |
+| Admin (`/admin`) | **Supabase Auth** session (`supabase.auth.getUser`)            | ✅ Aman    |
+| Login admin      | `signInWithPassword` di `/nyosor/login` (email + password)    | ✅ Aman    |
+| Tulis data       | RLS: `is_admin()` — email di-whitelist di `admin_emails()`    | ✅ Aman    |
+| Member           | `localStorage.isMemberLoggedIn` (cosmetic)                    | Scaffold   |
 
-⚠️ Semua auth di atas **belum** menggunakan Supabase Auth / RLS. Jangan gunakan untuk
-data sensitif sebelum diubah ke Supabase Auth.
+> Admin & tulis data sudah aman via Supabase Auth + RLS. Auth member masih cosmetic
+> (`localStorage`) — belum Supabase Auth.
 
 ---
 
@@ -202,6 +208,7 @@ Seluruh konteks untuk pengembangan otomatis (fresh session) berada di folder **[
 | [`CLAUDE.md`](./agentic/CLAUDE.md)   | Instruksi proyek untuk Claude Code.                          |
 | [`AGENTS.md`](./agentic/AGENTS.md)   | Instruksi generik untuk agen manapun.                        |
 | [`TASTE.md`](./agentic/TASTE.md)     | Panduan desain / UI (palet, tipografi, mikrokopi BI).        |
+| [`supabase-setup.sql`](./agentic/supabase-setup.sql) | Skema DB + RLS + bucket storage.              |
 | [`README.md`](./agentic/README.md)   | Index dokumentasi agentic.                                   |
 
 Root [`AGENTS.md`](./AGENTS.md) menunjuk ke folder ini agar agen di sesi baru langsung
@@ -211,7 +218,8 @@ membaca konteks yang tepat.
 
 ## 🚀 Roadmap & Known Issues
 
-- [ ] Pindahkan auth admin ke **Supabase Auth** + RLS (keamanan produksi).
+- [x] **Auth admin aman** — Supabase Auth (`signInWithPassword`) + RLS (`is_admin()`).
+- [x] **Dependency CVE** — `next` dinaikkan ke `14.2.35` (tutup CVE middleware auth bypass kritis); `postcss` ke `8.5.23`.
 - [ ] Implementasikan auth member nyata (saat ini cosmetic).
 - [ ] Tambahkan halaman detail postingan (`/loker/[id]`).
 - [ ] SEO: `sitemap.xml`, `robots.txt`, Open Graph image.
