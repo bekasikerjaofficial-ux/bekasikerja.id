@@ -70,7 +70,7 @@ export default function AdminDashboard() {
 
       <div className="max-w-6xl mx-auto px-4 mt-8 space-y-8">
         
-        {/* EDIT BRANDING & LOGO (WORDPRESS SITE IDENTITY) */}
+        {/* EDIT BRANDING & LOGO */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-4">
           <h2 className="font-extrabold text-sm text-slate-900 pb-2 border-b">⚙️ Identity & Branding Situs (Ganti Logo & Teks)</h2>
           
@@ -98,7 +98,6 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* PREVIEW LOGO */}
             {settings.logo_url && (
               <div className="p-3 bg-slate-50 border rounded-xl flex items-center gap-3">
                 <span className="text-[11px] font-bold text-slate-500">Preview Logo:</span>
