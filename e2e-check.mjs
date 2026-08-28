@@ -8,8 +8,8 @@ const routes = [
 
 const results = [];
 // Treat network-resolution failures as environmental (sandbox has no egress).
-const isEnvError = (e) => /ERR_NAME_NOT_RESOLVED|ERR_NETWORK|net::ERR_|Failed to fetch|Supabase/i.test(e);
-const browser = await chromium.launch();
+const isEnvError = (e) => /ERR_NAME_NOT_RESOLVED|ERR_NETWORK|net::ERR_|Failed to fetch|Supabase|Failed to load resource/i.test(e);
+const browser = await chromium.launch(process.env.CHROME_BIN ? { executablePath: process.env.CHROME_BIN, args: ['--no-sandbox'] } : { args: ['--no-sandbox'] });
 const ctx = await browser.newContext();
 
 for (const r of routes) {

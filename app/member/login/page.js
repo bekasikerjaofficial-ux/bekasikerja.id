@@ -1,14 +1,23 @@
 'use client';
 import React, { useState } from 'react';
+import { supabase } from '../../../lib/supabase';
 
 export default function MemberLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    localStorage.setItem('isMemberLoggedIn', 'true');
-    localStorage.setItem('memberName', email.split('@')[0]);
+    setError('');
+    setLoading(true);
+    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (err) {
+      setError(err.message);
+      return;
+    }
     window.location.href = '/';
   };
 
@@ -48,11 +57,18 @@ export default function MemberLogin() {
             />
           </div>
 
+          {error && (
+            <p className="text-rose-600 text-xs font-bold bg-rose-50 border border-rose-200 p-2 rounded-lg">
+              {error}
+            </p>
+          )}
+
           <button
             type="submit"
-            className="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-2.5 rounded-lg text-sm transition shadow"
+            disabled={loading}
+            className="w-full bg-blue-900 hover:bg-blue-800 disabled:bg-slate-400 text-white font-bold py-2.5 rounded-lg text-sm transition shadow"
           >
-            Masuk
+            {loading ? 'Memproses...' : 'Masuk'}
           </button>
         </form>
 

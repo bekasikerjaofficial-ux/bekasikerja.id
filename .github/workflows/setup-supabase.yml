@@ -1,0 +1,58 @@
+name: Setup Supabase (production provisioning)
+
+# Jalankan sekali tiap deploy ke main. Idempoten: aman dijalankan berulang.
+# Tidak ada seed data — production menggunakan data aslinya.
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch: # bisa di-trigger manual dari tab Actions
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply schema (idempotent SQL)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::error::Secret SUPABASE_DB_URL belum diset di repo settings."
+            echo "Format: postgresql://postgres:[PASSWORD]@db.[PROJECT].supabase.co:5432/postgres"
+            exit 1
+          fi
+          # psql dari image postgres official (sudah ada client)
+          docker run --rm -i -e PGPASSWORD postgres:16-bullseye \
+            psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f - < agentic/supabase-setup.sql
+
+      - name: Ensure admin user exists (Auth Admin API)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ADMIN_EMAIL: "admin@bekasikerja.id"
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          [ -z "$SUPABASE_URL" ] && { echo "::error::SUPABASE_URL secret missing"; exit 1; }
+          [ -z "$SUPABASE_SERVICE_ROLE_KEY" ] && { echo "::error::SUPABASE_SERVICE_ROLE_KEY secret missing"; exit 1; }
+          [ -z "$ADMIN_PASSWORD" ] && { echo "::error::ADMIN_PASSWORD secret missing"; exit 1; }
+
+          AUTH="$SUPABASE_URL/auth/v1"
+          # Cek user sudah ada?
+          EXISTS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "$AUTH/admin/users?search=$ADMIN_EMAIL" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY")
+          if [ "$EXISTS" = "200" ]; then
+            echo "Admin user $ADMIN_EMAIL sudah ada, skip create."
+            exit 0
+          fi
+          # Buat user baru (service_role bypass email confirm)
+          CREATE=$(curl -s -X POST "$AUTH/admin/users" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{\"email\":\"$ADMIN_EMAIL\",\"password\":\"$ADMIN_PASSWORD\",\"email_confirm\":true,\"app_metadata\":{\"role\":\"admin\"}}")
+          echo "$CREATE"
+          echo "Admin user $ADMIN_EMAIL dibuat."

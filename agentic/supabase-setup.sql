@@ -1,6 +1,8 @@
 -- ============================================================
--- BekasiKerja.id — Supabase Setup (SQL)
--- Jalankan di Supabase dashboard: SQL Editor -> New query -> paste ini -> Run.
+-- BekasiKerja.id — Supabase Setup (Schema + RLS + Storage)
+-- Idempoten: aman dijalankan berulang (CI/CD tiap deploy ke main).
+-- TIDAK ada seed data — production menggunakan data aslinya.
+-- Jalankan via psql:  psql "$SUPABASE_DB_URL" -f agentic/supabase-setup.sql
 -- ============================================================
 
 -- 1) TABEL posts -------------------------------------------------
@@ -82,9 +84,7 @@ create policy "images_admin_write" on storage.objects
 
 -- ============================================================
 -- BUAT USER ADMIN (Supabase Auth)
--- Jalankan ini SETELAH membuat user di Authentication -> Users,
--- atau gunakan supabase.auth.admin API. Email harus sama dengan
--- yang ada di public.admin_emails() di atas.
+-- Tidak bisa via SQL murni. CI/CD membuatnya via Auth Admin API
+-- (lihat .github/workflows/setup-supabase.yml) pakai SERVICE_ROLE key.
+-- Email harus sama dengan public.admin_emails() di atas.
 -- ============================================================
--- (Tidak ada SQL langsung untuk create user via anon; buat lewat UI
---  Authentication -> Add user, lalu pastikan email = 'admin@bekasikerja.id'.)
