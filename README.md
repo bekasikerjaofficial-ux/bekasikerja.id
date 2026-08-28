@@ -139,6 +139,52 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=paste_anon_key_asli_disini
 
 </details>
 
+---
+
+## 🐳 Development Lokal dengan Supabase (Docker)
+
+Seluruh backend (Postgres, Auth, Storage, REST) bisa dijalankan **lokal** lewat
+Supabase CLI + Docker — tanpa tergantung project Supabase cloud. Cocok buat dev/test
+di server sendiri (Vercel tetap handle production).
+
+### Prasyarat
+- Docker & Docker CLI (user di grup `docker`, atau pakai `sg docker -c '...'`)
+- Supabase CLI: `npm i -g supabase` atau unduh binary dari rilis GitHub
+- Node.js 22+
+
+### Langkah
+```bash
+# 1. Start local Supabase stack (docker)
+supabase start
+#    API      -> http://127.0.0.1:54321
+#    DB       -> postgresql://postgres:postgres@127.0.0.1:54322/postgres
+#    Studio   -> http://127.0.0.1:54323
+
+# 2. Apply skema + RLS + storage bucket (sekali, idempoten)
+docker exec -i $(docker ps --filter name=supabase_db -q) \
+  psql -U postgres -d postgres -f /dev/stdin < agentic/supabase-setup.sql
+
+# 3. Buat admin user lokal (email di-whitelist admin_emails())
+curl -X POST http://127.0.0.1:54321/auth/v1/signup \
+  -H "apikey: $ANON" -H "Content-Type: application/json" \
+  -d '{"email":"admin@bekasikerja.id","password":"AdminBekasi123!"}'
+
+# 4. Isi .env.local (pakai URL + anon key lokal dari `supabase status`)
+cp .env.local.example .env.local
+#   NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+#   NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key dari supabase status>
+
+# 5. Jalankan app + E2E
+npm install
+npm run dev                 # http://localhost:3000
+node e2e-check.mjs          # butuh chromium; set CHROME_BIN kalau pakai system chromium
+```
+
+> Catatan: `supabase/` (hasil `supabase init`) dan `.env.local` sudah di-`.gitignore`
+> karena memuat port & secret lokal — **jangan di-commit**.
+
+---
+
 ## 🚀 Deployment (Vercel)
 
 Build selalu hijau meskipun env belum disetel (client Supabase tidak me-throw saat import).

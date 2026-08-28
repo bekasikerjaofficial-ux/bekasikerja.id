@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import Link from 'next/link';
 
 export default function HomePage() {
   const [settings, setSettings] = useState(null);
@@ -8,6 +9,7 @@ export default function HomePage() {
   const [news, setNews] = useState([]);
   const [sliderPosts, setSliderPosts] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     fetchInitialData();
@@ -93,7 +95,7 @@ export default function HomePage() {
                 key={slide.id}
                 className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
               >
-                <img src={slide.image_url || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800'} alt="slide" className="w-full h-full object-cover brightness-50" />
+                <img src={slide.image_url || '/placeholder.svg'} alt="slide" className="w-full h-full object-cover brightness-50" />
                 <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent text-white space-y-2">
                   <span className="bg-blue-600 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded">
                     {slide.type === 'job' ? 'Lowongan Utama' : 'Headline News'}
@@ -113,6 +115,23 @@ export default function HomePage() {
         </section>
       )}
 
+      {/* SEARCH BAR */}
+      <div className="max-w-5xl mx-auto px-4 -mt-6 relative z-10">
+        <div className="bg-white rounded-2xl shadow-md border border-slate-200 p-2 flex items-center gap-2">
+          <span className="text-slate-400 text-sm px-2">🔍</span>
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Cari lowongan, perusahaan, atau artikel..."
+            className="flex-1 px-2 py-2 text-xs outline-none bg-transparent"
+          />
+          {query && (
+            <button onClick={() => setQuery('')} className="text-xs text-slate-400 px-2">✕</button>
+          )}
+        </div>
+      </div>
+
       {/* DUAL GRID CONTENT */}
       <main className="max-w-5xl mx-auto px-4 py-12 space-y-12">
         
@@ -126,11 +145,16 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {jobs.map((job) => (
-              <div key={job.id} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 transition">
+            {jobs
+              .filter((j) =>
+                !query ||
+                [j.title, j.company, j.location].join(' ').toLowerCase().includes(query.toLowerCase())
+              )
+              .map((job) => (
+              <Link key={job.id} href={`/loker/${job.id}`} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 transition">
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <img src={job.image_url || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=200'} alt="pt" className="w-10 h-10 rounded-xl object-cover border" />
+                    <img src={job.image_url || '/placeholder.svg'} alt="pt" className="w-10 h-10 rounded-xl object-cover border" />
                     <div>
                       <h3 className="font-extrabold text-slate-900 text-xs line-clamp-1">{job.title}</h3>
                       <p className="text-[11px] font-semibold text-slate-500">{job.company}</p>
@@ -143,7 +167,7 @@ export default function HomePage() {
                   <span>📍 {job.location || 'Kawasan Industri'}</span>
                   <span className="text-rose-600 font-bold">S/d: {job.deadline || 'Secepatnya'}</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </section>
@@ -158,17 +182,22 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {news.map((item) => (
-              <div key={item.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+            {news
+              .filter((n) =>
+                !query ||
+                [n.title, n.category].join(' ').toLowerCase().includes(query.toLowerCase())
+              )
+              .map((item) => (
+              <Link key={item.id} href={`/loker/${item.id}`} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
                 <div>
-                  <img src={item.image_url || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500'} alt="cover" className="w-full h-32 object-cover" />
+                  <img src={item.image_url || '/placeholder.svg'} alt="cover" className="w-full h-32 object-cover" />
                   <div className="p-4 space-y-2">
                     <span className="text-[9px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded uppercase">{item.category || 'Lifestyle'}</span>
                     <h3 className="font-extrabold text-slate-900 text-xs line-clamp-2">{item.title}</h3>
                     <p className="text-xs text-slate-500 line-clamp-2">{item.content}</p>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </section>

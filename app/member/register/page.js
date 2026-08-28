@@ -1,42 +1,48 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { supabase } from '../../../lib/supabase';
 
 export default function MemberRegister() {
   const router = useRouter();
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-  const [submitted, setSubmitted] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const [msg, setMsg] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  const saveAndRedirect = (name) => {
-    localStorage.setItem('isMemberLoggedIn', 'true');
-    localStorage.setItem('memberName', name);
-    setSubmitted(true);
-    
-    setTimeout(() => {
-      router.replace('/');
-      router.refresh();
-    }, 600);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setMsg('');
     if (!formData.name.trim()) return;
-    saveAndRedirect(formData.name);
-  };
+    setLoading(true);
+    const { data, error: err } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: { data: { full_name: formData.name } },
+    });
+    setLoading(false);
 
-  if (!isMounted) return null;
+    if (err) {
+      setError(err.message);
+      return;
+    }
+
+    if (data.session) {
+      // langsung login (email confirmation nonaktif di env)
+      setTimeout(() => {
+        router.replace('/');
+        router.refresh();
+      }, 600);
+    } else {
+      setMsg('Pendaftaran berhasil! Cek email untuk verifikasi, lalu login.');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans text-slate-800">
       <div className="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full border border-slate-200">
-        
-        {/* Header Logo */}
         <div className="text-center mb-6">
           <Link href="/" className="bg-blue-900 text-white font-black px-3 py-1.5 rounded-lg text-xl tracking-widest inline-block mb-2 shadow">
             BK
@@ -45,13 +51,17 @@ export default function MemberRegister() {
           <p className="text-xs text-slate-500 mt-1">Cari kerja & buat CV gratis dalam hitungan detik</p>
         </div>
 
-        {submitted && (
+        {msg && (
           <div className="bg-emerald-100 border border-emerald-400 text-emerald-800 text-xs p-3 rounded-lg mb-4 text-center font-bold">
-            🎉 Berhasil Mendaftar! Mengalihkan ke Halaman Utama...
+            🎉 {msg}
+          </div>
+        )}
+        {error && (
+          <div className="bg-rose-100 border border-rose-400 text-rose-800 text-xs p-3 rounded-lg mb-4 text-center font-bold">
+            {error}
           </div>
         )}
 
-        {/* Form Pendaftaran Manual */}
         <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           <div>
             <label className="font-bold text-slate-700 block mb-1">Nama Lengkap</label>
@@ -91,9 +101,10 @@ export default function MemberRegister() {
 
           <button
             type="submit"
-            className="w-full bg-blue-900 hover:bg-blue-800 text-white font-extrabold py-3 rounded-xl text-xs transition shadow mt-2 cursor-pointer"
+            disabled={loading}
+            className="w-full bg-blue-900 hover:bg-blue-800 disabled:bg-slate-400 text-white font-extrabold py-3 rounded-xl text-xs transition shadow mt-2 cursor-pointer"
           >
-            Daftar Akun Gratis
+            {loading ? 'Memproses...' : 'Daftar Akun Gratis'}
           </button>
         </form>
 
@@ -103,7 +114,6 @@ export default function MemberRegister() {
             Masuk di sini
           </Link>
         </p>
-
       </div>
     </div>
   );
