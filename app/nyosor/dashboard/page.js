@@ -2,59 +2,41 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../../lib/supabase';
+import { Image, CheckCircle2 } from 'lucide-react';
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    title: '',
-    company: '',
-    location: 'Cikarang',
-    salary: '',
-    type: 'Full-time',
-    description: ''
+    title: '', company: '', location: 'Cikarang', salary: '', type: 'Full-time', description: '',
   });
-
   const [imagePreview, setImagePreview] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
-  // Proteksi Halaman Admin — hanya user Supabase yang login
   useEffect(() => {
     let active = true;
     const guard = async () => {
       const { data } = await supabase.auth.getUser();
       if (!active) return;
-      if (!data.user) {
-        router.replace('/nyosor/login');
-      }
+      if (!data.user) router.replace('/nyosor/login');
     };
     guard();
     return () => { active = false; };
   }, [router]);
 
-  // Handle Input Teks
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // Handle Upload File Gambar & Convert ke Preview
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert("Ukuran gambar terlalu besar! Maksimal 2 MB.");
-        return;
-      }
+      if (file.size > 2 * 1024 * 1024) { alert('Ukuran gambar terlalu besar! Maksimal 2 MB.'); return; }
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
+      reader.onloadend = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const payload = { ...formData, image: imagePreview };
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
   };
@@ -65,102 +47,70 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
-      <header className="bg-blue-950 text-white px-6 py-4 flex justify-between items-center border-b border-blue-900">
-        <div className="flex items-center gap-2">
-          <span className="bg-yellow-500 text-blue-950 font-black px-2 py-0.5 rounded text-xs">ADMIN PANEL</span>
-          <span className="font-bold text-sm">Dashboard BekasiKerja.id</span>
+    <div>
+      <header className="header">
+        <div className="container" style={{ justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span className="brand-mark">ADMIN</span>
+            <span style={{ fontWeight: 700, fontSize: 14 }}>Dashboard BekasiKerja.id</span>
+          </div>
+          <button onClick={handleLogout} className="btn-danger" style={{ padding: '8px 14px', fontSize: 12 }}>Logout</button>
         </div>
-        <button onClick={() => handleLogout()} className="text-xs bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded text-white font-semibold">
-          Logout
-        </button>
       </header>
 
-      <main className="max-w-3xl mx-auto p-6">
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
-          <div className="border-b pb-4">
-            <h1 className="text-lg font-bold text-slate-900">Posting Lowongan Kerja Baru</h1>
-            <p className="text-xs text-slate-500">Isi formulir di bawah ini untuk mengunggah postingan loker baru.</p>
-          </div>
+      <main className="container section" style={{ maxWidth: 720 }}>
+        <section className="panel" style={{ padding: 24 }}>
+          <h2 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)' }}>
+            Posting Lowongan Kerja Baru
+          </h2>
+          <p className="text-muted" style={{ fontSize: 12, marginTop: 8 }}>Isi formulir di bawah ini untuk mengunggah postingan loker baru.</p>
 
           {submitted && (
-            <div className="bg-emerald-100 border border-emerald-400 text-emerald-800 text-xs p-3 rounded-lg text-center font-bold">
-              ✅ Lowongan Kerja Berhasil Diposting!
+            <div style={{ background: '#e8f7ee', border: '1px solid #b7e3c8', color: '#1a7f43', fontSize: 13, padding: 12, borderRadius: 8, margin: '16px 0', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <CheckCircle2 size={16} /> Lowongan Kerja Berhasil Diposting!
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="font-bold text-slate-700 block mb-1">Judul Posisi Pekerjaan</label>
-                <input
-                  type="text"
-                  name="title"
-                  required
-                  placeholder="ex: Staff QC Inspector"
-                  onChange={handleChange}
-                  className="w-full p-2.5 border rounded-lg focus:outline-none focus:border-blue-900"
-                />
+          <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 16, marginTop: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }} className="admin-grid">
+              <div className="field" style={{ margin: 0 }}>
+                <label>Judul Posisi Pekerjaan</label>
+                <input name="title" required placeholder="ex: Staff QC Inspector" onChange={handleChange} />
               </div>
-
-              <div>
-                <label className="font-bold text-slate-700 block mb-1">Nama Perusahaan / PT</label>
-                <input
-                  type="text"
-                  name="company"
-                  required
-                  placeholder="ex: PT Astra Honda Motor"
-                  onChange={handleChange}
-                  className="w-full p-2.5 border rounded-lg focus:outline-none focus:border-blue-900"
-                />
+              <div className="field" style={{ margin: 0 }}>
+                <label>Nama Perusahaan / PT</label>
+                <input name="company" required placeholder="ex: PT Astra Honda Motor" onChange={handleChange} />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="font-bold text-slate-700 block mb-1">Lokasi Kawasan</label>
-                <select name="location" onChange={handleChange} className="w-full p-2.5 border rounded-lg focus:outline-none">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }} className="admin-grid">
+              <div className="field" style={{ margin: 0 }}>
+                <label>Lokasi Kawasan</label>
+                <select name="location" onChange={handleChange}>
                   <option value="Cikarang">Cikarang / EJIP / Jababeka</option>
                   <option value="Cibitung">Cibitung / MM2100</option>
                   <option value="Kota Bekasi">Kota Bekasi</option>
                   <option value="Tambun">Tambun / Summarecon</option>
                 </select>
               </div>
-
-              <div>
-                <label className="font-bold text-slate-700 block mb-1">Kisaran Gaji</label>
-                <input
-                  type="text"
-                  name="salary"
-                  placeholder="ex: Rp 5.200.000 - Rp 6.000.000"
-                  onChange={handleChange}
-                  className="w-full p-2.5 border rounded-lg focus:outline-none focus:border-blue-900"
-                />
+              <div className="field" style={{ margin: 0 }}>
+                <label>Kisaran Gaji</label>
+                <input name="salary" placeholder="ex: Rp 5.200.000 - Rp 6.000.000" onChange={handleChange} />
               </div>
             </div>
 
-            {/* FIELD UPLOAD GAMBAR DENGAN FILE INPUT */}
-            <div className="border border-dashed border-slate-300 p-4 rounded-xl bg-slate-50">
-              <label className="font-bold text-slate-700 block mb-1">Upload Gambar / Logo Perusahaan / Poster</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-900 file:text-white hover:file:bg-blue-800 cursor-pointer"
-              />
-              <span className="text-[10px] text-slate-400 mt-1 block">*Format JPG/PNG, maksimal 2MB</span>
-
-              {/* TAMPILAN PREVIEW GAMBAR */}
+            <div style={{ padding: 16, border: '1px dashed var(--gray-300)', borderRadius: 12, background: 'var(--gray-100)' }}>
+              <label style={{ fontWeight: 700, fontSize: 13, color: 'var(--gray-700)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <Image size={14} /> Upload Gambar / Logo Perusahaan
+              </label>
+              <input type="file" accept="image/*" onChange={handleImageUpload} style={{ fontSize: 12 }} />
+              <span className="text-muted" style={{ fontSize: 11, display: 'block', marginTop: 4 }}>*Format JPG/PNG, maksimal 2MB</span>
               {imagePreview && (
-                <div className="mt-3 flex items-center gap-3 bg-white p-2 rounded-lg border border-slate-200">
-                  <img src={imagePreview} alt="Preview" className="w-16 h-16 object-contain rounded border" />
+                <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 12, background: '#fff', padding: 8, borderRadius: 8, border: '1px solid var(--gray-200)' }}>
+                  <img src={imagePreview} alt="Preview" style={{ width: 64, height: 64, objectFit: 'contain', borderRadius: 8, border: '1px solid var(--gray-200)' }} />
                   <div>
-                    <span className="text-xs font-bold text-slate-800 block">Gambar Siap Diposting</span>
-                    <button
-                      type="button"
-                      onClick={() => setImagePreview(null)}
-                      className="text-[11px] text-red-600 hover:underline font-semibold"
-                    >
+                    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-800)', display: 'block' }}>Gambar Siap Diposting</span>
+                    <button type="button" onClick={() => setImagePreview(null)} style={{ fontSize: 11, color: 'var(--hl-red)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
                       Hapus Gambar
                     </button>
                   </div>
@@ -168,25 +118,14 @@ export default function AdminDashboard() {
               )}
             </div>
 
-            <div>
-              <label className="font-bold text-slate-700 block mb-1">Deskripsi & Syarat Kualifikasi</label>
-              <textarea
-                name="description"
-                rows="5"
-                placeholder="Tuliskan kualifikasi dan cara melamar..."
-                onChange={handleChange}
-                className="w-full p-2.5 border rounded-lg focus:outline-none focus:border-blue-900"
-              ></textarea>
+            <div className="field" style={{ margin: 0 }}>
+              <label>Deskripsi &amp; Syarat Kualifikasi</label>
+              <textarea name="description" rows="5" placeholder="Tuliskan kualifikasi dan cara melamar..." onChange={handleChange} />
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 rounded-lg text-sm transition shadow"
-            >
-              Publish Lowongan Kerja
-            </button>
+            <button type="submit" className="btn-primary">Publish Lowongan Kerja</button>
           </form>
-        </div>
+        </section>
       </main>
     </div>
   );

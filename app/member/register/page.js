@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '../../../lib/supabase';
+import { CheckCircle2 } from 'lucide-react';
 
 export default function MemberRegister() {
   const router = useRouter();
@@ -30,7 +31,6 @@ export default function MemberRegister() {
     }
 
     if (data.session) {
-      // langsung login (email confirmation nonaktif di env)
       setTimeout(() => {
         router.replace('/');
         router.refresh();
@@ -41,78 +41,47 @@ export default function MemberRegister() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans text-slate-800">
-      <div className="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full border border-slate-200">
-        <div className="text-center mb-6">
-          <Link href="/" className="bg-blue-900 text-white font-black px-3 py-1.5 rounded-lg text-xl tracking-widest inline-block mb-2 shadow">
-            BK
-          </Link>
-          <h1 className="text-xl font-extrabold text-slate-900">Daftar Akun Member</h1>
-          <p className="text-xs text-slate-500 mt-1">Cari kerja & buat CV gratis dalam hitungan detik</p>
+    <div className="auth-wrap font-sans">
+      <div className="panel" style={{ padding: 32, maxWidth: 400, width: '100%' }}>
+        <div className="text-center" style={{ marginBottom: 24 }}>
+          <Link href="/" className="brand-mark" style={{ fontSize: 18, marginBottom: 8 }}>BK</Link>
+          <h1 className="h-display" style={{ fontSize: 20, color: 'var(--gray-900)' }}>Daftar Akun Member</h1>
+          <p className="text-muted" style={{ fontSize: 13 }}>Cari kerja &amp; buat CV gratis dalam hitungan detik</p>
         </div>
 
         {msg && (
-          <div className="bg-emerald-100 border border-emerald-400 text-emerald-800 text-xs p-3 rounded-lg mb-4 text-center font-bold">
-            🎉 {msg}
+          <div style={{ background: '#e8f7ee', border: '1px solid #b7e3c8', color: '#1a7f43', fontSize: 13, padding: 12, borderRadius: 8, marginBottom: 16, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <CheckCircle2 size={16} /> {msg}
           </div>
         )}
         {error && (
-          <div className="bg-rose-100 border border-rose-400 text-rose-800 text-xs p-3 rounded-lg mb-4 text-center font-bold">
+          <div style={{ background: '#fff0f0', border: '1px solid #ffd0d0', color: 'var(--hl-red)', fontSize: 13, padding: 12, borderRadius: 8, marginBottom: 16, fontWeight: 700 }}>
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
-          <div>
-            <label className="font-bold text-slate-700 block mb-1">Nama Lengkap</label>
-            <input
-              type="text"
-              required
-              placeholder="Contoh: Budi Santoso"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-900 bg-slate-50 focus:bg-white transition"
-            />
+        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 14 }}>
+          <div className="field" style={{ margin: 0 }}>
+            <label>Nama Lengkap</label>
+            <input type="text" required placeholder="Contoh: Budi Santoso" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+          </div>
+          <div className="field" style={{ margin: 0 }}>
+            <label>Email</label>
+            <input type="email" required placeholder="nama@gmail.com" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+          </div>
+          <div className="field" style={{ margin: 0 }}>
+            <label>Password</label>
+            <input type="password" required placeholder="••••••••" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
           </div>
 
-          <div>
-            <label className="font-bold text-slate-700 block mb-1">Email</label>
-            <input
-              type="email"
-              required
-              placeholder="nama@gmail.com"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-900 bg-slate-50 focus:bg-white transition"
-            />
-          </div>
-
-          <div>
-            <label className="font-bold text-slate-700 block mb-1">Password</label>
-            <input
-              type="password"
-              required
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-900 bg-slate-50 focus:bg-white transition"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-900 hover:bg-blue-800 disabled:bg-slate-400 text-white font-extrabold py-3 rounded-xl text-xs transition shadow mt-2 cursor-pointer"
-          >
+          <button type="submit" disabled={loading} className="btn-primary" style={{ width: '100%', marginTop: 8 }}>
             {loading ? 'Memproses...' : 'Daftar Akun Gratis'}
           </button>
         </form>
 
-        <p className="text-center text-xs text-slate-500 mt-6">
+        <p className="text-center text-muted" style={{ fontSize: 13, marginTop: 24 }}>
           Sudah punya akun?{' '}
-          <Link href="/member/login" className="text-blue-900 font-bold hover:underline">
-            Masuk di sini
-          </Link>
+          <Link href="/member/login" style={{ color: 'var(--hl-blue)', fontWeight: 700 }}>Masuk di sini</Link>
         </p>
       </div>
     </div>
