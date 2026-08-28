@@ -1,11 +1,10 @@
 name: Setup Supabase (production provisioning)
 
-# Jalankan sekali tiap deploy ke main. Idempoten: aman dijalankan berulang.
-# Tidak ada seed data — production menggunakan data aslinya.
+# DISABLED auto-run: hanya jalan manual (tab Actions -> Run workflow) SETELAH
+# secret SUPABASE_DB_URL / SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY / ADMIN_PASSWORD
+# diset di repo. Idempoten: aman dijalankan berulang. Tidak ada seed data.
 on:
-  push:
-    branches: ["main"]
-  workflow_dispatch: # bisa di-trigger manual dari tab Actions
+  workflow_dispatch: # hanya manual, bukan otomatis pas push ke main
 
 jobs:
   provision:
