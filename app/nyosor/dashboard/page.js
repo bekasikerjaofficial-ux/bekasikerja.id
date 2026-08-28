@@ -72,7 +72,7 @@ export default function AdminDashboard() {
           )}
 
           <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 16, marginTop: 16 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }} className="admin-grid">
+            <div className="admin-grid" style={{ gap: 16 }}>
               <div className="field" style={{ margin: 0 }}>
                 <label>Judul Posisi Pekerjaan</label>
                 <input name="title" required placeholder="ex: Staff QC Inspector" onChange={handleChange} />
@@ -83,7 +83,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }} className="admin-grid">
+            <div className="admin-grid" style={{ gap: 16 }}>
               <div className="field" style={{ margin: 0 }}>
                 <label>Lokasi Kawasan</label>
                 <select name="location" onChange={handleChange}>

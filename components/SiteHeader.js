@@ -1,9 +1,10 @@
 'use client';
-import React from 'react';
-import { Briefcase, Search } from 'lucide-react';
+import React, { useState } from 'react';
+import { Briefcase, Search, Menu, X } from 'lucide-react';
 
 // Shared navbar — HeyLaw layout + BCA token (#005cab)
-// 3-section: logo (kiri) | nav (center) | actions: search + auth (kanan)
+// Desktop: logo (kiri) | nav (center) | search + auth (kanan)
+// Mobile (<860px): logo + hamburger (kiri) | auth (kanan), nav dropdown + search row di bawah
 export default function SiteHeader({
   brand = 'BekasiKerja.id',
   logoUrl = null,
@@ -11,6 +12,7 @@ export default function SiteHeader({
   searchPlaceholder = 'Cari lowongan, perusahaan, atau artikel...',
   showSearch = true,
 }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const nav = [
     { href: '/', label: 'Beranda' },
     { href: '/#lowongan', label: 'Lowongan' },
@@ -28,9 +30,18 @@ export default function SiteHeader({
           <span>{brand}</span>
         </a>
 
-        <nav className="nav">
+        <button
+          className="nav-toggle"
+          aria-label="Buka menu"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((o) => !o)}
+        >
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+
+        <nav className={`nav ${menuOpen ? 'mobile-open' : ''}`}>
           {nav.map((n) => (
-            <a key={n.href} href={n.href} className={active === n.href ? 'active' : ''}>
+            <a key={n.href} href={n.href} className={active === n.href ? 'active' : ''} onClick={() => setMenuOpen(false)}>
               {n.label}
             </a>
           ))}
@@ -50,14 +61,24 @@ export default function SiteHeader({
           )}
           <div className="auth-btns">
             <a href="/member/register" className="btn-outline btn-pill" style={{ padding: '8px 14px', fontSize: 13, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-              Daftar Member
+              Daftar
             </a>
             <a href="/member/login" className="btn-login btn-pill">
-              Login Member
+              Login
             </a>
           </div>
         </div>
       </div>
+
+      {showSearch && (
+        <div className="mobile-search">
+          <form className="search-card" role="search" action="/#lowongan">
+            <Search size={18} color="var(--gray-500)" />
+            <input type="text" placeholder={searchPlaceholder} aria-label="Pencarian" />
+            <button type="submit" className="btn-primary">Cari</button>
+          </form>
+        </div>
+      )}
     </header>
   );
 }

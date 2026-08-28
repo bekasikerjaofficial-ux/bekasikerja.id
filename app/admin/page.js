@@ -153,7 +153,7 @@ export default function AdminDashboard() {
         </section>
 
         {/* INPUT + LIST POSTINGAN */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px,5fr) 7fr', gap: 24 }} className="admin-grid">
+        <div className="admin-grid" style={{ gap: 24 }}>
           <section className="panel" style={{ padding: 24 }}>
             <h2 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)', marginBottom: 16, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
               <Plus size={18} /> Tambah Postingan Baru
