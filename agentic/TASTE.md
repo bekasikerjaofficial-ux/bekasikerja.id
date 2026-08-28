@@ -68,10 +68,17 @@ Berlaku untuk semua perubahan tampilan di `app/`.
 - Error: "Login gagal: …", "Gagal upload file…".
 - Istilah teknis tetap Inggris: Next.js, Supabase, bucket, URL.
 
-## 🖼 Aset & Gambar
-- Placeholder: `/placeholder.svg`. Job/news pake `image_url` dari Supabase.
-- Upload logo PT ke bucket `images` (Public), `getPublicUrl`.
-- Ikon: emoji ringan (💼 📰 📍 🎉) — hindari icon library ekstra.
+## 🖼 Iconografi
+- **Library:** `lucide-react` (stroke-based 24px, tree-shakeable, MIT). Import per-icon:
+  `import { Search, Briefcase, MapPin, Newspaper } from 'lucide-react'`.
+- **Penggunaan:** semua ikon pakai `size={16|18|20|22}` + `color="var(--hl-blue)"`
+  (atau `var(--gray-500)` untuk dekoratif). Hindari warna selain token.
+- **Jangan pakai emoji** (💼 📍 📰 dll) di UI — render beda tiap OS, rusak brand
+  consistency. Emoji hanya boleh di string `alert()` (JS, bukan render DOM).
+- Ikon yang sudah dipakai: `Briefcase` (brand/logo), `Search` (search), `MapPin`
+  (lokasi), `CalendarClock` (deadline), `Newspaper` (artikel), `Factory`/`Wrench`/
+  `Package`/`Truck`/`BookOpen`/`Brain` (cat bar), `Settings`/`Plus`/`ClipboardList`/
+  `Image`/`Save`/`Trash2` (admin), `CheckCircle2` (sukses), `LogOut` (logout).
 
 ## 🚫 Jangan
 - Jangan pakai warna di luar palet token di atas.

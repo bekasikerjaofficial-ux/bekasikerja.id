@@ -5,6 +5,7 @@ import { supabase } from '../../../lib/supabase';
 import Link from 'next/link';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
+import { MapPin } from 'lucide-react';
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -59,7 +60,9 @@ export default function PostDetailPage() {
             {isJob ? 'Lowongan Kerja' : (post.category || 'Artikel')}
           </span>
           {isJob && post.location && (
-            <span className="text-muted" style={{ fontSize: 13 }}>📍 {post.location}</span>
+            <span className="text-muted" style={{ fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <MapPin size={13} /> {post.location}
+            </span>
           )}
         </div>
 

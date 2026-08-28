@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import SiteHeader from '../../components/SiteHeader';
+import { Settings, Plus, ClipboardList, Image, Save, Trash2, CheckCircle2 } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
@@ -75,13 +76,13 @@ export default function AdminDashboard() {
   const handleSaveSettings = async (e) => {
     e.preventDefault();
     await supabase.from('site_settings').update(settings).eq('id', 1);
-    alert('✅ Settings & Logo Website berhasil diperbarui!');
+    alert('Settings & Logo Website berhasil diperbarui!');
   };
 
   const handleCreatePost = async (e) => {
     e.preventDefault();
     await supabase.from('posts').insert([postForm]);
-    alert('✅ Postingan berhasil di-publish!');
+    alert('Postingan berhasil di-publish!');
     setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Manufaktur', deadline: '', image_url: '', content: '' });
     fetchData();
   };
@@ -102,8 +103,8 @@ export default function AdminDashboard() {
       <main className="container section">
         {/* EDIT BRANDING */}
         <section className="panel" style={{ padding: 24, marginBottom: 32 }}>
-          <h2 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)' }}>
-            ⚙️ Identity &amp; Branding Situs
+          <h2 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <Settings size={18} /> Identity &amp; Branding Situs
           </h2>
           <form onSubmit={handleSaveSettings} style={{ display: 'grid', gap: 16, marginTop: 16 }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16 }}>
@@ -145,15 +146,17 @@ export default function AdminDashboard() {
               <textarea rows="2" value={settings.hero_subtitle || ''} onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })} />
             </div>
 
-            <button type="submit" className="btn-primary" style={{ justifySelf: 'start' }}>💾 Simpan Pengaturan Situs</button>
+            <button type="submit" className="btn-primary" style={{ justifySelf: 'start', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <Save size={16} /> Simpan Pengaturan Situs
+            </button>
           </form>
         </section>
 
         {/* INPUT + LIST POSTINGAN */}
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px,5fr) 7fr', gap: 24 }} className="admin-grid">
           <section className="panel" style={{ padding: 24 }}>
-            <h2 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)', marginBottom: 16 }}>
-              ➕ Tambah Postingan Baru
+            <h2 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)', marginBottom: 16, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <Plus size={18} /> Tambah Postingan Baru
             </h2>
             <form onSubmit={handleCreatePost} style={{ display: 'grid', gap: 14 }}>
               <div className="field" style={{ margin: 0 }}>
@@ -186,7 +189,9 @@ export default function AdminDashboard() {
               )}
 
               <div style={{ padding: 12, background: 'var(--gray-100)', border: '1px solid var(--gray-200)', borderRadius: 12, display: 'grid', gap: 8 }}>
-                <span style={{ fontWeight: 700, color: 'var(--gray-700)', fontSize: 11 }}>🖼️ Gambar / Logo PT</span>
+                <span style={{ fontWeight: 700, color: 'var(--gray-700)', fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <Image size={14} /> Gambar / Logo PT
+                </span>
                 <input type="file" accept="image/*" onChange={handlePostImageUpload} style={{ fontSize: 12 }} />
                 {uploadingPostImg && <span style={{ fontSize: 11, color: 'var(--hl-blue)', fontWeight: 700 }}>Mengunggah gambar...</span>}
                 <input type="text" placeholder="Atau tempel link URL gambar" value={postForm.image_url} onChange={(e) => setPostForm({ ...postForm, image_url: e.target.value })} style={{ fontSize: 12 }} />
@@ -207,10 +212,12 @@ export default function AdminDashboard() {
           </section>
 
           <section className="panel" style={{ padding: 24 }}>
-            <h3 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)', marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
-              <span>📋 Semua Postingan</span>
+            <h2 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                <ClipboardList size={18} /> Semua Postingan
+              </span>
               <span style={{ color: 'var(--hl-blue)' }}>{posts.length} Content</span>
-            </h3>
+            </h2>
             <div style={{ display: 'grid', gap: 12, maxHeight: 520, overflowY: 'auto' }}>
               {posts.map((p) => (
                 <div key={p.id} className="card" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 12, gap: 12 }}>
@@ -222,7 +229,9 @@ export default function AdminDashboard() {
                       <span className="text-muted" style={{ fontSize: 11 }}>{p.company || p.category}</span>
                     </div>
                   </div>
-                  <button onClick={() => handleDeletePost(p.id)} className="btn-danger" style={{ padding: '8px 12px', fontSize: 12 }}>Hapus</button>
+                  <button onClick={() => handleDeletePost(p.id)} className="btn-danger" style={{ padding: '8px 12px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                    <Trash2 size={14} /> Hapus
+                  </button>
                 </div>
               ))}
             </div>

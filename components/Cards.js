@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
+import { MapPin, CalendarClock, Newspaper } from 'lucide-react';
 
 // JobCard — card grid item, HeyLaw card style + BCA token
 export function JobCard({ job }) {
@@ -23,8 +24,12 @@ export function JobCard({ job }) {
           {job.content}
         </p>
         <div className="meta">
-          <span>📍 {job.location || 'Kawasan Industri'}</span>
-          <span className="deadline">S/d: {job.deadline || 'Secepatnya'}</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <MapPin size={12} /> {job.location || 'Kawasan Industri'}
+          </span>
+          <span className="deadline" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <CalendarClock size={12} /> {job.deadline || 'Secepatnya'}
+          </span>
         </div>
       </div>
     </Link>

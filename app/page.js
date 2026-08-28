@@ -7,6 +7,7 @@ import SiteFooter from '../components/SiteFooter';
 import SearchBar from '../components/SearchBar';
 import CookieConsent from '../components/CookieConsent';
 import { JobCard, NewsCard, SidebarItem } from '../components/Cards';
+import { Factory, Briefcase, Wrench, Package, Truck, Newspaper, Brain, BookOpen } from 'lucide-react';
 
 export default function HomePage() {
   const [settings, setSettings] = useState(null);
@@ -57,19 +58,22 @@ export default function HomePage() {
       <div className="cat-bar">
         <div className="container">
           {[
-            { icon: '🏭', label: 'Manufaktur' },
-            { icon: '💼', label: 'Admin' },
-            { icon: '⚙️', label: 'Engineering' },
-            { icon: '📦', label: 'Gudang' },
-            { icon: '🚚', label: 'Logistik' },
-            { icon: '📰', label: 'Tips Karir' },
-            { icon: '🧪', label: 'Psikotes' },
-          ].map((c) => (
-            <a key={c.label} href="/#lowongan" className="cat">
-              <span className="circle">{c.icon}</span>
-              <span>{c.label}</span>
-            </a>
-          ))}
+            { icon: Factory, label: 'Manufaktur' },
+            { icon: Briefcase, label: 'Admin' },
+            { icon: Wrench, label: 'Engineering' },
+            { icon: Package, label: 'Gudang' },
+            { icon: Truck, label: 'Logistik' },
+            { icon: BookOpen, label: 'Tips Karir' },
+            { icon: Brain, label: 'Psikotes' },
+          ].map((c) => {
+            const Icon = c.icon;
+            return (
+              <a key={c.label} href="/#lowongan" className="cat">
+                <span className="circle"><Icon size={20} /></span>
+                <span>{c.label}</span>
+              </a>
+            );
+          })}
         </div>
       </div>
 
@@ -119,7 +123,9 @@ export default function HomePage() {
             <section id="lowongan" className="scroll-mt-20">
               <div className="section-head">
                 <div>
-                  <h2>💼 Lowongan Kerja Terbaru</h2>
+                  <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                    <Briefcase size={22} color="var(--hl-blue)" /> Lowongan Kerja Terbaru
+                  </h2>
                   <p className="text-muted" style={{ fontSize: 13, margin: 0 }}>
                     Info loker terverifikasi kawasan Bekasi, Cikarang, &amp; Karawang
                   </p>
@@ -141,7 +147,9 @@ export default function HomePage() {
             {/* SIDEBAR: LIFESTYLE & ARTICLES */}
             <aside id="lifestyle" className="side scroll-mt-20">
               <div className="panel" style={{ padding: 16 }}>
-                <h3>📰 Lifestyle &amp; Tips Karir</h3>
+                <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  <Newspaper size={18} color="var(--hl-blue)" /> Lifestyle &amp; Tips Karir
+                </h3>
                 {filteredNews.length === 0 ? (
                   <p className="text-muted" style={{ fontSize: 13 }}>Belum ada artikel.</p>
                 ) : (
@@ -160,7 +168,9 @@ export default function HomePage() {
           <section id="lifestyle-grid" className="scroll-mt-20" style={{ marginTop: 48 }}>
             <div className="section-head">
               <div>
-                <h2>📰 Lifestyle &amp; Tips Karir</h2>
+                <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  <Newspaper size={22} color="var(--hl-blue)" /> Lifestyle &amp; Tips Karir
+                </h2>
                 <p className="text-muted" style={{ fontSize: 13, margin: 0 }}>
                   Panduan kerja, psikotes, hingga berita industri terkini
                 </p>

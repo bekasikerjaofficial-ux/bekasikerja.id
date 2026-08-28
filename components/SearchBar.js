@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { Search } from 'lucide-react';
 
 // SearchCard — BCA-style inline filter card (lokasi/posisi)
 export default function SearchBar({ value, onChange, onSubmit, placeholder }) {
@@ -12,7 +13,7 @@ export default function SearchBar({ value, onChange, onSubmit, placeholder }) {
       }}
       role="search"
     >
-      <span style={{ color: 'var(--gray-400)' }}>🔍</span>
+      <Search size={18} color="var(--gray-500)" />
       <input
         type="text"
         value={value}

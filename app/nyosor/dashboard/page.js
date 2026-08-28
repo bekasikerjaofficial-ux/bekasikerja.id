@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../../lib/supabase';
+import { Image, CheckCircle2 } from 'lucide-react';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -65,8 +66,8 @@ export default function AdminDashboard() {
           <p className="text-muted" style={{ fontSize: 12, marginTop: 8 }}>Isi formulir di bawah ini untuk mengunggah postingan loker baru.</p>
 
           {submitted && (
-            <div style={{ background: '#e8f7ee', border: '1px solid #b7e3c8', color: '#1a7f43', fontSize: 13, padding: 12, borderRadius: 8, margin: '16px 0', fontWeight: 700 }}>
-              ✅ Lowongan Kerja Berhasil Diposting!
+            <div style={{ background: '#e8f7ee', border: '1px solid #b7e3c8', color: '#1a7f43', fontSize: 13, padding: 12, borderRadius: 8, margin: '16px 0', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <CheckCircle2 size={16} /> Lowongan Kerja Berhasil Diposting!
             </div>
           )}
 
@@ -99,7 +100,9 @@ export default function AdminDashboard() {
             </div>
 
             <div style={{ padding: 16, border: '1px dashed var(--gray-300)', borderRadius: 12, background: 'var(--gray-100)' }}>
-              <label style={{ fontWeight: 700, fontSize: 13, color: 'var(--gray-700)', display: 'block', marginBottom: 8 }}>Upload Gambar / Logo Perusahaan</label>
+              <label style={{ fontWeight: 700, fontSize: 13, color: 'var(--gray-700)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <Image size={14} /> Upload Gambar / Logo Perusahaan
+              </label>
               <input type="file" accept="image/*" onChange={handleImageUpload} style={{ fontSize: 12 }} />
               <span className="text-muted" style={{ fontSize: 11, display: 'block', marginTop: 4 }}>*Format JPG/PNG, maksimal 2MB</span>
               {imagePreview && (

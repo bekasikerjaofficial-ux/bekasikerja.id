@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '../../../lib/supabase';
+import { CheckCircle2 } from 'lucide-react';
 
 export default function MemberRegister() {
   const router = useRouter();
@@ -49,8 +50,8 @@ export default function MemberRegister() {
         </div>
 
         {msg && (
-          <div style={{ background: '#e8f7ee', border: '1px solid #b7e3c8', color: '#1a7f43', fontSize: 13, padding: 12, borderRadius: 8, marginBottom: 16, fontWeight: 700 }}>
-            🎉 {msg}
+          <div style={{ background: '#e8f7ee', border: '1px solid #b7e3c8', color: '#1a7f43', fontSize: 13, padding: 12, borderRadius: 8, marginBottom: 16, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <CheckCircle2 size={16} /> {msg}
           </div>
         )}
         {error && (
