@@ -69,16 +69,6 @@ export default function SiteHeader({
           </div>
         </div>
       </div>
-
-      {showSearch && (
-        <div className="mobile-search">
-          <form className="search-card" role="search" action="/#lowongan">
-            <Search size={18} color="var(--gray-500)" />
-            <input type="text" placeholder={searchPlaceholder} aria-label="Pencarian" />
-            <button type="submit" className="btn-primary">Cari</button>
-          </form>
-        </div>
-      )}
     </header>
   );
 }

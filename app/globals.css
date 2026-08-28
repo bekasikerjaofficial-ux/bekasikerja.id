@@ -120,13 +120,6 @@ img { max-width: 100%; display: block; }
   }
   .nav.mobile-open a { padding: var(--sp-3) 0; border-bottom: 1px solid var(--gray-100); }
 }
-/* Mobile search row under header */
-.mobile-search { display: none; }
-@media (max-width: 860px) {
-  .mobile-search { display: block; background: #fff; border-bottom: 1px solid var(--gray-200); padding: var(--sp-3) var(--sp-6); }
-  .mobile-search .search-card { box-shadow: none; border: none; padding: 0; }
-  .mobile-search .search-card input { border: 1px solid var(--gray-300); }
-}
 .btn-login {
   background: var(--hl-blue); color: #fff; font-weight: 600; font-size: var(--fs-base);
   padding: var(--sp-2) var(--sp-5); border-radius: var(--r-md); border: none; cursor: pointer; transition: background .15s;
@@ -257,13 +250,22 @@ img { max-width: 100%; display: block; }
 .admin-grid { display: grid; grid-template-columns: minmax(320px,5fr) 7fr; }
 @media (max-width: 860px) { .admin-grid { grid-template-columns: 1fr !important; } }
 
-/* ============ COOKIE ============ */
+/* ============ COOKIE (slim bottom bar) ============ */
 .cookie {
-  position: fixed; bottom: var(--sp-4); left: 50%; transform: translateX(-50%);
-  background: #fff; border-radius: var(--r-lg); box-shadow: 0 8px 30px rgba(0,0,0,.2);
-  padding: var(--sp-4) var(--sp-6); display: flex; align-items: center; gap: var(--sp-4); font-size: var(--fs-sm); z-index: 100; max-width: 90vw;
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--gray-900); color: #fff; z-index: 100;
+  padding: var(--sp-3) var(--sp-6);
+  display: flex; align-items: center; justify-content: center; gap: var(--sp-4);
+  font-size: var(--fs-sm); border-top: 1px solid rgba(255,255,255,.1);
 }
-.cookie button { background: var(--hl-blue); color: #fff; border: none; padding: var(--sp-2) var(--sp-4); border-radius: var(--r-md); font-weight: 600; cursor: pointer; }
+.cookie span { line-height: 1.4; }
+.cookie button { background: var(--hl-blue); color: #fff; border: none; padding: var(--sp-2) var(--sp-5); border-radius: var(--r-md); font-weight: 600; cursor: pointer; flex-shrink: 0; }
+.cookie button:hover { background: var(--hl-blue-light); }
+@media (max-width: 600px) { .cookie { flex-direction: column; gap: var(--sp-2); text-align: center; padding: var(--sp-3) var(--sp-4); } }
+
+/* ============ HERO SEARCH (inside hero, not floating) ============ */
+.hero-search { margin-top: var(--sp-8); max-width: 520px; }
+@media (max-width: 860px) { .hero-search { margin-top: var(--sp-6); max-width: 100%; } }
 
 /* ---------- A11y utilities ---------- */
 .skip-link { position: absolute; left: -9999px; top: 0; z-index: 999; background: var(--hl-blue); color: #fff; padding: var(--sp-2) var(--sp-4); border-radius: 0 0 var(--r-md) 0; font-size: var(--fs-base); font-weight: 600; }

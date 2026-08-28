@@ -99,6 +99,9 @@ export default function HomePage() {
                   <div className="lbl">Kawasan Industri</div>
                 </div>
               </div>
+              <div className="hero-search">
+                <SearchBar value={query} onChange={setQuery} placeholder="Cari lowongan, perusahaan, atau artikel..." />
+              </div>
             </div>
             <div>
               <img
@@ -110,11 +113,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* SEARCH CARD (BCA style) */}
-        <div className="container" style={{ marginTop: -24, position: 'relative', zIndex: 10 }}>
-          <SearchBar value={query} onChange={setQuery} placeholder="Cari lowongan, perusahaan, atau artikel..." />
-        </div>
 
         {/* SPLIT CONTENT: Jobs (main) + Articles (sidebar) */}
         <div className="container section">
