@@ -167,7 +167,7 @@ docker exec -i $(docker ps --filter name=supabase_db -q) \
 # 3. Buat admin user lokal (email di-whitelist admin_emails())
 curl -X POST http://127.0.0.1:54321/auth/v1/signup \
   -H "apikey: $ANON" -H "Content-Type: application/json" \
-  -d '{"email":"admin@bekasikerja.id","password":"AdminBekasi123!"}'
+  -d '{"email":"admin@bekasikerja.id","password":"<PASSWORD_ANDA>"}'
 
 # 4. Isi .env.local (pakai URL + anon key lokal dari `supabase status`)
 cp .env.local.example .env.local
