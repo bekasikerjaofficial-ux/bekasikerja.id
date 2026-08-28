@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { supabase } from '../../../lib/supabase';
 import Link from 'next/link';
+import SiteHeader from '../../../components/SiteHeader';
+import SiteFooter from '../../../components/SiteFooter';
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -13,11 +15,7 @@ export default function PostDetailPage() {
   useEffect(() => {
     if (!id) return;
     const load = async () => {
-      const { data } = await supabase
-        .from('posts')
-        .select('*')
-        .eq('id', id)
-        .single();
+      const { data } = await supabase.from('posts').select('*').eq('id', id).single();
       setPost(data);
       setLoading(false);
     };
@@ -26,17 +24,17 @@ export default function PostDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center text-xs text-slate-500 font-sans">
-        Memuat artikel...
+      <div className="auth-wrap">
+        <p className="text-muted" style={{ fontSize: 13 }}>Memuat artikel...</p>
       </div>
     );
   }
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4 font-sans">
-        <p className="text-sm text-slate-600">Konten tidak ditemukan.</p>
-        <Link href="/" className="text-xs text-blue-600 font-bold">← Kembali ke Beranda</Link>
+      <div className="auth-wrap" style={{ flexDirection: 'column', gap: 16 }}>
+        <p className="text-muted" style={{ fontSize: 14 }}>Konten tidak ditemukan.</p>
+        <Link href="/" style={{ color: 'var(--hl-blue)', fontWeight: 700, fontSize: 13 }}>← Kembali ke Beranda</Link>
       </div>
     );
   }
@@ -44,61 +42,54 @@ export default function PostDetailPage() {
   const isJob = post.type === 'job';
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="font-extrabold text-lg tracking-tight text-blue-900">
-            {isJob ? '💼 Lowongan' : '📰 Artikel'}
-          </Link>
-          <Link href="/" className="text-xs text-blue-600 font-bold">← Beranda</Link>
-        </div>
-      </header>
+    <div>
+      <SiteHeader brand="BekasiKerja.id" active={isJob ? '/#lowongan' : '/#lifestyle'} showSearch={false} />
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="container section" style={{ maxWidth: 860 }}>
         {post.image_url && (
           <img
             src={post.image_url}
             alt={post.title}
-            className="w-full h-64 md:h-80 object-cover rounded-2xl border border-slate-200 shadow-sm"
+            style={{ width: '100%', height: 280, objectFit: 'cover', borderRadius: 16, border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-card)' }}
           />
         )}
 
-        <div className="mt-6 flex items-center gap-2">
-          <span className={`text-[10px] font-bold uppercase px-2.5 py-0.5 rounded ${isJob ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}`}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 24 }}>
+          <span className={`badge-tag ${isJob ? 'job' : 'news'}`}>
             {isJob ? 'Lowongan Kerja' : (post.category || 'Artikel')}
           </span>
           {isJob && post.location && (
-            <span className="text-[11px] text-slate-500">📍 {post.location}</span>
+            <span className="text-muted" style={{ fontSize: 13 }}>📍 {post.location}</span>
           )}
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 mt-3 leading-tight">
-          {post.title}
-        </h1>
+        <h1 className="h-display" style={{ fontSize: 30, marginTop: 12 }}>{post.title}</h1>
 
         {isJob && post.company && (
-          <p className="text-sm font-semibold text-slate-600 mt-1">{post.company}</p>
+          <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--gray-600)' }}>{post.company}</p>
         )}
         {isJob && post.deadline && (
-          <p className="text-[11px] text-rose-600 font-bold mt-1">Batas lamar: {post.deadline}</p>
+          <p style={{ fontSize: 12, color: 'var(--hl-red)', fontWeight: 700 }}>Batas lamar: {post.deadline}</p>
         )}
 
-        <article className="mt-6 text-sm leading-relaxed text-slate-700 whitespace-pre-line bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <article className="panel" style={{ marginTop: 24, padding: 24, fontSize: 14, lineHeight: 1.7, color: 'var(--gray-700)', whiteSpace: 'pre-line' }}>
           {post.content}
         </article>
 
         {isJob && (
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-2xl text-xs text-blue-900">
-            <strong>Cara melamar:</strong> Kirim CV & berkas ke email HRD perusahaan, atau datang
+          <div style={{ marginTop: 24, padding: 16, background: 'rgba(0,92,171,.06)', border: '1px solid rgba(0,92,171,.2)', borderRadius: 16, fontSize: 13, color: 'var(--hl-blue-dark)' }}>
+            <strong>Cara melamar:</strong> Kirim CV &amp; berkas ke email HRD perusahaan, atau datang
             langsung ke alamat kawasan industri tertera. Pastikan melengkapi persyaratan sebelum
             batas waktu lamaran.
           </div>
         )}
 
-        <div className="mt-8">
-          <Link href="/" className="text-xs text-blue-600 font-bold">← Kembali ke Beranda</Link>
+        <div style={{ marginTop: 32 }}>
+          <Link href="/" style={{ color: 'var(--hl-blue)', fontWeight: 700, fontSize: 13 }}>← Kembali ke Beranda</Link>
         </div>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }

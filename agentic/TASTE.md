@@ -1,67 +1,82 @@
-# TASTE.md — Panduan Desain UI BekasiKerja.id
+# TASTE.md — Design System BekasiKerja.id
 
-Standar visual agar agen menghasilkan UI yang konsisten dengan brand, tanpa harus
-menebak. Berlaku untuk semua perubahan tampilan di `app/`.
+Standar visual BekasiKerja.id. **Rombak 2026-08-28:** seluruh UI diport ke
+design system dari `github.com/hernanda-git/heylaw-design-system` — **layout &
+modul mengikuti HeyLaw (heylaw.id)**, dengan **brand token BCA (biru #005cab)**.
+Berlaku untuk semua perubahan tampilan di `app/`.
 
-## 🎨 Palet Warna (Tailwind)
+## 🎨 Sumber Design System
+- Repo: `hernanda-git/heylaw-design-system` (token `tokens.json` v3.0, BCA skin)
+- Layout & modul: ekstraksi `heylaw.id` (promo strip, header+search, category
+  icon bar, hero gradient, split content, sidebar, footer, cookie consent)
+- Implementasi lokal: `app/globals.css` (CSS vars + komponen) + `tailwind.config.js`
+  (extend colors/font/radius) + `components/` (SiteHeader, SiteFooter, Cards,
+  SearchBar, CookieConsent)
 
-| Peran            | Kelas Tailwind            | Hex (referensi)     | Pemakaian                              |
-| ---------------- | ------------------------- | ------------------- | -------------------------------------- |
-| Aksen utama      | `blue-900`                | `#1e3a8a`           | Header, tombol primer gelap, brand.    |
-| Aksenaksi        | `blue-600`                | `#2563eb`           | CTA, link aktif, badge, slider dot.    |
-| Aksen hover      | `blue-700` / `blue-800`   | —                   | Hover tombol biru.                      |
-| Base / surface   | `slate-50` / `slate-100`  | `#f8fafc` / `#f1f5f9` | Background halaman, card.             |
-| Text             | `slate-800` / `slate-900` | —                   | Teks body / heading.                   |
-| Muted            | `slate-500` / `slate-600` | —                   | Caption, meta.                         |
-| Border           | `slate-200`               | `#e2e8f0`           | Garis pemisah card/input.              |
-| News / amber     | `amber-100` bg / `amber-800` text | —           | Label kategori news.                    |
-| Sukses           | `emerald-100` / `emerald-800` | —              | Notifikasi berhasil.                    |
-| Bahaya           | `rose-100` / `rose-600/700` | —                | Hapus, error, logout.                   |
+## 🎨 Palet Warna (token BCA)
+| Peran | Token CSS | Tailwind | Hex |
+|-------|-----------|----------|-----|
+| Aksen utama (brand BCA) | `--hl-blue` | `brand-blue` | `#005cab` |
+| Aksen hover | `--hl-blue-dark` | `brand-blue-dark` | `#004a89` |
+| Aksen light | `--hl-blue-light` | `brand-blue-light` | `#00b6f1` |
+| Gradien hero | `--hl-blue-grad` | — | `linear-gradient(135deg,#005cab,#004a89)` |
+| News / gold | `--hl-gold` | `brand-gold` | `#f49c31` |
+| Bahaya | `--hl-red` | `brand-red` | `#f80000` |
+| Surface / base | `--gray-100` | `bca-100` | `#f8f9fa` |
+| Text | `--gray-700/900` | `bca-700/900` | `#495057 / #212529` |
+| Muted | `--gray-500/600` | `bca-500/600` | `#adb5bd / #6c757d` |
+| Border | `--gray-200` | `bca-200` | `#e9ecef` |
+| Footer dark | `--gray-900` | `bca-900` | `#212529` |
 
-> Latar hero banner & login admin gelap: `slate-900` / `slate-800` dengan teks `white` /
-> `slate-100` dan aksen `blue-500`/`blue-600`.
+> Pakai token di atas. Jangan introduce warna di luar palet (kecuali gold news
+> & red danger yang sudah terdaftar).
 
 ## 🔤 Tipografi
-
-- **Font:** `font-sans` (Tailwind default stack). Heading boleh `tracking-tight`.
-- **Heading:** `font-extrabold` (`font-black` untuk logo mark "BK").
-- **Body:** `text-xs` / `text-sm`. Meta & caption: `text-[10px]`/`text-[11px]`.
-- **Weight:** bold untuk label (`font-bold`), extrabold untuk judul (`font-extrabold`).
-- **Warna teks heading:** `text-slate-900`; sub: `text-slate-500`/`text-slate-600`.
+- **Font:** `Open Sans` (BCA skin) untuk SEMUA teks — body & display. Dimuat di
+  `globals.css` via Google Fonts, dan di-set sebagai `font-sans`/`font-display`
+  di Tailwind. Jangan ganti ke font lain tanpa alasan.
+- Heading: helper `.h-display` (800) / `.h-section` (700). Logo: `.logo` (800).
+- Body: `.text-body`; meta/caption: `.text-muted` (12–13px).
+- Weight: bold (600/700) label & judul, extra (800) impact.
 
 ## 📐 Bentuk & Elevasi
+- Radius: card `12px` (`--r-lg`); panel/input/button `8px` (`--r-md`);
+  pill/badge `9999px` (`--r-pill`).
+- Shadow: card `var(--shadow-card)`; hover `var(--shadow-card-hover)`.
+- Border: `1px solid var(--gray-200)` konsisten.
+- Hover card: `translateY(-3px)` + shadow-hover (lihat `.card`).
 
-- **Radius:** card besar `rounded-2xl`; input & tombol `rounded-xl`; pill/badge `rounded-full`.
-- **Shadow:** `shadow-sm` (card) / `shadow` (hover) / `shadow-xl` (hero slider).
-- **Border:** `border border-slate-200` konsisten di card & input.
-- **Hover:** `hover:border-blue-300` (card), `hover:bg-blue-700` (tombol biru),
-  `transition` singkat.
-
-## 🧩 Pola Layout
-
-- Container: `max-w-6xl` (header) / `max-w-5xl` (konten) / `max-w-3xl` (form).
-- Grid: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4`.
-- Header sticky: `sticky top-0 z-50 bg-white border-b`.
-- Spacing section: `py-12 space-y-12` di `<main>`.
-- Scroll anchor: `scroll-mt-20` pada section ber-id.
+## 🧩 Pola Layout (HeyLaw)
+- **Promo strip** atas (`.promo-strip`) — link CTAsingkat.
+- **Header sticky** `.header` (logo + nav + search pill + Daftar/Login).
+  Gunakan `components/SiteHeader.js` (jangan hardcode header tiap halaman).
+- **Category icon bar** `.cat-bar` (opsional, di beranda).
+- **Hero** `.hero` gradient biru, grid 2 kolom (text + ilustrasi), badge +
+  h1 + stats.
+- **Search card** `.search-card` (filter bar BCA-style) — pakai `SearchBar`.
+- **Split content** `.split` (main + sidebar 340px), collapse di &lt;1024px.
+- **Card grid** `.card-grid` (3 kolom desktop, 2 tablet, 1 mobile).
+- **Footer** `.footer` navy 3-kolom — pakai `SiteFooter.js`.
+- **Cookie consent** `.cookie` floating — `CookieConsent.js`.
+- Container: `.container` max 1280px. Section padding: `.section` (64px).
 
 ## ✍️ Mikrokopi (Bahasa Indonesia)
-
 - Judul section: "💼 Lowongan Kerja Terbaru", "📰 Lifestyle & Tips Karir".
-- Tombol: "Daftar Akun Gratis", "Masuk", "Publish Postingan", "Simpan Pengaturan Situs".
+- Tombol: "Daftar Member Gratis", "Login Member", "Publish Postingan",
+  "Simpan Pengaturan Situs".
 - Sukses: "🎉 Berhasil Mendaftar! Mengalihkan ke Halaman Utama…".
-- Error: "Password akses admin tidak valid!", "Gagal upload file…".
-- Istilah teknis tetap Inggris: Next.js, Supabase, localStorage, bucket, URL.
+- Error: "Login gagal: …", "Gagal upload file…".
+- Istilah teknis tetap Inggris: Next.js, Supabase, bucket, URL.
 
 ## 🖼 Aset & Gambar
-
-- Placeholder Unsplash untuk job/news bila `image_url` kosong.
-- Upload logo PT ke Supabase Storage bucket `images` (Public), pakai `getPublicUrl`.
-- Ikon: emoji ringan (💼 📰 📍 🎉) — hindari dependensi icon library ekstra.
+- Placeholder: `/placeholder.svg`. Job/news pake `image_url` dari Supabase.
+- Upload logo PT ke bucket `images` (Public), `getPublicUrl`.
+- Ikon: emoji ringan (💼 📰 📍 🎉) — hindari icon library ekstra.
 
 ## 🚫 Jangan
-
-- Jangan pakai warna di luar palet di atas tanpa alasan.
-- Jangan ubah `font-sans` ke font custom tanpa dijelaskan.
-- Jangan hapus `scroll-mt-20` pada section yang di-link dari nav.
-- Jangan perkecil radius secara drastis (tetap `rounded-2xl`/`rounded-xl`).
+- Jangan pakai warna di luar palet token di atas.
+- Jangan ubah font ke selain Open Sans tanpa penjelasan.
+- Jangan hardcode header/footer tiap halaman — pakai komponen `SiteHeader`/
+  `SiteFooter` biar konsisten.
+- Jangan perkecil radius drastis (tetap 8–16px).
+- Jangan hapus `scroll-mt-20` pada section yang di-link dari nav (#lowongan, #lifestyle).

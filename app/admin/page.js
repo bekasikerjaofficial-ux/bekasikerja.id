@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
+import SiteHeader from '../../components/SiteHeader';
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
@@ -9,11 +10,11 @@ export default function AdminDashboard() {
   const [posts, setPosts] = useState([]);
 
   const [settings, setSettings] = useState({
-    brand_name: '', logo_url: '', badge_text: '', hero_title: '', hero_subtitle: ''
+    brand_name: '', logo_url: '', badge_text: '', hero_title: '', hero_subtitle: '',
   });
 
   const [postForm, setPostForm] = useState({
-    type: 'job', title: '', company: '', location: '', category: 'Manufaktur', deadline: '', image_url: '', content: ''
+    type: 'job', title: '', company: '', location: '', category: 'Manufaktur', deadline: '', image_url: '', content: '',
   });
 
   useEffect(() => {
@@ -34,26 +35,18 @@ export default function AdminDashboard() {
     setLoading(true);
     const { data: st } = await supabase.from('site_settings').select('*').eq('id', 1).single();
     if (st) setSettings(st);
-
     const { data: ps } = await supabase.from('posts').select('*').order('created_at', { ascending: false });
     if (ps) setPosts(ps);
     setLoading(false);
   };
 
-  // HELPER UPLOAD GAMBAR KE SUPABASE STORAGE
   const uploadImage = async (file) => {
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('images')
-        .upload(filePath, file);
-
+      const { error: uploadError } = await supabase.storage.from('images').upload(fileName, file);
       if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage.from('images').getPublicUrl(filePath);
+      const { data } = supabase.storage.from('images').getPublicUrl(fileName);
       return data.publicUrl;
     } catch (error) {
       alert('Gagal upload file. Pastikan bucket "images" di Supabase sudah dibuat & di-set PUBLIC! Error: ' + error.message);
@@ -61,7 +54,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // UPLOAD LOGO
   const handleLogoUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -71,7 +63,6 @@ export default function AdminDashboard() {
     setUploadingLogo(false);
   };
 
-  // UPLOAD GAMBAR POSTINGAN
   const handlePostImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -102,211 +93,142 @@ export default function AdminDashboard() {
     }
   };
 
-  if (loading) return <div className="p-8 text-center text-xs text-slate-500 font-sans">Memuat Dashboard Admin...</div>;
+  if (loading) return <div className="auth-wrap"><p className="text-muted" style={{ fontSize: 13 }}>Memuat Dashboard Admin...</p></div>;
 
   return (
-    <div className="min-h-screen bg-slate-100 font-sans text-slate-800 pb-16">
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <h1 className="font-extrabold text-slate-900 text-lg flex items-center gap-2">
-            {settings.logo_url && <img src={settings.logo_url} alt="Logo" className="h-6 w-auto" />}
-            {settings.brand_name || 'Admin Dashboard'}
-          </h1>
-          <button onClick={async () => { await supabase.auth.signOut(); window.location.href = '/nyosor/login'; }} className="bg-rose-100 text-rose-700 font-bold text-xs px-3 py-1.5 rounded-lg">Logout</button>
-        </div>
-      </header>
+    <div>
+      <SiteHeader brand={settings.brand_name || 'BekasiKerja.id'} active="/admin" showSearch={false} />
 
-      <div className="max-w-6xl mx-auto px-4 mt-8 space-y-8">
-        
-        {/* EDIT BRANDING & LOGO */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-4">
-          <h2 className="font-extrabold text-sm text-slate-900 pb-2 border-b">⚙️ Identity & Branding Situs (Ganti Logo & Teks)</h2>
-          
-          <form onSubmit={handleSaveSettings} className="space-y-4 text-xs">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="font-bold block mb-1">Nama Website / Brand</label>
-                <input 
-                  type="text" 
-                  value={settings.brand_name || ''} 
-                  onChange={(e) => setSettings({ ...settings, brand_name: e.target.value })} 
-                  className="w-full px-3 py-2 border rounded-xl" 
-                />
+      <main className="container section">
+        {/* EDIT BRANDING */}
+        <section className="panel" style={{ padding: 24, marginBottom: 32 }}>
+          <h2 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)' }}>
+            ⚙️ Identity &amp; Branding Situs
+          </h2>
+          <form onSubmit={handleSaveSettings} style={{ display: 'grid', gap: 16, marginTop: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16 }}>
+              <div className="field" style={{ margin: 0 }}>
+                <label>Nama Website / Brand</label>
+                <input type="text" value={settings.brand_name || ''} onChange={(e) => setSettings({ ...settings, brand_name: e.target.value })} />
               </div>
-
-              <div>
-                <label className="font-bold block mb-1">Upload File Logo (Dari HP/PC)</label>
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  onChange={handleLogoUpload} 
-                  className="w-full px-3 py-1.5 border rounded-xl bg-slate-50 cursor-pointer" 
-                />
-                {uploadingLogo && <p className="text-[10px] text-blue-600 font-bold mt-1">Mengunggah logo...</p>}
+              <div className="field" style={{ margin: 0 }}>
+                <label>Upload File Logo</label>
+                <input type="file" accept="image/*" onChange={handleLogoUpload} style={{ fontSize: 13 }} />
+                {uploadingLogo && <span className="text-muted" style={{ fontSize: 11, color: 'var(--hl-blue)', fontWeight: 700 }}>Mengunggah logo...</span>}
               </div>
-
-              <div>
-                <label className="font-bold block mb-1">Atau Link URL Logo (Web/ImgBB)</label>
-                <input 
-                  type="text" 
-                  placeholder="https://..."
-                  value={settings.logo_url || ''} 
-                  onChange={(e) => setSettings({ ...settings, logo_url: e.target.value })} 
-                  className="w-full px-3 py-2 border rounded-xl" 
-                />
+              <div className="field" style={{ margin: 0 }}>
+                <label>Atau Link URL Logo</label>
+                <input type="text" placeholder="https://..." value={settings.logo_url || ''} onChange={(e) => setSettings({ ...settings, logo_url: e.target.value })} />
               </div>
             </div>
 
-            {/* PREVIEW LOGO */}
             {settings.logo_url && (
-              <div className="p-3 bg-slate-50 border rounded-xl flex items-center gap-3">
-                <span className="text-[11px] font-bold text-slate-500">Preview Logo Terpasang:</span>
-                <img src={settings.logo_url} alt="Preview Logo" className="h-8 w-auto object-contain" />
+              <div style={{ padding: 12, background: 'var(--gray-100)', border: '1px solid var(--gray-200)', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span className="text-muted" style={{ fontSize: 11, fontWeight: 700 }}>Preview:</span>
+                <img src={settings.logo_url} alt="Preview Logo" style={{ height: 32, width: 'auto', objectFit: 'contain' }} />
               </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="font-bold block mb-1">Badge Teks Header (Kecil Atas)</label>
-                <input 
-                  type="text" 
-                  value={settings.badge_text || ''} 
-                  onChange={(e) => setSettings({ ...settings, badge_text: e.target.value })} 
-                  className="w-full px-3 py-2 border rounded-xl" 
-                />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 16 }}>
+              <div className="field" style={{ margin: 0 }}>
+                <label>Badge Teks Header</label>
+                <input type="text" value={settings.badge_text || ''} onChange={(e) => setSettings({ ...settings, badge_text: e.target.value })} />
               </div>
-              <div>
-                <label className="font-bold block mb-1">Judul Utama Hero Banner</label>
-                <input 
-                  type="text" 
-                  value={settings.hero_title || ''} 
-                  onChange={(e) => setSettings({ ...settings, hero_title: e.target.value })} 
-                  className="w-full px-3 py-2 border rounded-xl" 
-                />
+              <div className="field" style={{ margin: 0 }}>
+                <label>Judul Utama Hero</label>
+                <input type="text" value={settings.hero_title || ''} onChange={(e) => setSettings({ ...settings, hero_title: e.target.value })} />
               </div>
             </div>
 
-            <div>
-              <label className="font-bold block mb-1">Sub-Judul / Deskripsi Banner</label>
-              <textarea 
-                rows="2" 
-                value={settings.hero_subtitle || ''} 
-                onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })} 
-                className="w-full px-3 py-2 border rounded-xl"
-              ></textarea>
+            <div className="field" style={{ margin: 0 }}>
+              <label>Sub-Judul / Deskripsi Banner</label>
+              <textarea rows="2" value={settings.hero_subtitle || ''} onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })} />
             </div>
 
-            <button type="submit" className="bg-slate-900 hover:bg-slate-800 text-white font-extrabold px-6 py-2.5 rounded-xl transition">
-              💾 Simpan Pengaturan Situs
-            </button>
+            <button type="submit" className="btn-primary" style={{ justifySelf: 'start' }}>💾 Simpan Pengaturan Situs</button>
           </form>
-        </div>
+        </section>
 
-        {/* INPUT POSTINGAN BARU */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-200">
-            <h2 className="font-extrabold text-sm text-slate-900 mb-4 pb-2 border-b">➕ Tambah Postingan Baru</h2>
-            <form onSubmit={handleCreatePost} className="space-y-3 text-xs">
-              <div>
-                <label className="font-bold block mb-1">Jenis Postingan</label>
-                <select value={postForm.type} onChange={(e) => setPostForm({ ...postForm, type: e.target.value })} className="w-full px-3 py-2 border rounded-xl bg-white">
+        {/* INPUT + LIST POSTINGAN */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px,5fr) 7fr', gap: 24 }} className="admin-grid">
+          <section className="panel" style={{ padding: 24 }}>
+            <h2 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)', marginBottom: 16 }}>
+              ➕ Tambah Postingan Baru
+            </h2>
+            <form onSubmit={handleCreatePost} style={{ display: 'grid', gap: 14 }}>
+              <div className="field" style={{ margin: 0 }}>
+                <label>Jenis Postingan</label>
+                <select value={postForm.type} onChange={(e) => setPostForm({ ...postForm, type: e.target.value })}>
                   <option value="job">Lowongan Kerja (Loker)</option>
                   <option value="news">Artikel Lifestyle / Berita</option>
                 </select>
               </div>
-              <div>
-                <label className="font-bold block mb-1">Judul</label>
-                <input type="text" required value={postForm.title} onChange={(e) => setPostForm({ ...postForm, title: e.target.value })} className="w-full px-3 py-2 border rounded-xl" />
+              <div className="field" style={{ margin: 0 }}>
+                <label>Judul</label>
+                <input type="text" required value={postForm.title} onChange={(e) => setPostForm({ ...postForm, title: e.target.value })} />
               </div>
 
               {postForm.type === 'job' && (
                 <>
-                  <div>
-                    <label className="font-bold block mb-1">Nama Perusahaan / PT</label>
-                    <input type="text" value={postForm.company} onChange={(e) => setPostForm({ ...postForm, company: e.target.value })} className="w-full px-3 py-2 border rounded-xl" />
+                  <div className="field" style={{ margin: 0 }}>
+                    <label>Nama Perusahaan / PT</label>
+                    <input type="text" value={postForm.company} onChange={(e) => setPostForm({ ...postForm, company: e.target.value })} />
                   </div>
-                  <div>
-                    <label className="font-bold block mb-1">Lokasi Kawasan</label>
-                    <input type="text" value={postForm.location} onChange={(e) => setPostForm({ ...postForm, location: e.target.value })} className="w-full px-3 py-2 border rounded-xl" />
+                  <div className="field" style={{ margin: 0 }}>
+                    <label>Lokasi Kawasan</label>
+                    <input type="text" value={postForm.location} onChange={(e) => setPostForm({ ...postForm, location: e.target.value })} />
                   </div>
-                  <div>
-                    <label className="font-bold block mb-1">Batas Melamar (Deadline)</label>
-                    <input type="text" placeholder="ex: 30 Sep 2026" value={postForm.deadline} onChange={(e) => setPostForm({ ...postForm, deadline: e.target.value })} className="w-full px-3 py-2 border rounded-xl" />
+                  <div className="field" style={{ margin: 0 }}>
+                    <label>Batas Melamar (Deadline)</label>
+                    <input type="text" placeholder="ex: 30 Sep 2026" value={postForm.deadline} onChange={(e) => setPostForm({ ...postForm, deadline: e.target.value })} />
                   </div>
                 </>
               )}
 
-              {/* OPSI GAMBAR: UPLOAD FILE & URL LINK */}
-              <div className="p-3 bg-slate-50 border rounded-xl space-y-2">
-                <span className="font-bold text-slate-700 block text-[11px]">🖼️ Pilih Gambar / Logo PT:</span>
-                <div>
-                  <label className="text-[10px] text-slate-500 block mb-1">Opsi A: Upload File dari HP/PC</label>
-                  <input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={handlePostImageUpload} 
-                    className="w-full px-2 py-1 border rounded-lg bg-white cursor-pointer text-[11px]" 
-                  />
-                  {uploadingPostImg && <p className="text-[10px] text-blue-600 font-bold mt-1">Mengunggah gambar...</p>}
-                </div>
-                <div>
-                  <label className="text-[10px] text-slate-500 block mb-1">Opsi B: Atau Tempel Link URL Gambar</label>
-                  <input 
-                    type="text" 
-                    placeholder="https://..."
-                    value={postForm.image_url} 
-                    onChange={(e) => setPostForm({ ...postForm, image_url: e.target.value })} 
-                    className="w-full px-3 py-1.5 border rounded-lg bg-white text-[11px]" 
-                  />
-                </div>
+              <div style={{ padding: 12, background: 'var(--gray-100)', border: '1px solid var(--gray-200)', borderRadius: 12, display: 'grid', gap: 8 }}>
+                <span style={{ fontWeight: 700, color: 'var(--gray-700)', fontSize: 11 }}>🖼️ Gambar / Logo PT</span>
+                <input type="file" accept="image/*" onChange={handlePostImageUpload} style={{ fontSize: 12 }} />
+                {uploadingPostImg && <span style={{ fontSize: 11, color: 'var(--hl-blue)', fontWeight: 700 }}>Mengunggah gambar...</span>}
+                <input type="text" placeholder="Atau tempel link URL gambar" value={postForm.image_url} onChange={(e) => setPostForm({ ...postForm, image_url: e.target.value })} style={{ fontSize: 12 }} />
                 {postForm.image_url && (
-                  <div className="pt-1 border-t">
-                    <span className="text-[9px] text-slate-400 block mb-1">Preview Gambar:</span>
-                    <img src={postForm.image_url} alt="Preview Post" className="h-16 w-auto rounded-lg border object-cover" />
-                  </div>
+                  <img src={postForm.image_url} alt="Preview" style={{ height: 64, width: 'auto', borderRadius: 8, border: '1px solid var(--gray-200)' }} />
                 )}
               </div>
 
-              <div>
-                <label className="font-bold block mb-1">Deskripsi / Konten Lengkap</label>
-                <textarea rows="4" required value={postForm.content} onChange={(e) => setPostForm({ ...postForm, content: e.target.value })} className="w-full px-3 py-2 border rounded-xl"></textarea>
+              <div className="field" style={{ margin: 0 }}>
+                <label>Deskripsi / Konten Lengkap</label>
+                <textarea rows="4" required value={postForm.content} onChange={(e) => setPostForm({ ...postForm, content: e.target.value })} />
               </div>
-              
-              <button 
-                type="submit" 
-                disabled={uploadingPostImg}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-extrabold py-2.5 rounded-xl"
-              >
+
+              <button type="submit" disabled={uploadingPostImg} className="btn-primary">
                 {uploadingPostImg ? 'Tunggu Upload...' : 'Publish Postingan'}
               </button>
             </form>
-          </div>
+          </section>
 
-          {/* LIST POSTINGAN */}
-          <div className="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-200">
-            <h3 className="font-extrabold text-sm text-slate-900 mb-4 pb-2 border-b flex justify-between">
+          <section className="panel" style={{ padding: 24 }}>
+            <h3 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)', marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
               <span>📋 Semua Postingan</span>
-              <span className="text-blue-600">{posts.length} Content</span>
+              <span style={{ color: 'var(--hl-blue)' }}>{posts.length} Content</span>
             </h3>
-            <div className="space-y-3 max-h-[500px] overflow-y-auto">
+            <div style={{ display: 'grid', gap: 12, maxHeight: 520, overflowY: 'auto' }}>
               {posts.map((p) => (
-                <div key={p.id} className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border text-xs">
-                  <div className="flex items-center gap-3">
-                    {p.image_url && <img src={p.image_url} alt="thumb" className="w-10 h-10 object-cover rounded-lg" />}
+                <div key={p.id} className="card" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 12, gap: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    {p.image_url && <img src={p.image_url} alt="thumb" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 8 }} />}
                     <div>
-                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase ${p.type === 'job' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}`}>{p.type}</span>
-                      <strong className="text-slate-900 block mt-0.5">{p.title}</strong>
-                      <p className="text-slate-500 text-[11px]">{p.company || p.category}</p>
+                      <span className={`badge-tag ${p.type === 'job' ? 'job' : 'news'}`} style={{ marginBottom: 4 }}>{p.type}</span>
+                      <strong style={{ color: 'var(--gray-900)', display: 'block', fontSize: 13 }}>{p.title}</strong>
+                      <span className="text-muted" style={{ fontSize: 11 }}>{p.company || p.category}</span>
                     </div>
                   </div>
-                  <button onClick={() => handleDeletePost(p.id)} className="bg-rose-100 text-rose-700 font-bold px-2.5 py-1 rounded-lg">Hapus</button>
+                  <button onClick={() => handleDeletePost(p.id)} className="btn-danger" style={{ padding: '8px 12px', fontSize: 12 }}>Hapus</button>
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         </div>
-
-      </div>
+      </main>
     </div>
   );
 }
