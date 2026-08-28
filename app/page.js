@@ -108,7 +108,7 @@ export default function HomePage() {
                 className="illus"
                 src={settings?.hero_image_url || '/placeholder.svg'}
                 alt="Kawasan industri Bekasi"
-                style={{ background: 'rgba(255,255,255,.1)' }}
+                style={{ background: 'rgba(255,255,255,.1)', display: (settings?.hero_image_url ? 'block' : 'none') }}
               />
             </div>
           </div>
@@ -161,25 +161,6 @@ export default function HomePage() {
               </div>
             </aside>
           </div>
-
-          {/* LIFESTYLE GRID (bawah, full width) */}
-          <section id="lifestyle-grid" className="scroll-mt-20" style={{ marginTop: 48 }}>
-            <div className="section-head">
-              <div>
-                <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                  <Newspaper size={22} color="var(--hl-blue)" /> Lifestyle &amp; Tips Karir
-                </h2>
-                <p className="text-muted" style={{ fontSize: 13, margin: 0 }}>
-                  Panduan kerja, psikotes, hingga berita industri terkini
-                </p>
-              </div>
-            </div>
-            <div className="card-grid">
-              {filteredNews.map((item) => (
-                <NewsCard key={item.id} item={item} />
-              ))}
-            </div>
-          </section>
         </div>
       </main>
 
