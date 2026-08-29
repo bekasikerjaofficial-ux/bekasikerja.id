@@ -125,21 +125,20 @@ img { max-width: 100%; display: block; }
 .btn-outline:hover { background: var(--hl-blue); color: #fff; }
 .btn-pill { border-radius: var(--r-pill); }
 
-/* ============ CATEGORY ICON BAR ============ */
-.cat-bar { background: #fff; border-bottom: 1px solid var(--gray-200); position: relative; }
-@media (max-width: 860px) { .cat-bar { display: none; } } /* hide kategori di mobile (clean) */
-.cat-bar .container { display: flex; gap: var(--sp-4); overflow-x: auto; padding: var(--sp-3) var(--sp-6); scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; }
-.cat-bar .container::-webkit-scrollbar { display: none; }
-/* fade edge hint = scrollable, not cut off */
-.cat-bar::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 36px; background: linear-gradient(90deg, rgba(255,255,255,0), #fff); pointer-events: none; }
-@media (min-width: 768px) { .cat-bar::after { display: none; } }
-.cat { display: flex; flex-direction: column; align-items: center; gap: var(--sp-2); min-width: 72px; padding: 4px 0; }
-.cat .circle {
-  width: 52px; height: 52px; border-radius: var(--r-pill);
-  background: var(--gray-100); display: grid; place-items: center; font-size: 20px; transition: .15s;
+/* ============ CATEGORY CHIPS (recommended UI: pill filter row, visual) ============ */
+.chips { background: #fff; border-bottom: 1px solid var(--gray-200); }
+.chips .container { display: flex; gap: var(--sp-2); overflow-x: auto; padding: var(--sp-3) var(--sp-6); scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; }
+.chips .container::-webkit-scrollbar { display: none; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto;
+  padding: 7px 14px; border: 1px solid var(--gray-300); border-radius: var(--r-pill);
+  background: #fff; color: var(--gray-700); font-size: var(--fs-sm); font-weight: 500;
+  white-space: nowrap; cursor: pointer; transition: .15s; text-decoration: none;
 }
-.cat span { font-size: var(--fs-sm); color: var(--gray-700); white-space: nowrap; font-weight: 500; }
-.cat:hover .circle, .cat.active .circle { background: var(--hl-blue); color: #fff; }
+.chip:hover, .chip:focus { border-color: var(--hl-blue); color: var(--hl-blue); background: var(--gray-100); }
+.chip svg { color: var(--hl-blue); }
+.chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--hl-blue); flex-shrink: 0; }
+
 
 /* ============ HERO ============ */
 .hero { background: var(--hl-blue-grad); color: #fff; padding: var(--sp-16) 0; }
