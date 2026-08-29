@@ -6,8 +6,9 @@ import SiteHeader from '../components/SiteHeader';
 import SiteFooter from '../components/SiteFooter';
 import SearchBar from '../components/SearchBar';
 import CookieConsent from '../components/CookieConsent';
+import CategoryChips from '../components/CategoryChips';
 import { JobCard, NewsCard, SidebarItem } from '../components/Cards';
-import { Factory, Briefcase, Wrench, Package, Truck, Newspaper, Brain, BookOpen } from 'lucide-react';
+import { Newspaper, Briefcase } from 'lucide-react';
 
 export default function HomePage() {
   const [settings, setSettings] = useState(null);
@@ -54,28 +55,8 @@ export default function HomePage() {
         active="/"
       />
 
-      {/* CATEGORY ICON BAR (HeyLaw module) */}
-      <div className="cat-bar">
-        <div className="container">
-          {[
-            { icon: Factory, label: 'Manufaktur' },
-            { icon: Briefcase, label: 'Admin' },
-            { icon: Wrench, label: 'Engineering' },
-            { icon: Package, label: 'Gudang' },
-            { icon: Truck, label: 'Logistik' },
-            { icon: BookOpen, label: 'Tips Karir' },
-            { icon: Brain, label: 'Psikotes' },
-          ].map((c) => {
-            const Icon = c.icon;
-            return (
-              <a key={c.label} href="/#lowongan" className="cat">
-                <span className="circle"><Icon size={20} /></span>
-                <span>{c.label}</span>
-              </a>
-            );
-          })}
-        </div>
-      </div>
+      {/* CATEGORY CHIPS (pill filter row — visual) */}
+      <CategoryChips />
 
       <main id="main">
         {/* HERO (HeyLaw gradient + BCA blue) */}
