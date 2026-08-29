@@ -2,7 +2,7 @@
 import React from 'react';
 import { Search } from 'lucide-react';
 
-// SearchCard — BCA-style inline filter card (lokasi/posisi)
+// SearchCard — clean, generic search element (works desktop & mobile)
 export default function SearchBar({ value, onChange, onSubmit, placeholder }) {
   return (
     <form
@@ -13,7 +13,7 @@ export default function SearchBar({ value, onChange, onSubmit, placeholder }) {
       }}
       role="search"
     >
-      <Search size={18} color="var(--gray-500)" />
+      <Search size={18} strokeWidth={2} />
       <input
         type="text"
         value={value}
