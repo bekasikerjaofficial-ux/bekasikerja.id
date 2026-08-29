@@ -121,7 +121,7 @@ img { max-width: 100%; display: block; }
   padding: var(--sp-2) var(--sp-5); border-radius: var(--r-md); border: none; cursor: pointer; transition: background .15s;
 }
 .btn-login:hover { background: var(--hl-blue-dark); }
-.btn-outline { background: #fff; color: var(--hl-blue); border: 1px solid var(--hl-blue); margin-left: var(--sp-2); }
+.btn-outline { background: #fff; color: var(--hl-blue); border: 1px solid var(--hl-blue); margin-left: var(--sp-2); padding: var(--sp-2) var(--sp-5); font-weight: 600; font-size: var(--fs-base); border-radius: var(--r-md); cursor: pointer; transition: .15s; }
 .btn-outline:hover { background: var(--hl-blue); color: #fff; }
 .btn-pill { border-radius: var(--r-pill); }
 
