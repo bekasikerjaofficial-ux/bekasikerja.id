@@ -47,7 +47,7 @@
 
   /* SPACING (4px base) */
   --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
-  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+  --sp-5: 20px; --sp-6: 24px; --sp-7: 28px; --sp-8: 32px; --sp-10: 40px;
   --sp-12: 48px; --sp-16: 64px; --sp-20: 80px; --sp-24: 96px;
 
   /* RADII */
@@ -180,10 +180,10 @@ img { max-width: 100%; display: block; }
   .search-card .btn-primary { flex: 0 0 auto; width: auto; padding: var(--sp-2) var(--sp-4); font-size: var(--fs-sm); }
   .hero-search { margin-top: var(--sp-6); }
 }
-/* Section content padding-x on mobile */
+/* Section content padding-x on mobile — proper, not cramped */
 @media (max-width: 600px) {
   .section { padding: var(--sp-10) 0; }
-  .container { padding: 0 var(--sp-5); }
+  .container { padding: 0 var(--sp-7); padding-left: max(var(--sp-7), env(safe-area-inset-left)); padding-right: max(var(--sp-7), env(safe-area-inset-right)); }
 }
 
 /* ============ SECTION ============ */
