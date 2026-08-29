@@ -182,12 +182,12 @@ img { max-width: 100%; display: block; }
 }
 /* Section content padding-x on mobile — proper, not cramped */
 @media (max-width: 600px) {
-  .section { padding: var(--sp-10) 0; }
+  .section { padding-top: var(--sp-10); padding-bottom: var(--sp-10); }
   .container { padding: 0 var(--sp-7); padding-left: max(var(--sp-7), env(safe-area-inset-left)); padding-right: max(var(--sp-7), env(safe-area-inset-right)); }
 }
 
 /* ============ SECTION ============ */
-.section { padding: var(--sp-16) 0; }
+.section { padding-top: var(--sp-16); padding-bottom: var(--sp-16); }
 .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--sp-6); flex-wrap: wrap; gap: var(--sp-3); }
 .section-head h2 { font-family: var(--font-display); font-size: var(--fs-2xl); font-weight: 700; color: var(--gray-900); }
 .link-more { color: var(--hl-blue); font-weight: 600; font-size: var(--fs-base); }
