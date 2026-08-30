@@ -75,6 +75,10 @@ body {
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
 
+/* Smooth scroll for in-page anchor nav (Lowongan / Lifestyle) */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
 .container { max-width: var(--container); margin: 0 auto; padding: 0 var(--sp-6); }
 
 /* ============ TYPOGRAPHY HELPERS ============ */
@@ -158,6 +162,14 @@ img { max-width: 100%; display: block; }
 .hero .stat .num { font-family: var(--font-display); font-size: var(--fs-3xl); font-weight: 800; }
 .hero .stat .lbl { font-size: var(--fs-sm); opacity: .95; font-weight: 600; }
 .hero .illus { width: 100%; border-radius: var(--r-xl); }
+/* Hero entrance — plays once on load (children rise in sequence) */
+.hero .container > div { opacity: 0; transform: translateY(18px); animation: heroIn .7s cubic-bezier(.22,.61,.36,1) forwards; }
+.hero .container > div:first-child { animation-delay: .05s; }
+.hero .container > div:last-child { animation-delay: .2s; }
+@keyframes heroIn { to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .hero .container > div { opacity: 1; transform: none; animation: none; }
+}
 @media (max-width: 860px) {
   .hero { padding: var(--sp-10) 0; }
   .hero .container { grid-template-columns: 1fr; gap: var(--sp-6); text-align: center; }
@@ -189,6 +201,8 @@ img { max-width: 100%; display: block; }
 
 /* ============ CARD GRID (jobs) ============ */
 .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); }
+.card-grid .stagger { display: flex; }
+.card-grid .stagger > .card { width: 100%; }
 @media (max-width: 1024px) { .card-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 600px)  { .card-grid { grid-template-columns: 1fr; } }
 
@@ -340,7 +354,18 @@ img { max-width: 100%; display: block; }
    ============================================================ */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; will-change: opacity, transform; }
 .reveal.reveal-in { opacity: 1; transform: none; }
+/* Stagger: when a .reveal container is shown, its .stagger children pop in sequence */
+.reveal .stagger { opacity: 0; transform: translateY(18px); transition: opacity .5s ease, transform .5s ease; }
+.reveal.reveal-in .stagger { opacity: 1; transform: none; }
+.reveal.reveal-in .stagger:nth-child(1) { transition-delay: .05s; }
+.reveal.reveal-in .stagger:nth-child(2) { transition-delay: .12s; }
+.reveal.reveal-in .stagger:nth-child(3) { transition-delay: .19s; }
+.reveal.reveal-in .stagger:nth-child(4) { transition-delay: .26s; }
+.reveal.reveal-in .stagger:nth-child(5) { transition-delay: .33s; }
+.reveal.reveal-in .stagger:nth-child(6) { transition-delay: .40s; }
+.reveal.reveal-in .stagger:nth-child(n+7) { transition-delay: .47s; }
 /* Respect reduced-motion: no transform, just show. */
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
+  .reveal .stagger { opacity: 1; transform: none; transition: none; }
 }

@@ -124,7 +124,9 @@ export default function HomePage() {
               ) : (
                 <div className="card-grid">
                   {filteredJobs.map((job) => (
-                    <JobCard key={job.id} job={job} />
+                    <div className="stagger" key={job.id}>
+                      <JobCard job={job} />
+                    </div>
                   ))}
                 </div>
               )}
