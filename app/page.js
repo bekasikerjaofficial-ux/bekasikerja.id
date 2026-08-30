@@ -8,6 +8,8 @@ import SearchBar from '../components/SearchBar';
 import CookieConsent from '../components/CookieConsent';
 import CategoryChips from '../components/CategoryChips';
 import { JobCard, NewsCard, SidebarItem } from '../components/Cards';
+import FeaturedSlider from '../components/FeaturedSlider';
+import Reveal from '../components/Reveal';
 import { Newspaper, Briefcase } from 'lucide-react';
 
 export default function HomePage() {
@@ -95,8 +97,13 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* FEATURED SLIDER (carousel of top jobs) */}
+        <Reveal as="section" className="container section" style={{ paddingTop: 0 }}>
+          <FeaturedSlider jobs={jobs.slice(0, 8)} />
+        </Reveal>
+
         {/* SPLIT CONTENT: Jobs (main) + Articles (sidebar) */}
-        <div className="container section">
+        <Reveal as="div" className="container section" delay={80}>
           <div className="split">
             {/* MAIN: LOWONGAN */}
             <section id="lowongan" className="scroll-mt-20">
@@ -142,7 +149,7 @@ export default function HomePage() {
               </div>
             </aside>
           </div>
-        </div>
+        </Reveal>
       </main>
 
       <SiteFooter brand={settings?.brand_name || 'BekasiKerja.id'} />
