@@ -88,3 +88,85 @@ create policy "images_admin_write" on storage.objects
 -- (lihat .github/workflows/setup-supabase.yml) pakai SERVICE_ROLE key.
 -- Email harus sama dengan public.admin_emails() di atas.
 -- ============================================================
+
+-- ============================================================
+-- PAKET MEMBERSHIP & PSIKOTES (concept doc: Gratis/Hemat/Sultan/Have)
+-- TIDAK ada seed data — diisi via /admin/paket.
+-- ============================================================
+
+-- 4) TABEL packages (konfigurasi paket, dikelola admin)
+create table if not exists public.packages (
+  id          bigint generated always as identity primary key,
+  slug        text not null unique,
+  name        text not null,
+  price       integer not null default 0,          -- 0 = gratis
+  period      text not null default 'bulan',
+  tagline     text,
+  description text,
+  features    jsonb not null default '[]'::jsonb,   -- [{text, included:bool}]
+  popular     boolean not null default false,
+  sort_order  integer not null default 0,
+  active      boolean not null default true,
+  created_at  timestamptz not null default now()
+);
+
+-- 5) TABEL memberships (entitlement member -> paket)
+create table if not exists public.memberships (
+  id          bigint generated always as identity primary key,
+  user_id     uuid not null references auth.users(id) on delete cascade,
+  package_id  bigint not null references public.packages(id) on delete cascade,
+  status      text not null default 'active' check (status in ('active','expired','cancelled')),
+  started_at  timestamptz not null default now(),
+  expires_at  timestamptz,
+  unique (user_id, package_id)
+);
+
+-- helper: apakah user punya package aktif by slug?
+create or replace function public.has_package(p_user uuid, p_slug text)
+returns boolean language sql stable security definer as $$
+  select exists (
+    select 1 from public.memberships m
+    join public.packages p on p.id = m.package_id
+    where m.user_id = p_user and p.slug = p_slug and m.status = 'active'
+      and (m.expires_at is null or m.expires_at > now())
+  );
+$$;
+
+-- RLS: packages publik baca, admin tulis
+alter table public.packages enable row level security;
+drop policy if exists "packages_public_read" on public.packages;
+create policy "packages_public_read" on public.packages for select using (true);
+drop policy if exists "packages_admin_write" on public.packages;
+create policy "packages_admin_write" on public.packages
+  for all using (public.is_admin()) with check (public.is_admin());
+
+-- RLS: memberships — owner baca miliknya, admin tulis semua
+alter table public.memberships enable row level security;
+drop policy if exists "memberships_owner_read" on public.memberships;
+create policy "memberships_owner_read" on public.memberships
+  for select using (auth.uid() = user_id);
+drop policy if exists "memberships_admin_write" on public.memberships;
+create policy "memberships_admin_write" on public.memberships
+  for all using (public.is_admin()) with check (public.is_admin());
+
+-- 6) TABEL membership_orders (order pembayaran QRIS, diisi oleh /api/checkout)
+create table if not exists public.membership_orders (
+  id          bigint generated always as identity primary key,
+  order_id    text not null unique,         -- order_id Midtrans
+  user_id     uuid not null references auth.users(id) on delete cascade,
+  package_id  bigint not null references public.packages(id) on delete cascade,
+  amount      integer not null,
+  status      text not null default 'pending' check (status in ('pending','paid','cancelled')),
+  paid_at     timestamptz,
+  created_at  timestamptz not null default now()
+);
+create index if not exists membership_orders_user_idx on public.membership_orders(user_id);
+
+-- RLS: order hanya bisa dibaca owner & admin (dibuat via service role di route)
+alter table public.membership_orders enable row level security;
+drop policy if exists "membership_orders_owner_read" on public.membership_orders;
+create policy "membership_orders_owner_read" on public.membership_orders
+  for select using (auth.uid() = user_id);
+drop policy if exists "membership_orders_admin_all" on public.membership_orders;
+create policy "membership_orders_admin_all" on public.membership_orders
+  for all using (public.is_admin()) with check (public.is_admin());

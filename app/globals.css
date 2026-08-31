@@ -369,3 +369,39 @@ html { scroll-behavior: smooth; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .reveal .stagger { opacity: 1; transform: none; transition: none; }
 }
+
+/* ============================================================
+   PACKAGE CARDS (Paket Psikotes — Gratis/Hemat/Sultan/Have)
+   ============================================================ */
+.package-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-4); }
+@media (max-width: 1024px) { .package-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .package-grid { grid-template-columns: 1fr; } }
+
+.pkg-card {
+  position: relative;
+  background: #fff; border: 1px solid var(--gray-200); border-radius: var(--r-lg);
+  padding: var(--sp-6); display: flex; flex-direction: column;
+  box-shadow: var(--shadow-card); transition: transform .15s, box-shadow .15s;
+}
+.pkg-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card-hover); }
+.pkg-card.popular { border: 2px solid var(--hl-blue); box-shadow: 0 8px 24px rgba(0,92,171,.18); }
+.pkg-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--hl-blue); color: #fff; font-size: var(--fs-xs); font-weight: 700;
+  padding: 4px 12px; border-radius: var(--r-pill); display: inline-flex; align-items: center; gap: 4px;
+  white-space: nowrap;
+}
+.pkg-name { font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 800; color: var(--gray-900); margin: 0 0 6px; }
+.pkg-price { font-family: var(--font-display); font-size: var(--fs-2xl); font-weight: 800; color: var(--hl-blue); line-height: 1.1; }
+.pkg-tagline { font-size: var(--fs-sm); font-weight: 600; color: var(--gray-700); margin: 6px 0 0; }
+.pkg-desc { font-size: var(--fs-sm); color: var(--gray-500); margin: 4px 0 0; }
+.pkg-features { list-style: none; padding: 0; margin: var(--sp-4) 0; display: grid; gap: 10px; flex: 1; }
+.pkg-features li { display: flex; align-items: flex-start; gap: 8px; font-size: var(--fs-sm); color: var(--gray-700); line-height: 1.4; }
+.pkg-features li .ic { flex-shrink: 0; margin-top: 2px; }
+.pkg-features li.inc .ic { color: var(--hl-teal); }
+.pkg-features li.exc { color: var(--gray-500); }
+.pkg-features li.exc .ic { color: var(--gray-400); }
+.pkg-cta { display: inline-flex; align-items: center; justify-content: center; width: 100%; margin-top: auto; text-decoration: none; }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spin { animation: none; } }

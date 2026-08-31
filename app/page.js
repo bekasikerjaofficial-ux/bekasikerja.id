@@ -10,6 +10,7 @@ import CategoryChips from '../components/CategoryChips';
 import { JobCard, NewsCard, SidebarItem } from '../components/Cards';
 import FeaturedSlider from '../components/FeaturedSlider';
 import Reveal from '../components/Reveal';
+import PackageCTA from '../components/PackageCTA';
 import { Newspaper, Briefcase } from 'lucide-react';
 
 export default function HomePage() {
@@ -101,6 +102,9 @@ export default function HomePage() {
         <Reveal as="section" className="container section" style={{ paddingTop: 0 }}>
           <FeaturedSlider jobs={jobs.slice(0, 8)} />
         </Reveal>
+
+        {/* 4 PAKET CTA PSIKOTES */}
+        <PackageCTA />
 
         {/* SPLIT CONTENT: Jobs (main) + Articles (sidebar) */}
         <Reveal as="div" className="container section" delay={80}>

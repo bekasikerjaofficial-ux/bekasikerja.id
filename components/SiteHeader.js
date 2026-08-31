@@ -27,6 +27,7 @@ export default function SiteHeader({
         <nav className="nav">
           <a href="/" className={active === '/' ? 'active' : ''}>Beranda</a>
           <a href="/#lowongan" className={active === '/#lowongan' ? 'active' : ''}>Lowongan</a>
+          <a href="/paket" className={active === '/paket' ? 'active' : ''}>Paket</a>
           <a href="/#lifestyle" className={active === '/#lifestyle' ? 'active' : ''}>Lifestyle</a>
         </nav>
 
