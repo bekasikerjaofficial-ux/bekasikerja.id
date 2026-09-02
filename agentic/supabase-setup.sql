@@ -170,3 +170,59 @@ create policy "membership_orders_owner_read" on public.membership_orders
 drop policy if exists "membership_orders_admin_all" on public.membership_orders;
 create policy "membership_orders_admin_all" on public.membership_orders
   for all using (public.is_admin()) with check (public.is_admin());
+
+-- ============================================================
+-- CATEGORIES (list kategori pekerjaan)
+-- ============================================================
+create table if not exists public.categories (
+  id          bigint generated always as identity primary key,
+  name        text not null unique,
+  slug        text not null unique,
+  description text,
+  active      boolean not null default true,
+  created_at  timestamptz not null default now()
+);
+
+-- ============================================================
+-- TAGS (list tag / keyword)
+-- ============================================================
+create table if not exists public.tags (
+  id          bigint generated always as identity primary key,
+  name        text not null unique,
+  slug        text not null unique,
+  active      boolean not null default true,
+  created_at  timestamptz not null default now()
+);
+
+-- ============================================================
+-- POST_TAGS (junction: posts <-> tags)
+-- ============================================================
+create table if not exists public.post_tags (
+  post_id     bigint not null references public.posts(id) on delete cascade,
+  tag_id      bigint not null references public.tags(id) on delete cascade,
+  primary key (post_id, tag_id)
+);
+
+-- ============================================================
+-- ALTER site_settings: add header_name column
+-- ============================================================
+alter table public.site_settings add column if not exists header_name text;
+update public.site_settings set header_name = 'BekasiKerja' where id = 1 and header_name is null;
+
+-- ============================================================
+-- RLS: categories, tags public read, admin write
+-- ============================================================
+alter table public.categories enable row level security;
+drop policy if exists "categories_public_read" on public.categories;
+create policy "categories_public_read" on public.categories for select using (true);
+drop policy if exists "categories_admin_write" on public.categories;
+create policy "categories_admin_write" on public.categories for all using (public.is_admin()) with check (public.is_admin());
+
+alter table public.tags enable row level security;
+drop policy if exists "tags_public_read" on public.tags;
+create policy "tags_public_read" on public.tags for select using (true);
+drop policy if exists "tags_admin_write" on public.tags;
+create policy "tags_admin_write" on public.tags for all using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists "post_tags_admin_write" on public.post_tags;
+create policy "post_tags_admin_write" on public.post_tags for all using (public.is_admin());
