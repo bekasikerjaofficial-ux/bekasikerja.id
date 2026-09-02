@@ -405,3 +405,4 @@ html { scroll-behavior: smooth; }
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+// bump Wed Sep  2 02:41:12 AM UTC 2026
