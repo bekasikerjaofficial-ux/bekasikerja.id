@@ -27,11 +27,7 @@ export default function SiteFooter({ brand = 'BekasiKerja.id' }) {
         </div>
 
         <div>
-          <h3>Kontak &amp; Legal</h3>
-          <a href="/tests">Status Data</a>
-          <a href="mailto:admin@bekasikerja.id">admin@bekasikerja.id</a>
-          <a href="/nyosor/login">Admin Panel</a>
-          <span style={{ fontSize: 12, display: 'block', paddingTop: 12, opacity: 0.7 }}>
+          <span style={{ fontSize: 12, display: 'block', opacity: 0.7 }}>
             © {new Date().getFullYear()} {brand}. All rights reserved.
           </span>
         </div>
