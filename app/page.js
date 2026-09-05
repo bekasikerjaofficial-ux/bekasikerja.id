@@ -228,6 +228,48 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
+
+            {/* Artikel 4: UMK Jawa Timur 2026 */}
+            <div className="stagger">
+              <div className="card" style={{ cursor: 'pointer' }}>
+                <div className="body" style={{ padding: 24 }}>
+                  <span className="badge-tag news">WILAYAH</span>
+                  <h3 style={{ marginBottom: 8 }}>UMK Jawa Timur 2026</h3>
+                  <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 12 }}>
+                    Daftar lengkap UMK Jawa Timur 2026 — 35 kabupaten/kota. Data resmi dari Gubernur Jatim.
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'var(--hl-blue)', fontWeight: 700 }}>
+                    <span>38 Wilayah</span>
+                    <span>·</span>
+                    <span>UMK Sampai Rp5,2jt</span>
+                  </div>
+                  <a href="/umk-jawa-timur-2026" className="btn-secondary" style={{ display: 'inline-flex', marginTop: 12, textDecoration: 'none', fontSize: 12, padding: '8px 16px' }}>
+                    Baca Selengkapnya →
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Artikel 5: UMK Banten 2026 */}
+            <div className="stagger">
+              <div className="card" style={{ cursor: 'pointer' }}>
+                <div className="body" style={{ padding: 24 }}>
+                  <span className="badge-tag job">JABODETABEK</span>
+                  <h3 style={{ marginBottom: 8 }}>UMK Banten 2026</h3>
+                  <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 12 }}>
+                    Daftar lengkap UMK Banten 2026 — 4 kabupaten + 4 kota. Zona industri Cilegon & Tangerang.
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'var(--hl-blue)', fontWeight: 700 }}>
+                    <span>4K+4Kab</span>
+                    <span>·</span>
+                    <span>UMK Sampai Rp5,4jt</span>
+                  </div>
+                  <a href="/umk-banten-2026" className="btn-secondary" style={{ display: 'inline-flex', marginTop: 12, textDecoration: 'none', fontSize: 12, padding: '8px 16px' }}>
+                    Baca Selengkapnya →
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </Reveal>
       </main>
