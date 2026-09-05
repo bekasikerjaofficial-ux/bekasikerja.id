@@ -156,6 +156,80 @@ export default function HomePage() {
             </aside>
           </div>
         </Reveal>
+
+        {/* ARTIKEL TERKINI — Section baru di bawah Lifestyle, bukan di slider */}
+        <Reveal as="section" className="container section" style={{ paddingTop: 0 }}>
+          <div className="section-head">
+            <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              📰 Artikel Terkini
+            </h2>
+            <a href="/ump-indonesia-2026" className="link-more">Lihat Semua Artikel ›</a>
+          </div>
+          <div className="card-grid">
+            {/* Artikel 1: Daftar UMP Indonesia 2026 */}
+            <div className="stagger">
+              <div className="card" style={{ cursor: 'pointer' }}>
+                <div className="body" style={{ padding: 24 }}>
+                  <span className="badge-tag job">INFO KERJA</span>
+                  <h3 style={{ marginBottom: 8 }}>Daftar UMP Indonesia Tahun 2026</h3>
+                  <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 12 }}>
+                    Update terbaru besaran Upah Minimum Provinsi di seluruh 38 provinsi Indonesia. Bandingkan gaji minimum daerahmu!
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'var(--hl-blue)', fontWeight: 700 }}>
+                    <span>38 Provinsi</span>
+                    <span>·</span>
+                    <span>Rp5,7jt UMP Tertinggi</span>
+                  </div>
+                  <a href="/ump-indonesia-2026" className="btn-primary" style={{ display: 'inline-flex', marginTop: 12, textDecoration: 'none', fontSize: 12, padding: '8px 16px' }}>
+                    Baca Selengkapnya →
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Artikel 2: UMK Jawa Tengah 2026 */}
+            <div className="stagger">
+              <div className="card" style={{ cursor: 'pointer' }}>
+                <div className="body" style={{ padding: 24 }}>
+                  <span className="badge-tag news">WILAYAH</span>
+                  <h3 style={{ marginBottom: 8 }}>UMK Jawa Tengah 2026</h3>
+                  <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 12 }}>
+                    Daftar lengkap UMK Jawa Tengah 2026 — semua kabupaten/kota di Jateng. Update dari Keputusan Gubernur.
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'var(--hl-blue)', fontWeight: 700 }}>
+                    <span>33+6 Kab/Kota</span>
+                    <span>·</span>
+                    <span>UMK Sampai Rp4,6jt</span>
+                  </div>
+                  <a href="/umk-jawa-tengah-2026" className="btn-secondary" style={{ display: 'inline-flex', marginTop: 12, textDecoration: 'none', fontSize: 12, padding: '8px 16px' }}>
+                    Baca Selengkapnya →
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Artikel 3: UMP DKI Jakarta 2026 */}
+            <div className="stagger">
+              <div className="card popular" style={{ cursor: 'pointer' }}>
+                <div className="body" style={{ padding: 24 }}>
+                  <span className="badge-tag job">🏆 TERKINI</span>
+                  <h3 style={{ marginBottom: 8 }}>UMP DKI Jakarta 2026</h3>
+                  <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 12 }}>
+                    Rp5.729.876 per bulan — tertinggi di Indonesia! Update terbaru besaran UMP DKI Jakarta tahun 2026.
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'var(--hl-blue)', fontWeight: 700 }}>
+                    <span>#1 Nasional</span>
+                    <span>·</span>
+                    <span>+6,17% Kenaikan</span>
+                  </div>
+                  <a href="/ump-dki-jakarta-2026" className="btn-primary" style={{ display: 'inline-flex', marginTop: 12, textDecoration: 'none', fontSize: 12, padding: '8px 16px' }}>
+                    Baca Selengkapnya →
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
       </main>
 
       <SiteFooter brand={settings?.brand_name || 'BekasiKerja.id'} />

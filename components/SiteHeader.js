@@ -29,6 +29,7 @@ export default function SiteHeader({
           <a href="/#lowongan" className={active === '/#lowongan' ? 'active' : ''}>Lowongan</a>
           <a href="/paket" className={active === '/paket' ? 'active' : ''}>Paket</a>
           <a href="/#lifestyle" className={active === '/#lifestyle' ? 'active' : ''}>Lifestyle</a>
+          <a href="/ump-indonesia-2026" className={active === '/ump-indonesia-2026' ? 'active' : ''}>Artikel</a>
         </nav>
 
         <div className="header-actions">
