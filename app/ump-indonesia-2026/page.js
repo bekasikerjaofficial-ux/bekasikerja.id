@@ -2,6 +2,8 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
+import SiteHeader from '../../components/SiteHeader'
+import SiteFooter from '../../components/SiteFooter'
 
 const formatRupiah = (num) => {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num)
@@ -49,13 +51,13 @@ const umpData = [
 
 export default function UMPIndonesia2026() {
   return (
-    <div>
-      {/* HERO */}
+    <>
+      <SiteHeader brand="BekasiKerja.id" logoUrl="/logo.svg" active="/ump-indonesia-2026" searchPlaceholder="Cari artikel UMP..." showSearch={false} />
       <section className="hero">
         <div className="container">
           <div>
             <span className="badge">INFORMASI KERJA TERKINI</span>
-            <h1>Daftar UMP Indonesia Tahun 2026</h1>
+            <h1><Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>Daftar UMP Indonesia Tahun 2026</Link></h1>
             <p>Update terbaru besaran Upah Minimum Provinsi di seluruh 38 provinsi Indonesia. Bandingkan gaji minimum daerahmu!</p>
             <div className="stats">
               <div className="stat"><div className="num">38</div><div className="lbl">Provinsi</div></div>
@@ -63,15 +65,12 @@ export default function UMPIndonesia2026() {
               <div className="stat"><div className="num">PP 49/2025</div><div className="lbl">Dasar Hukum</div></div>
             </div>
           </div>
-          <div>
-            <img className="illus" src="/placeholder.svg" alt="Kawasan industri Indonesia" />
-          </div>
+          <div><img className="illus" src="/placeholder.svg" alt="Kawasan industri Indonesia" style={{ background: 'rgba(255,255,255,.15)', display: 'block' }} /></div>
         </div>
       </section>
 
       <main id="main" className="section">
         <div className="container">
-          {/* Pengantar */}
           <div className="panel" style={{ padding: 24, marginBottom: 32 }}>
             <h2 className="h-section" style={{ marginBottom: 16 }}>Apa Itu UMP 2026?</h2>
             <p style={{ marginBottom: 12 }}>
@@ -85,7 +84,6 @@ export default function UMPIndonesia2026() {
             </p>
           </div>
 
-          {/* Tabel UMP */}
           <div style={{ marginBottom: 32 }}>
             <h2 className="h-section" style={{ marginBottom: 8 }}>Daftar Lengkap UMP 2026 — 38 Provinsi</h2>
             <p className="text-muted" style={{ marginBottom: 16 }}>Data berdasarkan PP No. 49/2025 dan Keputusan Gubernur masing-masing provinsi.</p>
@@ -110,9 +108,7 @@ export default function UMPIndonesia2026() {
                       <td style={{ padding: '10px 16px', textAlign: 'right' }}>{formatRupiah(item.ump2025)}</td>
                       <td style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700 }}>{formatRupiah(item.ump2026)}</td>
                       <td style={{ padding: '10px 16px', textAlign: 'center' }}>
-                        <span style={{ 
-                          background: 'var(--hl-teal)', color: '#fff', padding: '2px 8px', borderRadius: 8, fontSize: 12, fontWeight: 700 
-                        }}>
+                        <span style={{ background: 'var(--hl-teal)', color: '#fff', padding: '2px 8px', borderRadius: 8, fontSize: 12, fontWeight: 700 }}>
                           {item.naik}
                         </span>
                       </td>
@@ -123,7 +119,6 @@ export default function UMPIndonesia2026() {
             </div>
           </div>
 
-          {/* Highlight Cards */}
           <div className="package-grid" style={{ marginBottom: 32 }}>
             <div className="pkg-card popular">
               <div className="pkg-badge">🏆 Tertinggi</div>
@@ -155,7 +150,6 @@ export default function UMPIndonesia2026() {
             </div>
           </div>
 
-          {/* FAQ */}
           <div className="panel" style={{ padding: 24 }}>
             <h2 className="h-section" style={{ marginBottom: 16 }}>Pertanyaan Umum</h2>
             <div style={{ display: 'grid', gap: 16 }}>
@@ -182,7 +176,6 @@ export default function UMPIndonesia2026() {
             </div>
           </div>
 
-          {/* CTA */}
           <div style={{ textAlign: 'center', marginTop: 32 }}>
             <Link href="/lowongan" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
               Cari Lowongan Kerja Terbaru
@@ -193,6 +186,12 @@ export default function UMPIndonesia2026() {
           </div>
         </div>
       </main>
-    </div>
+      <div style={{ textAlign: 'center', padding: 'var(--sp-8) var(--sp-6)', background: 'var(--hl-blue)', color: '#fff', borderRadius: 'var(--r-xl)', marginTop: 'var(--sp-8)' }}>
+        <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--fs-lg)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          ← Kembali ke Beranda
+        </Link>
+      </div>
+      <SiteFooter brand="BekasiKerja.id" />
+    </>
   )
 }
