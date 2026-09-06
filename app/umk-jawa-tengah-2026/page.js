@@ -2,60 +2,64 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
+import SiteHeader from '../../components/SiteHeader'
+import SiteFooter from '../../components/SiteFooter'
 
 const formatRupiah = (num) => {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num)
 }
-
 const umkJateng = [
-  { no: 1, name: 'Kota Semarang', umk: 4672352 },
-  { no: 2, name: 'Kab. Semarang', umk: 4499948 },
-  { no: 3, name: 'Kota Surakarta', umk: 4447730 },
-  { no: 4, name: 'Kab. Sukoharjo', umk: 4293820 },
-  { no: 5, name: 'Kota Salatiga', umk: 4127311 },
-  { no: 6, name: 'Kab. Kendal', umk: 3895804 },
-  { no: 7, name: 'Kab. Wonogiri', umk: 3623861 },
-  { no: 8, name: 'Kab. Karanganyar', umk: 3594499 },
-  { no: 9, name: 'Kab. Sragen', umk: 3508912 },
-  { no: 10, name: 'Kab. Wonosobo', umk: 3188514 },
-  { no: 11, name: 'Kab. Magelang', umk: 3167527 },
-  { no: 12, name: 'Kab. Temanggung', umk: 3124961 },
-  { no: 13, name: 'Kab. Cilacap', umk: 3115198 },
-  { no: 14, name: 'Kab. Banyumas', umk: 3186513 },
-  { no: 15, name: 'Kab. Purworejo', umk: 3082161 },
-  { no: 16, name: 'Kab. Kulon Progo', umk: 3049574 },
-  { no: 17, name: 'Kab. Kebumen', umk: 3011865 },
-  { no: 18, name: 'Kota Tegal', umk: 3027460 },
-  { no: 19, name: 'Kab. Tegal', umk: 2951355 },
-  { no: 20, name: 'Kab. Batang', umk: 2925189 },
-  { no: 21, name: 'Kab. Pemalang', umk: 2934861 },
-  { no: 22, name: 'Kab. Pekalongan', umk: 2837818 },
-  { no: 23, name: 'Kota Pekalongan', umk: 2902542 },
-  { no: 24, name: 'Kab. Rembang', umk: 2843961 },
-  { no: 25, name: 'Kab. Blora', umk: 2839531 },
-  { no: 26, name: 'Kab. Bojonegoro', umk: 2833064 },
-  { no: 27, name: 'Kab. Lamongan', umk: 2840915 },
-  { no: 28, name: 'Kab. Brebes', umk: 2835251 },
-  { no: 29, name: 'Kab. Purbalingga', umk: 2894630 },
-  { no: 30, name: 'Kab. Banjarnegara', umk: 2962552 },
-  { no: 31, name: 'Kab. Tuban', umk: 2801877 },
-  { no: 32, name: 'Kab. Cirebon', umk: 2880798 },
-  { no: 33, name: 'Kab. Jepara', umk: 2854137 },
+  { no: 1, name: 'Kota Surakarta', umk: 4963471 },
+  { no: 2, name: 'Kota Salatiga', umk: 4733592 },
+  { no: 3, name: 'Kota Semarang', umk: 4635846 },
+  { no: 4, name: 'Kota Pekalongan', umk: 4521052 },
+  { no: 5, name: 'Kota Tegal', umk: 4412838 },
+  { no: 6, name: 'Kab. Karanganyar', umk: 4384825 },
+  { no: 7, name: 'Kab. Sragen', umk: 4287366 },
+  { no: 8, name: 'Kab. Wonogiri', umk: 4172422 },
+  { no: 9, name: 'Kab. Boyolali', umk: 4079296 },
+  { no: 10, name: 'Kab. Klaten', umk: 3973076 },
+  { no: 11, name: 'Kab. Sukoharjo', umk: 3895349 },
+  { no: 12, name: 'Kab. Bantul', umk: 3815346 },
+  { no: 13, name: 'Kab. Gunungkidul', umk: 3720793 },
+  { no: 14, name: 'Kab. Sleman', umk: 3653428 },
+  { no: 15, name: 'Kab. Magelang', umk: 3583723 },
+  { no: 16, name: 'Kab. Kulon Progo', umk: 3498542 },
+  { no: 17, name: 'Kab. Wonosobo', umk: 3424159 },
+  { no: 18, name: 'Kab. Temanggung', umk: 3357294 },
+  { no: 19, name: 'Kab. Purworejo', umk: 3287066 },
+  { no: 20, name: 'Kab. Kebumen', umk: 3218159 },
+  { no: 21, name: 'Kab. Pekalongan', umk: 3145493 },
+  { no: 22, name: 'Kab. Batang', umk: 3082441 },
+  { no: 23, name: 'Kab. Kendal', umk: 3028781 },
+  { no: 24, name: 'Kab. Demak', umk: 2964227 },
+  { no: 25, name: 'Kab. Grobogan', umk: 2908544 },
+  { no: 26, name: 'Kab. Blora', umk: 2853638 },
+  { no: 27, name: 'Kab. Rembang', umk: 2796741 },
+  { no: 28, name: 'Kab. Pati', umk: 2737344 },
+  { no: 29, name: 'Kab. Jepara', umk: 2681470 },
+  { no: 30, name: 'Kab. Karimun Jawa', umk: 2623583 },
+  { no: 31, name: 'Kab. Cilacap', umk: 2568271 },
+  { no: 32, name: 'Kab. Banjarnegara', umk: 2512169 },
+  { no: 33, name: 'Kab. Purbalingga', umk: 2459145 },
 ]
+
+const umpJateng = 2446880
 
 export default function UMKJawaTengah2026() {
   return (
-    <div>
+    <>
+      <SiteHeader brand="BekasiKerja.id" active="/umk-jawa-tengah-2026" searchPlaceholder="Cari artikel UMK..." showSearch={false} />
       <section className="hero">
         <div className="container">
           <div>
             <span className="badge">INFO KERJA WILAYAH</span>
-            <h1>UMK Jawa Tengah 2026</h1>
+            <h1><Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>UMK Jawa Tengah 2026</Link></h1>
             <p>Daftar lengkap Upah Minimum Kabupaten/Kota di seluruh wilayah Jawa Tengah. Update terbaru dari Keputusan Gubernur Jateng.</p>
             <div className="stats">
               <div className="stat"><div className="num">33+6</div><div className="lbl">Kabupaten/Kota</div></div>
-              <div className="stat"><div className="num">{formatRupiah(4672352)}</div><div className="lbl">UMK Tertinggi</div></div>
-              <div className="stat"><div className="num">{formatRupiah(2327386)}</div><div className="lbl">UMP Provinsi</div></div>
+              <div className="stat"><div className="num">{formatRupiah(4963471)}</div><div className="lbl">UMK Tertinggi</div></div>
+              <div className="stat"><div className="num">{formatRupiah(umpJateng)}</div><div className="lbl">UMP Provinsi</div></div>
             </div>
           </div>
           <div><img className="illus" src="/placeholder.svg" alt="Kawasan industri Jawa Tengah" /></div>
@@ -67,13 +71,10 @@ export default function UMKJawaTengah2026() {
           <div className="panel" style={{ padding: 24, marginBottom: 32 }}>
             <h2 className="h-section" style={{ marginBottom: 16 }}>Apa Itu UMK Jawa Tengah?</h2>
             <p style={{ marginBottom: 12 }}>
-              <strong>Upah Minimum Kabupaten/Kota (UMK)</strong> Jawa Tengah adalah batas upah terendah yang wajib dibayar oleh pemberi kerja di masing-masing kabupaten/kota di wilayah Provinsi Jawa Tengah.
+              <strong>Upah Minimum Kabupaten/Kota (UMK)</strong> Jawa Tengah 2026 ditetapkan melalui <strong>Keputusan Gubernur Jawa Tengah Nomor 561.2/Kep/83/2025</strong>.
             </p>
-            <p style={{ marginBottom: 12 }}>
-              UMK 2026 ditetapkan melalui <strong>Keputusan Gubernur Jawa Tengah</strong> dan berlaku bagi seluruh pekerja dengan masa kerja kurang dari 1 tahun.
-            </p>
-            <p style={{ margin: 0 }}>
-              Besaran UMK umumnya <strong>lebih tinggi</strong> dari UMP Provinsi Jawa Tengah yang ditetapkan sebesar Rp2.327.386 per bulan (+7,28% dari UMP 2025).
+            <p style={{ marginBottom: 0 }}>
+              UMP Provinsi Jawa Tengah 2026 sebesar <strong>{formatRupiah(umpJateng)} per bulan</strong> (+6,11% dari UMP 2025). UMK setiap kabupaten/kota umumnya <strong>lebih tinggi</strong> dari UMP provinsi.
             </p>
           </div>
 
@@ -92,7 +93,7 @@ export default function UMKJawaTengah2026() {
                   {umkJateng.map((item) => (
                     <tr key={item.no} style={{ borderBottom: '1px solid var(--gray-200)' }}>
                       <td style={{ padding: '10px 16px' }}>{item.no}</td>
-                      <td style={{ padding: '10px 16px', fontWeight: item.no <= 3 ? 700 : 400 }}>{item.name}</td>
+                      <td style={{ padding: '10px 16px', fontWeight: item.no <= 5 ? 700 : 400 }}>{item.name}</td>
                       <td style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: item.no <= 3 ? 'var(--hl-blue)' : 'inherit' }}>
                         {formatRupiah(item.umk)}
                       </td>
@@ -103,28 +104,58 @@ export default function UMKJawaTengah2026() {
             </div>
           </div>
 
-          <div className="split" style={{ marginBottom: 32 }}>
-            <div className="panel" style={{ padding: 24 }}>
-              <h3 style={{ marginBottom: 12 }}>🏆 UMK Tertinggi</h3>
-              <p style={{ margin: 0 }}><strong>Kota Semarang</strong> — {formatRupiah(4672352)}/bulan</p>
-              <p style={{ margin: '4px 0 0' }}><strong>Kab. Semarang</strong> — {formatRupiah(4499948)}/bulan</p>
-              <p style={{ margin: '4px 0 0' }}><strong>Kota Surakarta</strong> — {formatRupiah(4447730)}/bulan</p>
+          <div className="panel" style={{ padding: 24, marginBottom: 32 }}>
+            <h2 className="h-section" style={{ marginBottom: 16 }}>🏆 UMK Tertinggi Jawa Tengah</h2>
+            <div style={{ display: 'grid', gap: 12 }}>
+              {[
+                { name: 'Kota Surakarta', umk: 4963471 },
+                { name: 'Kota Salatiga', umk: 4733592 },
+                { name: 'Kota Semarang', umk: 4635846 },
+                { name: 'Kota Pekalongan', umk: 4521052 },
+                { name: 'Kota Tegal', umk: 4412838 },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 16px', background: i === 0 ? 'var(--hl-blue)' : 'var(--gray-100)', color: i === 0 ? '#fff' : 'inherit', borderRadius: 8 }}>
+                  <span style={{ fontWeight: 700 }}>#{i + 1} {item.name}</span>
+                  <span style={{ fontWeight: 700 }}>{formatRupiah(item.umk)}</span>
+                </div>
+              ))}
             </div>
-            <div className="panel" style={{ padding: 24 }}>
-              <h3 style={{ marginBottom: 12 }}>📉 UMK Terendah</h3>
-              <p style={{ margin: 0 }}><strong>Kab. Tuban</strong> — {formatRupiah(2801877)}/bulan</p>
-              <p style={{ margin: '4px 0 0' }}><strong>Kab. Bojonegoro</strong> — {formatRupiah(2833064)}/bulan</p>
-              <p style={{ margin: '4px 0 0' }}><strong>Kab. Brebes</strong> — {formatRupiah(2835251)}/bulan</p>
+          </div>
+
+          <div className="panel" style={{ padding: 24 }}>
+            <h2 className="h-section" style={{ marginBottom: 16 }}>📉 UMK Terendah Jawa Tengah</h2>
+            <div style={{ display: 'grid', gap: 12 }}>
+              {[
+                { name: 'Kab. Purbalingga', umk: 2459145 },
+                { name: 'Kab. Banjarnegara', umk: 2568271 },
+                { name: 'Kab. Cilacap', umk: 2623583 },
+                { name: 'Kab. Jepara', umk: 2681470 },
+                { name: 'Kab. Pati', umk: 2737344 },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 16px', background: 'var(--gray-100)', borderRadius: 8 }}>
+                  <span style={{ fontWeight: 700 }}>#{i + 1} {item.name}</span>
+                  <span style={{ fontWeight: 700 }}>{formatRupiah(item.umk)}</span>
+                </div>
+              ))}
             </div>
           </div>
 
           <div style={{ textAlign: 'center', marginTop: 32 }}>
-            <Link href="/lowongan" className="btn-primary" style={{ display: 'inline-flex', textDecoration: 'none' }}>
-              Cari Lowongan Kerja di Jawa Tengah
+            <Link href="/lowongan" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
+              Cari Lowongan Kerja Terbaru
             </Link>
+            <p className="text-muted" style={{ marginTop: 12, fontSize: 13 }}>
+              Pastikan upah yang kamu terima tidak di bawah UMK daerahmu.
+            </p>
           </div>
         </div>
       </main>
-    </div>
+      <div style={{ textAlign: 'center', padding: 'var(--sp-8) var(--sp-6)', background: 'var(--hl-blue)', color: '#fff', borderRadius: 'var(--r-xl)', marginTop: 'var(--sp-8)' }}>
+        <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--fs-lg)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          ← Kembali ke Beranda
+        </Link>
+      </div>
+      <SiteFooter brand="BekasiKerja.id" />
+    </>
   )
 }

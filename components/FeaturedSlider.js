@@ -6,7 +6,7 @@ import { JobCard } from './Cards';
 // FeaturedSlider — horizontal carousel of featured jobs.
 // Controls: prev/next arrows, dot indicators, autoplay (pauses on hover/focus),
 // keyboard arrows, and native scroll-snap fallback for touch. BCA token styling.
-export default function FeaturedSlider({ jobs = [] }) {
+export default function FeaturedSlider({ jobs = [], staticJobs = [] }) {
   const trackRef = useRef(null);
   const [index, setIndex] = useState(0);
   const [pages, setPages] = useState(1);
@@ -71,7 +71,9 @@ export default function FeaturedSlider({ jobs = [] }) {
     return () => clearInterval(t);
   }, [auto, pages, goTo]);
 
-  if (!jobs.length) return null;
+  if (!jobs.length && !staticJobs.length) return null;
+
+  const allJobs = [...staticJobs, ...jobs];
 
   return (
     <div
@@ -121,7 +123,7 @@ export default function FeaturedSlider({ jobs = [] }) {
           if (e.key === 'ArrowRight') goTo(index + 1);
         }}
       >
-        {jobs.map((job) => (
+        {allJobs.map((job) => (
           <div className="slide" key={job.id}>
             <JobCard job={job} />
           </div>

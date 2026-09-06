@@ -2,14 +2,16 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
+import SiteHeader from '../../../components/SiteHeader'
+import SiteFooter from '../../../components/SiteFooter'
 import { MapPin, CalendarClock, Briefcase, Users, Building2 } from 'lucide-react'
 
 const featuredImage = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80'
 
 export default function JobDetail() {
   return (
-    <div>
-      {/* HERO dengan featured image */}
+    <>
+      <SiteHeader brand="BekasiKerja.id" active="/loker" searchPlaceholder="Cari lowongan..." />
       <section className="hero" style={{ paddingTop: 'var(--sp-20)', paddingBottom: 'var(--sp-20)' }}>
         <div style={{ position: 'relative' }}>
           <img
@@ -19,7 +21,9 @@ export default function JobDetail() {
           />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(0,92,171,.85) 0%, rgba(0,74,137,.9) 100%)', borderRadius: 'var(--r-xl)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', color: '#fff', textAlign: 'center', padding: 'var(--sp-6)' }}>
             <span className="badge" style={{ background: 'rgba(255,255,255,.2)', border: '1px solid rgba(255,255,255,.6)' }}>LOWONGAN KERJA</span>
-            <h1 style={{ fontSize: 'var(--fs-4xl)', fontWeight: 800, marginTop: 'var(--sp-4)', marginBottom: 'var(--sp-2)' }}>People and Culture Head</h1>
+            <h1 style={{ fontSize: 'var(--fs-4xl)', fontWeight: 800, marginTop: 'var(--sp-4)', marginBottom: 'var(--sp-2)' }}>
+              <Link href="/" style={{ color: '#fff', textDecoration: 'none' }}>People and Culture Head</Link>
+            </h1>
             <p style={{ fontSize: 'var(--fs-xl)', opacity: .95, maxWidth: 600, margin: 0 }}>PT. Sam Putra Inti — Bekasi, Jawa Barat</p>
           </div>
         </div>
@@ -27,7 +31,6 @@ export default function JobDetail() {
 
       <main id="main" className="section">
         <div className="container">
-          {/* Info Card */}
           <div className="panel" style={{ padding: 32, marginBottom: 32 }}>
             <div style={{ display: 'grid', gap: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
@@ -76,7 +79,6 @@ export default function JobDetail() {
           </div>
 
           <div className="split">
-            {/* MAIN: Responsibilities */}
             <section>
               <div className="panel" style={{ padding: 32 }}>
                 <h2 className="h-section" style={{ marginBottom: 24 }}>
@@ -107,7 +109,6 @@ export default function JobDetail() {
               </div>
             </section>
 
-            {/* SIDEBAR: Qualifications */}
             <aside>
               <div className="panel" style={{ padding: 32 }}>
                 <h2 className="h-section" style={{ marginBottom: 24 }}>
@@ -146,7 +147,6 @@ export default function JobDetail() {
             </aside>
           </div>
 
-          {/* Disclaimer */}
           <div className="panel" style={{ padding: 24, marginTop: 32, background: 'var(--gray-100)' }}>
             <p style={{ margin: 0, fontSize: 12, color: 'var(--gray-500)' }}>
               <strong>Disclaimer:</strong> Lowongan ini bersumber dari <a href="https://id.jobstreet.com/id/job/94366986" target="_blank" rel="noopener" style={{ color: 'var(--hl-blue)' }}>JobStreet</a>. Informasi gaji, lokasi, dan kualifikasi dapat berubah sewaktu-waktu. Hubungi perusahaan langsung untuk konfirmasi terbaru. BekasiKerja.id tidak terlibat dalam proses rekrutmen.
@@ -154,6 +154,12 @@ export default function JobDetail() {
           </div>
         </div>
       </main>
-    </div>
+      <div style={{ textAlign: 'center', padding: 'var(--sp-8) var(--sp-6)', background: 'var(--hl-blue)', color: '#fff', borderRadius: 'var(--r-xl)', marginTop: 'var(--sp-8)' }}>
+        <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--fs-lg)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          ← Kembali ke Beranda
+        </Link>
+      </div>
+      <SiteFooter brand="BekasiKerja.id" />
+    </>
   )
 }

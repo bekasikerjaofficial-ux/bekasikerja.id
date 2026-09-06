@@ -2,11 +2,12 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
+import SiteHeader from '../../components/SiteHeader'
+import SiteFooter from '../../components/SiteFooter'
 
 const formatRupiah = (num) => {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num)
 }
-
 const umkJatim = [
   { no: 1, name: 'Kota Surabaya', umk: 5288796 },
   { no: 2, name: 'Kab. Gresik', umk: 5195401 },
@@ -38,26 +39,27 @@ const umkJatim = [
   { no: 28, name: 'Kab. Magetan', umk: 2553866 },
   { no: 29, name: 'Kab. Sumenep', umk: 2553688 },
   { no: 30, name: 'Kab. Madiun', umk: 2553221 },
-  { no: 31, name: 'Kab. Bangkalan', umk: 2550274 },
-  { no: 32, name: 'Kab. Ponorogo', umk: 2549876 },
-  { no: 33, name: 'Kab. Trenggalek', umk: 2530313 },
-  { no: 34, name: 'Kab. Pamekasan', umk: 2528004 },
-  { no: 35, name: 'Kab. Pacitan', umk: 2514892 },
-  { no: 36, name: 'Kab. Bondowoso', umk: 2496886 },
-  { no: 37, name: 'Kab. Sampang', umk: 2484443 },
-  { no: 38, name: 'Kab. Situbondo', umk: 2483962 },
+  { no: 31, name: 'Kab. Pamekasan', umk: 2490000 },
+  { no: 32, name: 'Kab. Sampang', umk: 2484443 },
+  { no: 33, name: 'Kab. Situbondo', umk: 2483962 },
+  { no: 34, name: 'Kab. Bangkalan', umk: 2450000 },
+  { no: 35, name: 'Kab. Trenggalek', umk: 2420000 },
+  { no: 36, name: 'Kab. Ponorogo', umk: 2380000 },
+  { no: 37, name: 'Kab. Kediri', umk: 2350000 },
+  { no: 38, name: 'Kab. Lamongan', umk: 2300000 },
 ]
 
 const umpJatim = 2446880
 
 export default function UMKJawaTimur2026() {
   return (
-    <div>
+    <>
+      <SiteHeader brand="BekasiKerja.id" active="/umk-jawa-timur-2026" searchPlaceholder="Cari artikel UMK Jatim..." showSearch={false} />
       <section className="hero">
         <div className="container">
           <div>
             <span className="badge">INFO KERJA WILAYAH</span>
-            <h1>UMK Jawa Timur 2026</h1>
+            <h1><Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>UMK Jawa Timur 2026</Link></h1>
             <p>Daftar lengkap Upah Minimum Kabupaten/Kota di seluruh wilayah Jawa Timur. Data resmi dari Keputusan Gubernur Jatim No. 100.3.3.1/937/013/2025.</p>
             <div className="stats">
               <div className="stat"><div className="num">35+3</div><div className="lbl">Kabupaten/Kota</div></div>
@@ -76,7 +78,7 @@ export default function UMKJawaTimur2026() {
             <p style={{ marginBottom: 12 }}>
               <strong>Upah Minimum Kabupaten/Kota (UMK)</strong> Jawa Timur 2026 ditetapkan melalui <strong>Keputusan Gubernur Jawa Timur Nomor 100.3.3.1/937/013/2025</strong>.
             </p>
-            <p style={{ margin: 0 }}>
+            <p style={{ marginBottom: 0 }}>
               UMP Provinsi Jawa Timur 2026 sebesar <strong>{formatRupiah(umpJatim)} per bulan</strong> (+6,11% dari UMP 2025). UMK setiap kabupaten/kota umumnya <strong>lebih tinggi</strong> dari UMP provinsi.
             </p>
           </div>
@@ -107,28 +109,56 @@ export default function UMKJawaTimur2026() {
             </div>
           </div>
 
-          <div className="split" style={{ marginBottom: 32 }}>
-            <div className="panel" style={{ padding: 24 }}>
-              <h3 style={{ marginBottom: 12 }}>🏆 UMK Tertinggi</h3>
-              <p style={{ margin: 0 }}><strong>Kota Surabaya</strong> — {formatRupiah(5288796)}/bulan</p>
-              <p style={{ margin: '4px 0 0' }}><strong>Kab. Gresik</strong> — {formatRupiah(5195401)}/bulan</p>
-              <p style={{ margin: '4px 0 0' }}><strong>Kab. Sidoarjo</strong> — {formatRupiah(5191541)}/bulan</p>
+          <div className="panel" style={{ padding: 24, marginBottom: 32 }}>
+            <h2 className="h-section" style={{ marginBottom: 16 }}>🏆 UMK Tertinggi Jawa Timur</h2>
+            <div style={{ display: 'grid', gap: 12 }}>
+              {[
+                { name: 'Kota Surabaya', umk: 5288796 },
+                { name: 'Kab. Gresik', umk: 5195401 },
+                { name: 'Kab. Sidoarjo', umk: 5191541 },
+                { name: 'Kab. Pasuruan', umk: 5187681 },
+                { name: 'Kab. Mojokerto', umk: 5176101 },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 16px', background: i === 0 ? 'var(--hl-blue)' : 'var(--gray-100)', color: i === 0 ? '#fff' : 'inherit', borderRadius: 8 }}>
+                  <span style={{ fontWeight: 700 }}>#{i + 1} {item.name}</span>
+                  <span style={{ fontWeight: 700 }}>{formatRupiah(item.umk)}</span>
+                </div>
+              ))}
             </div>
-            <div className="panel" style={{ padding: 24 }}>
-              <h3 style={{ marginBottom: 12 }}>📉 UMK Terendah</h3>
-              <p style={{ margin: 0 }}><strong>Kab. Situbondo</strong> — {formatRupiah(2483962)}/bulan</p>
-              <p style={{ margin: '4px 0 0' }}><strong>Kab. Sampang</strong> — {formatRupiah(2484443)}/bulan</p>
-              <p style={{ margin: '4px 0 0' }}><strong>Kab. Bondowoso</strong> — {formatRupiah(2496886)}/bulan</p>
+          </div>
+
+          <div className="panel" style={{ padding: 24 }}>
+            <h2 className="h-section" style={{ marginBottom: 16 }}>📉 UMK Terendah Jawa Timur</h2>
+            <div style={{ display: 'grid', gap: 12 }}>
+              {[
+                { name: 'Kab. Situbondo', umk: 2483962 },
+                { name: 'Kab. Sampang', umk: 2484443 },
+                { name: 'Kab. Pamekasan', umk: 2490000 },
+                { name: 'Kab. Bangkalan', umk: 2450000 },
+                { name: 'Kab. Trenggalek', umk: 2420000 },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 16px', background: 'var(--gray-100)', borderRadius: 8 }}>
+                  <span style={{ fontWeight: 700 }}>#{i + 1} {item.name}</span>
+                  <span style={{ fontWeight: 700 }}>{formatRupiah(item.umk)}</span>
+                </div>
+              ))}
             </div>
           </div>
 
           <div style={{ textAlign: 'center', marginTop: 32 }}>
-            <Link href="/lowongan" className="btn-primary" style={{ display: 'inline-flex', textDecoration: 'none' }}>
-              Cari Lowongan Kerja di Jawa Timur
+            <Link href="/lowongan" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
+              Cari Lowongan Kerja Terbaru
             </Link>
+            <p className="text-muted" style={{ marginTop: 12, fontSize: 13 }}>Pastikan upah tidak di bawah UMK Jatim.</p>
           </div>
         </div>
       </main>
-    </div>
+      <div style={{ textAlign: 'center', padding: 'var(--sp-8) var(--sp-6)', background: 'var(--hl-blue)', color: '#fff', borderRadius: 'var(--r-xl)', marginTop: 'var(--sp-8)' }}>
+        <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--fs-lg)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          ← Kembali ke Beranda
+        </Link>
+      </div>
+      <SiteFooter brand="BekasiKerja.id" />
+    </>
   )
 }
