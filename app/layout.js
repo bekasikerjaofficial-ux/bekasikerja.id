@@ -1,4 +1,5 @@
 import './globals.css';
+import AnalyticsTracker from '../components/AnalyticsTracker';
 
 export const metadata = {
   title: 'Portal Lowongan Kerja Bekasi & Karawang',
@@ -14,7 +15,7 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body>{children}</body>
+      <body><AnalyticsTracker />{children}</body>
     </html>
   );
 }

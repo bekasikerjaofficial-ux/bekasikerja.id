@@ -9,7 +9,7 @@ import ImageUpload from '../../components/ImageUpload';
 import {
   Settings, Plus, ClipboardList, Image, Save, Trash2,
   Edit2, Tag as TagIcon, FolderOpen, CheckCircle2, X,
-  ChevronDown, ChevronUp,
+  ChevronDown, ChevronUp, BarChart3, Users, Eye,
 } from 'lucide-react';
 
 // ---------- helpers ----------
@@ -28,6 +28,7 @@ export default function AdminDashboard() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingPostImg, setUploadingPostImg] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [analytics, setAnalytics] = useState([]);
 
   const [settings, setSettings] = useState({
     brand_name: '', header_name: '', logo_url: '', badge_text: '', hero_title: '', hero_subtitle: '',
@@ -62,6 +63,8 @@ export default function AdminDashboard() {
     if (cats) setCategories(cats);
     const { data: tgs } = await supabase.from('tags').select('*').order('name');
     if (tgs) setTags(tgs);
+    const { data: metrics, error: metricsError } = await supabase.rpc('get_admin_analytics', { p_days: 30 });
+    if (!metricsError && metrics) setAnalytics(metrics);
     setLoading(false);
   }, []);
 
@@ -201,6 +204,7 @@ export default function AdminDashboard() {
         <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap', borderBottom: '1px solid var(--gray-200)', paddingBottom: 8 }}>
           {[
             { key: 'posts', label: 'Postingan', icon: ClipboardList },
+            { key: 'analytics', label: 'Statistik', icon: BarChart3 },
             { key: 'settings', label: 'Branding & Header', icon: Settings },
             { key: 'categories', label: 'Kategori', icon: FolderOpen },
             { key: 'tags', label: 'Tag', icon: TagIcon },
@@ -296,6 +300,28 @@ export default function AdminDashboard() {
             </div>
           </>
         )}
+
+        {/* ===== TAB: STATISTIK ===== */}
+        {tab === 'analytics' && (() => {
+          const totalVisitors = analytics.reduce((sum, row) => sum + Number(row.visitors || 0), 0);
+          const latestMembers = analytics.length ? Number(analytics[analytics.length - 1].members || 0) : 0;
+          const maxVisitors = Math.max(1, ...analytics.map((row) => Number(row.visitors || 0)));
+          return <section className="panel" style={{ padding: 24 }}>
+            <h2 className="h-section" style={{ fontSize: 18, marginBottom: 20, display: 'inline-flex', alignItems: 'center', gap: 8 }}><BarChart3 size={18} /> Statistik 30 Hari Terakhir</h2>
+            <div className="stats" style={{ marginBottom: 24 }}>
+              <div className="stat"><div className="num"><Eye size={20} style={{ verticalAlign: 'middle' }} /> {totalVisitors.toLocaleString('id-ID')}</div><div className="lbl">Visitor unik tercatat</div></div>
+              <div className="stat"><div className="num"><Users size={20} style={{ verticalAlign: 'middle' }} /> {latestMembers.toLocaleString('id-ID')}</div><div className="lbl">Total member terdaftar</div></div>
+            </div>
+            <div style={{ display: 'grid', gap: 8 }}>
+              {analytics.map((row) => <div key={row.metric_date} style={{ display: 'grid', gridTemplateColumns: '110px 1fr 70px', gap: 12, alignItems: 'center', fontSize: 12 }}>
+                <strong>{new Date(row.metric_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' })}</strong>
+                <div style={{ background: 'var(--gray-100)', borderRadius: 8, height: 18, overflow: 'hidden' }}><div style={{ width: `${Math.max(2, (Number(row.visitors || 0) / maxVisitors) * 100)}%`, height: '100%', background: 'var(--hl-blue)', borderRadius: 8 }} /></div>
+                <span>{Number(row.visitors || 0).toLocaleString('id-ID')} visitor</span>
+              </div>)}
+              {!analytics.length && <p className="text-muted">Belum ada data. Jalankan SQL analytics di Supabase terlebih dahulu.</p>}
+            </div>
+          </section>;
+        })()}
 
         {/* ===== TAB: BRANDING & HEADER ===== */}
         {tab === 'settings' && (

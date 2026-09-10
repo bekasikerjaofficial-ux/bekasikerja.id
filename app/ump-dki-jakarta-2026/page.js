@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import SiteHeader from '../../components/SiteHeader'
 import SiteFooter from '../../components/SiteFooter'
+import ArticleReaderCount from '../../components/ArticleReaderCount'
 
 const formatRupiah = (num) => {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num)
@@ -34,6 +35,7 @@ export default function UMPDKIJakarta2026() {
   return (
     <>
       <SiteHeader brand="BekasiKerja.id" active="/ump-dki-jakarta-2026" searchPlaceholder="Cari artikel UMP DKI..." showSearch={false} />
+      <div className="container" style={{ paddingTop: 12 }}><ArticleReaderCount slug="ump-dki-jakarta-2026" /></div>
       <section className="hero">
         <div className="container">
           <div>

@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import SiteHeader from '../../components/SiteHeader'
 import SiteFooter from '../../components/SiteFooter'
+import ArticleReaderCount from '../../components/ArticleReaderCount'
 
 const formatRupiah = (num) => {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num)
@@ -59,6 +60,7 @@ export default function UMPIndonesia2026() {
             <span className="badge">INFORMASI KERJA TERKINI</span>
             <h1><Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>Daftar UMP Indonesia Tahun 2026</Link></h1>
             <p>Update terbaru besaran Upah Minimum Provinsi di seluruh 38 provinsi Indonesia. Bandingkan gaji minimum daerahmu!</p>
+            <ArticleReaderCount slug="ump-indonesia-2026" />
             <div className="stats">
               <div className="stat"><div className="num">38</div><div className="lbl">Provinsi</div></div>
               <div className="stat"><div className="num">{formatRupiah(5729876)}</div><div className="lbl">UMP Tertinggi</div></div>
@@ -102,9 +104,9 @@ export default function UMPIndonesia2026() {
                   {umpData.map((item) => (
                     <tr key={item.no} style={{ borderBottom: '1px solid var(--gray-200)' }}>
                       <td style={{ padding: '10px 16px', fontWeight: 600 }}>{item.no}</td>
-                      <td style={{ padding: '10px 16px', fontWeight: item.no === 11 ? 800 : 400, color: item.no === 11 ? 'var(--hl-blue)' : 'inherit' }}>
-                        {item.prov}{item.no === 11 ? ' ⭐' : ''}
-                      </td>
+                        <td style={{ padding: '10px 16px', fontWeight: item.no === 11 ? 800 : 400, color: item.no === 11 ? 'var(--hl-blue)' : 'inherit' }}>
+                          <Link href={`/ump/${item.prov.toLowerCase().replaceAll(' ', '-').replace('di-', '').replaceAll('.', '')}`} style={{ color: 'inherit' }}>{item.prov}{item.no === 11 ? ' ⭐' : ''}</Link>
+                        </td>
                       <td style={{ padding: '10px 16px', textAlign: 'right' }}>{formatRupiah(item.ump2025)}</td>
                       <td style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700 }}>{formatRupiah(item.ump2026)}</td>
                       <td style={{ padding: '10px 16px', textAlign: 'center' }}>
