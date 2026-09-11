@@ -40,7 +40,7 @@ export function JobCard({ job }) {
 export function NewsCard({ item }) {
   return (
     <Link href={`/loker/${item.id}`} className="card">
-      <img src={item.image_url || '/placeholder.svg'} alt="cover" className="thumb" />
+      <img src={item.image_url || '/placeholder.svg'} alt={`${item.title} cover`} className="thumb" />
       <div className="body">
         <span className="badge-tag news">{item.category || 'Lifestyle'}</span>
         <h3>{item.title}</h3>
@@ -56,7 +56,7 @@ export function NewsCard({ item }) {
 export function SidebarItem({ item }) {
   return (
     <a href={`/loker/${item.id}`} className="item">
-      <img src={item.image_url || '/placeholder.svg'} alt="thumb" />
+      <img src={item.image_url || '/placeholder.svg'} alt={item.title} />
       <span className="t">{item.title}</span>
     </a>
   );
