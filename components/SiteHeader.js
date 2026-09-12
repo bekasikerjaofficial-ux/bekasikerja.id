@@ -1,10 +1,8 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Briefcase, Search } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
-// Shared navbar — HeyLaw layout + BCA token (#005cab)
-// Desktop: logo (kiri) | nav (center) | search + auth (kanan)
-// Mobile (<860px): logo (kiri) | Daftar (kanan) — hamburger & nav disembunyiin (clean)
 export default function SiteHeader({
   brand = 'BekasiKerja.id',
   logoUrl = null,
@@ -12,6 +10,25 @@ export default function SiteHeader({
   searchPlaceholder = 'Cari lowongan, perusahaan, atau artikel...',
   showSearch = true,
 }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const init = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user || null);
+    };
+    init();
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/';
+  };
+
   return (
     <header className="header">
       <div className="container">
@@ -45,8 +62,17 @@ export default function SiteHeader({
             </div>
           )}
           <div className="auth-btns">
-            <a href="/member/register" className="btn-outline btn-pill btn-daftar">Daftar</a>
-            <a href="/member/login" className="btn-login btn-pill btn-login-mobile">Login</a>
+            {user ? (
+              <>
+                <a href="/member/dashboard" className="btn-outline btn-pill btn-daftar">Dashboard</a>
+                <button onClick={handleLogout} className="btn-login btn-pill btn-login-mobile">Logout</button>
+              </>
+            ) : (
+              <>
+                <a href="/member/register" className="btn-outline btn-pill btn-daftar">Daftar</a>
+                <a href="/member/login" className="btn-login btn-pill btn-login-mobile">Login</a>
+              </>
+            )}
           </div>
         </div>
       </div>

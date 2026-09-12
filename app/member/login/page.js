@@ -19,7 +19,7 @@ export default function MemberLogin() {
       setError(err.message);
       return;
     }
-    window.location.href = '/';
+    window.location.href = '/member/dashboard';
   };
 
   return (

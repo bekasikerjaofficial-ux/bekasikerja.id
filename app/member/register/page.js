@@ -32,7 +32,7 @@ export default function MemberRegister() {
 
     if (data.session) {
       setTimeout(() => {
-        router.replace('/');
+        router.replace('/member/dashboard');
         router.refresh();
       }, 600);
     } else {
