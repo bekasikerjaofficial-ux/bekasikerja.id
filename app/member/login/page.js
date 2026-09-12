@@ -69,6 +69,9 @@ export default function MemberLogin() {
           Belum punya akun?{' '}
           <Link href="/member/register" style={{ color: 'var(--hl-blue)', fontWeight: 700 }}>Daftar Member Gratis</Link>
         </p>
+        <p className="text-center" style={{ fontSize: 12, marginTop: 8 }}>
+          <Link href="/member/forgot-password" style={{ color: 'var(--gray-500)' }}>Lupa password?</Link>
+        </p>
       </div>
     </div>
   );
