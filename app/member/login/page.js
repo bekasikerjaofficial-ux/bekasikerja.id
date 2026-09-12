@@ -72,6 +72,11 @@ export default function MemberLogin() {
         <p className="text-center" style={{ fontSize: 12, marginTop: 8 }}>
           <Link href="/member/forgot-password" style={{ color: 'var(--gray-500)' }}>Lupa password?</Link>
         </p>
+        <div style={{ textAlign: 'center', marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--gray-200)' }}>
+          <Link href="/" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, textDecoration: 'none' }}>
+            ← Kembali ke Beranda
+          </Link>
+        </div>
       </div>
     </div>
   );

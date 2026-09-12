@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '../../../lib/supabase';
 import { Image, CheckCircle2 } from 'lucide-react';
 
@@ -51,6 +52,7 @@ export default function AdminDashboard() {
       <header className="header">
         <div className="container" style={{ justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Link href="/" style={{ fontSize: 12, color: 'var(--gray-500)', marginRight: 8 }}>← Beranda</Link>
             <span className="brand-mark">ADMIN</span>
             <span style={{ fontWeight: 700, fontSize: 14 }}>Dashboard BekasiKerja.id</span>
           </div>

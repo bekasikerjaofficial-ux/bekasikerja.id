@@ -120,6 +120,11 @@ export default function MemberVerify() {
             </Link>
           </div>
         )}
+        <div style={{ textAlign: 'center', marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--gray-200)' }}>
+          <Link href="/" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, textDecoration: 'none' }}>
+            ← Kembali ke Beranda
+          </Link>
+        </div>
       </div>
     </div>
   );

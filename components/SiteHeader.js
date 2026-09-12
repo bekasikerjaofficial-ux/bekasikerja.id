@@ -32,7 +32,7 @@ export default function SiteHeader({
   return (
     <header className="header">
       <div className="container">
-        <a href="/" className="logo">
+        <a href="/" className="logo" title="Kembali ke Beranda">
           {logoUrl ? (
             <img src={logoUrl} alt="Logo" style={{ height: 32, width: 'auto', objectFit: 'contain' }} />
           ) : (

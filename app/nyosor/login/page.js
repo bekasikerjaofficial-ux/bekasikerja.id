@@ -27,6 +27,7 @@ export default function AdminLoginPage() {
     <div className="auth-wrap" style={{ background: 'var(--hl-navy)' }}>
       <div className="panel" style={{ padding: 32, maxWidth: 360, width: '100%', background: '#fff' }}>
         <div className="text-center" style={{ marginBottom: 20 }}>
+          <Link href="/" style={{ fontSize: 12, color: 'var(--gray-500)', display: 'inline-block', marginBottom: 12 }}>← Kembali ke BekasiKerja.id</Link>
           <h1 className="h-display" style={{ fontSize: 20, color: 'var(--gray-900)' }}>Nyosor Portal Access</h1>
           <p className="text-muted" style={{ fontSize: 12 }}>Restricted Admin Authentication</p>
         </div>
