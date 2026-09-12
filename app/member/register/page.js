@@ -18,10 +18,20 @@ export default function MemberRegister() {
     setMsg('');
     if (!formData.name.trim()) return;
     setLoading(true);
+
+    // Use the current window origin (production domain, not localhost).
+    // Supabase replaces {EMAIL_REDIRECT_PLACEHOLDER} in the email template
+    // with the redirect_to param. For password recovery / email change it's
+    // embedded in the action link directly.
+    const redirectUrl = `${window.location.origin}/member/verify`;
+
     const { data, error: err } = await supabase.auth.signUp({
       email: formData.email,
       password: formData.password,
-      options: { data: { full_name: formData.name } },
+      options: {
+        data: { full_name: formData.name },
+        emailRedirectTo: redirectUrl,
+      },
     });
     setLoading(false);
 
