@@ -4,7 +4,8 @@ import { useParams } from 'next/navigation';
 import { supabase } from '../../../lib/supabase';
 import Link from 'next/link';
 import SiteHeader from '../../../components/SiteHeader';
-import SiteFooter from '../../../components/SiteFooter';
+import SiteFooter from '../../../components/SiteFooter'
+import ShareButtons from '../../../components/ShareButtons';
 
 export default function ArtikelPage() {
   const params = useParams();
@@ -78,6 +79,7 @@ export default function ArtikelPage() {
       </main>
 
       <SiteFooter />
+      <ShareButtons title={post?.title ? `${post.title} — BekasiKerja.id` : ''} />
     </div>
   );
 }

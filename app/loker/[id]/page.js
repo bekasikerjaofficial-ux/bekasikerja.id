@@ -5,7 +5,8 @@ import { supabase } from '../../../lib/supabase';
 import Link from 'next/link';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
-import { MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react'
+import ShareButtons from '../../../components/ShareButtons';
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -95,6 +96,7 @@ export default function PostDetailPage() {
       </main>
 
       <SiteFooter />
+      <ShareButtons title={post?.title ? `${post.title} — BekasiKerja.id` : ''} />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import SiteHeader from '../../components/SiteHeader'
 import SiteFooter from '../../components/SiteFooter'
 import ArticleReaderCount from '../../components/ArticleReaderCount'
+import ShareButtons from '../../components/ShareButtons'
 
 const formatRupiah = (num) => {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num)
@@ -192,6 +193,7 @@ export default function UMPIndonesia2026() {
         </div>
       </main>
       <SiteFooter brand="BekasiKerja.id" />
+      <ShareButtons title="Daftar UMP Indonesia Tahun 2026 — BekasiKerja.id" />
     </>
   )
 }

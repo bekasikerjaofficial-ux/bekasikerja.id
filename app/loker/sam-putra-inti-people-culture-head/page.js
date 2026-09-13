@@ -5,6 +5,7 @@ import Link from 'next/link'
 import SiteHeader from '../../../components/SiteHeader'
 import SiteFooter from '../../../components/SiteFooter'
 import { MapPin, CalendarClock, Briefcase, Users, Building2 } from 'lucide-react'
+import ShareButtons from '../../../components/ShareButtons'
 
 const featuredImage = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80'
 
@@ -171,6 +172,7 @@ export default function JobDetail() {
         </Link>
       </div>
       <SiteFooter brand="BekasiKerja.id" />
+      <ShareButtons title="People and Culture Head — PT. Sam Putra Inti | BekasiKerja.id" />
     </>
   )
 }

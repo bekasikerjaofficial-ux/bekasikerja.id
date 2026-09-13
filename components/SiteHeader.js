@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Briefcase, Search, Menu, X } from 'lucide-react';
+import { Briefcase, Search, Menu, X, Moon, Sun } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 export default function SiteHeader({
@@ -12,6 +12,20 @@ export default function SiteHeader({
 }) {
   const [user, setUser] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('theme') || 'light';
+    setTheme(saved);
+    document.documentElement.className = saved;
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'light' ? 'dark' : 'light';
+    setTheme(next);
+    localStorage.setItem('theme', next);
+    document.documentElement.className = next;
+  };
 
   useEffect(() => {
     const init = async () => {
@@ -68,6 +82,14 @@ export default function SiteHeader({
         </nav>
 
         <div className="header-actions">
+          <button
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-label={theme === 'light' ? 'Aktifkan mode gelap' : 'Aktifkan mode terang'}
+            title={theme === 'light' ? 'Mode Gelap' : 'Mode Terang'}
+          >
+            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
           {showSearch && (
             <div className="search">
               <Search size={16} color="var(--gray-500)" />
