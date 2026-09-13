@@ -52,8 +52,9 @@ export default function AdminDashboard() {
       <header className="header">
         <div className="container" style={{ justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Link href="/" style={{ fontSize: 12, color: 'var(--gray-500)', marginRight: 8 }}>← Beranda</Link>
-            <span className="brand-mark">ADMIN</span>
+            <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none', marginRight: 8 }}>
+              <img src="/logo.png" alt="Logo BekasiKerja.id" style={{ height: 24, width: 'auto', objectFit: 'contain' }} />
+            </Link>
             <span style={{ fontWeight: 700, fontSize: 14 }}>Dashboard BekasiKerja.id</span>
           </div>
           <button onClick={handleLogout} className="btn-danger" style={{ padding: '8px 14px', fontSize: 12 }}>Logout</button>

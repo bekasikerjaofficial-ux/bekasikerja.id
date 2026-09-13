@@ -191,7 +191,7 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <SiteHeader brand={settings.header_name || settings.brand_name || 'BekasiKerja.id'} active="/admin" showSearch={false} />
+      <SiteHeader brand={settings.header_name || settings.brand_name || 'BekasiKerja.id'} logoUrl={settings.logo_url || '/logo.png'} active="/admin" showSearch={false} />
 
       <main className="container section">
         {/* PAGE TITLE */}

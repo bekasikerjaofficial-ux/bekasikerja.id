@@ -12,6 +12,7 @@ export default function RootLayout({ children }) {
     <html lang="id">
       <head>
         <meta name="google-site-verification" content="LgV02PAoMZm0SUZalTtOVlc2uz60Tt0ihtNti7QAEIE" />
+        <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>

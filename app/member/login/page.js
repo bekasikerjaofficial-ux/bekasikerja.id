@@ -53,7 +53,9 @@ export default function MemberLogin() {
     <div className="auth-wrap font-sans">
       <div className="panel" style={{ padding: 32, maxWidth: 400, width: '100%' }}>
         <div className="text-center" style={{ marginBottom: 24 }}>
-          <Link href="/" className="brand-mark" style={{ fontSize: 18, marginBottom: 8 }}>BK</Link>
+          <Link href="/" style={{ marginBottom: 8, display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
+            <img src="/logo.png" alt="Logo BekasiKerja.id" style={{ height: 36, width: 'auto', objectFit: 'contain' }} />
+          </Link>
           <h1 className="h-display" style={{ fontSize: 20, color: 'var(--gray-900)' }}>Masuk Akun Member</h1>
           <p className="text-muted" style={{ fontSize: 13 }}>Akses lamaran &amp; fitur eksklusif BekasiKerja</p>
         </div>
