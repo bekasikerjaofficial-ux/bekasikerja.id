@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { supabase } from '../../../lib/supabase';
 import Link from 'next/link';
+import Image from 'next/image';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
 import { MapPin } from 'lucide-react'
@@ -49,9 +50,11 @@ export default function PostDetailPage() {
 
       <main className="container section" style={{ maxWidth: 860 }}>
         {post.image_url && (
-          <img
+          <Image
             src={post.image_url}
             alt={post.title}
+            width={860}
+            height={280}
             style={{ width: '100%', height: 280, objectFit: 'cover', borderRadius: 16, border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-card)' }}
           />
         )}

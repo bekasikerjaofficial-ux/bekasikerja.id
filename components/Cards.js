@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { MapPin, CalendarClock, Newspaper } from 'lucide-react';
 
 // JobCard — card grid item, HeyLaw card style + BCA token
@@ -10,10 +11,13 @@ export function JobCard({ job }) {
       <div className="body">
         <span className="badge-tag job">Lowongan</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-          <img
+          <Image
             src={job.image_url || '/placeholder.svg'}
             alt={job.company || 'PT'}
-            style={{ width: 40, height: 40, borderRadius: 12, objectFit: 'cover', border: '1px solid var(--gray-200)' }}
+            width={40}
+            height={40}
+            loading="lazy"
+            style={{ borderRadius: 12, objectFit: 'cover', border: '1px solid var(--gray-200)' }}
           />
           <div>
             <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700 }}>{job.title}</h3>
@@ -40,7 +44,17 @@ export function JobCard({ job }) {
 export function NewsCard({ item }) {
   return (
     <Link href={`/artikel/${item.id}`} className="card">
-      <img src={item.image_url || '/placeholder.svg'} alt={`${item.title} cover`} className="thumb" />
+      <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9' }}>
+        <Image
+          src={item.image_url || '/placeholder.svg'}
+          alt={`${item.title} cover`}
+          fill
+          loading="lazy"
+          sizes="(max-width: 768px) 100vw, 33vw"
+          style={{ objectFit: 'cover' }}
+          className="thumb"
+        />
+      </div>
       <div className="body">
         <span className="badge-tag news">{item.category || 'Lifestyle'}</span>
         <h3>{item.title}</h3>
@@ -61,7 +75,16 @@ export function NewsCard({ item }) {
 export function SidebarItem({ item }) {
   return (
     <a href={`/artikel/${item.id}`} className="item">
-      <img src={item.image_url || '/placeholder.svg'} alt={item.title} />
+      <div style={{ position: 'relative', width: 60, height: 60, flexShrink: 0 }}>
+        <Image
+          src={item.image_url || '/placeholder.svg'}
+          alt={item.title}
+          fill
+          loading="lazy"
+          sizes="60px"
+          style={{ objectFit: 'cover', borderRadius: 8 }}
+        />
+      </div>
       <span className="t">{item.title}</span>
     </a>
   );

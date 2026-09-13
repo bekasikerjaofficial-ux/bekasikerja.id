@@ -1,15 +1,21 @@
 'use client';
 import React from 'react';
 import { Briefcase, Newspaper } from 'lucide-react';
+import Image from 'next/image';
 
 // Shared footer — HeyLaw 3-column layout + BCA navy
-export default function SiteFooter({ brand = 'BekasiKerja.id' }) {
+export default function SiteFooter({ brand = 'BekasiKerja.id', logoUrl = '/logo.png' }) {
   return (
     <footer className="footer">
       <div className="container">
         <div>
           <h3 style={{ color: '#fff', fontSize: 18, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Briefcase size={18} /> {brand}
+            {logoUrl ? (
+              <Image src={logoUrl} alt="Logo" width={24} height={24} style={{ objectFit: 'contain' }} />
+            ) : (
+              <Briefcase size={18} />
+            )}
+            {brand}
           </h3>
           <p style={{ fontSize: 13, marginTop: 12, lineHeight: 1.7 }}>
             Portal lowongan kerja terverifikasi untuk kawasan industri Bekasi, Cikarang,

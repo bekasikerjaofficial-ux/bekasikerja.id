@@ -4,14 +4,14 @@ import { supabase } from '../lib/supabase';
 import Link from 'next/link';
 import SiteHeader from '../components/SiteHeader';
 import SiteFooter from '../components/SiteFooter';
-import SearchBar from '../components/SearchBar';
-import CookieConsent from '../components/CookieConsent';
-import CategoryChips from '../components/CategoryChips';
-import { JobCard, NewsCard, SidebarItem } from '../components/Cards';
-import FeaturedSlider from '../components/FeaturedSlider';
-import Reveal from '../components/Reveal';
-import PackageCTA from '../components/PackageCTA';
 import { Newspaper, Briefcase } from 'lucide-react';
+import CategoryChips from '../components/CategoryChips';
+import CookieConsent from '../components/CookieConsent';
+import SearchBar from '../components/SearchBar';
+import Reveal from '../components/Reveal';
+import FeaturedSlider from '../components/FeaturedSlider';
+import PackageCTA from '../components/PackageCTA';
+import { JobCard, NewsCard, SidebarItem } from '../components/Cards';
 
 export default function HomePage() {
   const [settings, setSettings] = useState(null);
@@ -151,7 +151,7 @@ export default function HomePage() {
                     <SidebarItem key={item.id} item={item} />
                   ))
                 )}
-                <a href="/#lifestyle" className="btn-secondary" style={{ display: 'block', textAlign: 'center', marginTop: 12, textDecoration: 'none' }}>
+                <a href="/ump-indonesia-2026" className="btn-secondary" style={{ display: 'block', textAlign: 'center', marginTop: 12, textDecoration: 'none' }}>
                   Lihat Artikel Lainnya
                 </a>
               </div>

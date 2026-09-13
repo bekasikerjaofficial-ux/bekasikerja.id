@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Briefcase, Search, Menu, X, Moon, Sun } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import Image from 'next/image';
 
 export default function SiteHeader({
   brand = 'BekasiKerja.id',
@@ -68,7 +69,7 @@ export default function SiteHeader({
       <div className="container">
         <a href="/" className="logo" title="Kembali ke Beranda">
           {logoUrl ? (
-            <img src={logoUrl} alt="Logo" style={{ height: 32, width: 'auto', objectFit: 'contain' }} />
+            <Image src={logoUrl} alt="Logo" width={32} height={32} priority style={{ objectFit: 'contain' }} />
           ) : (
             <Briefcase size={24} strokeWidth={2} />
           )}

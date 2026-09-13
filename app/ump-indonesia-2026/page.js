@@ -2,6 +2,7 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import SiteHeader from '../../components/SiteHeader'
 import SiteFooter from '../../components/SiteFooter'
 import ArticleReaderCount from '../../components/ArticleReaderCount'
@@ -68,7 +69,7 @@ export default function UMPIndonesia2026() {
               <div className="stat"><div className="num">PP 49/2025</div><div className="lbl">Dasar Hukum</div></div>
             </div>
           </div>
-          <div><img className="illus" src="/placeholder.svg" alt="Kawasan industri Indonesia" style={{ background: 'rgba(255,255,255,.15)', display: 'block' }} /></div>
+          <div><Image className="illus" src="/placeholder.svg" alt="Kawasan industri Indonesia" width={600} height={400} style={{ background: 'rgba(255,255,255,.15)', display: 'block' }} /></div>
         </div>
       </section>
 
