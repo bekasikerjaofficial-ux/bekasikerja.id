@@ -22,6 +22,7 @@ export default function AdminDashboard() {
       const { data } = await supabase.auth.getUser();
       if (!active) return;
       if (!data.user) router.replace('/nyosor/login');
+      if (data.user?.user_metadata?.role !== 'admin') router.replace('/');
     };
     guard();
     return () => { active = false; };
@@ -171,8 +172,8 @@ export default function AdminDashboard() {
               <textarea name="description" rows="5" placeholder="Tuliskan kualifikasi dan cara melamar..." value={formData.description} onChange={handleChange} />
             </div>
 
-            <button type="submit" disabled={submitting} className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              {uploading ? <><Loader2 size={16} className="spin" /> Mengunggah...</> : submitting ? <><Loader2 size={16} className="spin" /> Menyimpan...</> : 'Publish Lowongan Kerja'}
+            <button type="submit" disabled={uploading} className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              {uploading ? <><Loader2 size={16} className="spin" /> Mengunggah...</> : 'Publish Lowongan Kerja'}
             </button>
           </form>
         </section>

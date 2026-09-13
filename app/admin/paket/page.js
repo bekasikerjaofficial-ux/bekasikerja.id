@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../../lib/supabase';
 import SiteHeader from '../../../components/SiteHeader';
-import { Plus, Save, Trash2, Package as PackageIcon, Star } from 'lucide-react';
+import { Plus, Save, Trash2, Edit2, Package as PackageIcon, Star } from 'lucide-react';
 
 // CRUD paket (mirip app/admin posts). Guard admin via Supabase Auth.
 export default function AdminPaket() {
@@ -13,6 +13,9 @@ export default function AdminPaket() {
     features: '[]', popular: false, sort_order: 0, active: true,
   };
   const [form, setForm] = useState(blank);
+
+  // Edit state
+  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -50,6 +53,47 @@ export default function AdminPaket() {
     fetchData();
   };
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    let features;
+    try { features = JSON.parse(form.features); }
+    catch { alert('Fitur harus JSON array, contoh: [{"text":"Akses loker","included":true}]'); return; }
+    const payload = {
+      ...form,
+      price: Number(form.price) || 0,
+      sort_order: Number(form.sort_order) || 0,
+      features,
+    };
+    delete payload.id;
+    const { error } = await supabase.from('packages').update(payload).eq('id', editingId);
+    if (error) { alert('Gagal update paket: ' + error.message); return; }
+    alert('Paket berhasil diperbarui!');
+    setForm(blank);
+    setEditingId(null);
+    fetchData();
+  };
+
+  const handleEdit = (pkg) => {
+    setEditingId(pkg.id);
+    setForm({
+      name: pkg.name || '',
+      slug: pkg.slug || '',
+      price: pkg.price || 0,
+      period: pkg.period || 'bulan',
+      tagline: pkg.tagline || '',
+      description: pkg.description || '',
+      features: JSON.stringify(pkg.features || [], null, 2),
+      popular: pkg.popular || false,
+      sort_order: pkg.sort_order || 0,
+      active: pkg.active !== undefined ? pkg.active : true,
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setForm(blank);
+  };
+
   const handleDelete = async (id) => {
     if (confirm('Hapus paket ini?')) {
       await supabase.from('packages').delete().eq('id', id);
@@ -67,9 +111,10 @@ export default function AdminPaket() {
         <div className="admin-grid" style={{ gap: 24 }}>
           <section className="panel" style={{ padding: 24 }}>
             <h2 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)', marginBottom: 16, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              <Plus size={18} /> Tambah Paket
+              {editingId ? <Edit2 size={18} /> : <Plus size={18} />}
+              {editingId ? 'Edit Paket' : 'Tambah Paket'}
             </h2>
-            <form onSubmit={handleCreate} style={{ display: 'grid', gap: 14 }}>
+            <form onSubmit={editingId ? handleUpdate : handleCreate} style={{ display: 'grid', gap: 14 }}>
               <div className="field" style={{ margin: 0 }}>
                 <label>Slug (unik, lowercase)</label>
                 <input type="text" required placeholder="hemat" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} />
@@ -109,9 +154,16 @@ export default function AdminPaket() {
                   <input type="checkbox" checked={form.popular} onChange={(e) => setForm({ ...form, popular: e.target.checked })} /> Tandai &quot;Terlaris&quot;
                 </label>
               </div>
-              <button type="submit" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                <Save size={16} /> Simpan Paket
-              </button>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button type="submit" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  <Save size={16} /> {editingId ? 'Update Paket' : 'Simpan Paket'}
+                </button>
+                {editingId && (
+                  <button type="button" onClick={handleCancelEdit} className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                    Batal
+                  </button>
+                )}
+              </div>
             </form>
           </section>
 
@@ -133,9 +185,14 @@ export default function AdminPaket() {
                       {p.slug} · Rp {new Intl.NumberFormat('id-ID').format(p.price || 0)} / {p.period}
                     </span>
                   </div>
-                  <button onClick={() => handleDelete(p.id)} className="btn-danger" style={{ padding: '8px 12px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                    <Trash2 size={14} /> Hapus
-                  </button>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button onClick={() => handleEdit(p)} className="btn-secondary" style={{ padding: '8px 12px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <Edit2 size={14} /> Edit
+                    </button>
+                    <button onClick={() => handleDelete(p.id)} className="btn-danger" style={{ padding: '8px 12px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <Trash2 size={14} /> Hapus
+                    </button>
+                  </div>
                 </div>
               ))}
               {packages.length === 0 && (

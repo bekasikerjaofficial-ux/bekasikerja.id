@@ -121,7 +121,10 @@ export default function CheckoutPage() {
                         style={{ width: 240, height: 240, margin: '12px auto', borderRadius: 12, border: '1px solid var(--gray-200)' }}
                       />
                       <p className="text-muted" style={{ fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6, justifyContent: 'center' }}>
-                        <Loader2 size={14} className="spin" /> Menunggu pembayaran... (otomatis aktif setelah transfer)
+                        <Loader2 size={14} className="spin" /> Menunggu pembayaran...
+                      </p>
+                      <p style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 8 }}>
+                        QRIS berlaku selama 30 menit. Paket akan otomatis aktif setelah transfer berhasil.
                       </p>
                     </>
                   )}

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Briefcase, Search } from 'lucide-react';
+import { Briefcase, Search, Menu, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 export default function SiteHeader({
@@ -11,6 +11,7 @@ export default function SiteHeader({
   showSearch = true,
 }) {
   const [user, setUser] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -24,10 +25,29 @@ export default function SiteHeader({
     return () => listener.subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     window.location.href = '/';
   };
+
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
+  const navLinks = [
+    { href: '/', label: 'Beranda', key: '/' },
+    { href: '/#lowongan', label: 'Lowongan', key: '/#lowongan' },
+    { href: '/paket', label: 'Paket', key: '/paket' },
+    { href: '/#lifestyle', label: 'Lifestyle', key: '/#lifestyle' },
+    { href: '/ump-indonesia-2026', label: 'Artikel', key: '/ump-indonesia-2026' },
+  ];
 
   return (
     <header className="header">
@@ -42,11 +62,9 @@ export default function SiteHeader({
         </a>
 
         <nav className="nav">
-          <a href="/" className={active === '/' ? 'active' : ''}>Beranda</a>
-          <a href="/#lowongan" className={active === '/#lowongan' ? 'active' : ''}>Lowongan</a>
-          <a href="/paket" className={active === '/paket' ? 'active' : ''}>Paket</a>
-          <a href="/#lifestyle" className={active === '/#lifestyle' ? 'active' : ''}>Lifestyle</a>
-          <a href="/ump-indonesia-2026" className={active === '/ump-indonesia-2026' ? 'active' : ''}>Artikel</a>
+          {navLinks.map(link => (
+            <a key={link.key} href={link.href} className={active === link.key ? 'active' : ''}>{link.label}</a>
+          ))}
         </nav>
 
         <div className="header-actions">
@@ -75,7 +93,53 @@ export default function SiteHeader({
             )}
           </div>
         </div>
+
+        <button
+          className="nav-toggle"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? 'Tutup menu' : 'Buka menu'}
+          aria-expanded={mobileMenuOpen}
+        >
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="mobile-overlay" onClick={closeMobileMenu} />
+      )}
+      <nav className={`mobile-drawer ${mobileMenuOpen ? 'open' : ''}`} aria-label="Menu navigasi mobile">
+        <div className="mobile-drawer-header">
+          <span className="mobile-drawer-brand">Menu</span>
+          <button className="mobile-drawer-close" onClick={closeMobileMenu} aria-label="Tutup menu">
+            <X size={22} />
+          </button>
+        </div>
+        <div className="mobile-nav-links">
+          {navLinks.map(link => (
+            <a
+              key={link.key}
+              href={link.href}
+              className={active === link.key ? 'active' : ''}
+              onClick={closeMobileMenu}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+        <div className="mobile-auth-btns">
+          {user ? (
+            <>
+              <a href="/member/dashboard" className="btn-outline btn-pill" onClick={closeMobileMenu}>Dashboard</a>
+              <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="btn-login btn-pill">Logout</button>
+            </>
+          ) : (
+            <>
+              <a href="/member/register" className="btn-outline btn-pill" onClick={closeMobileMenu}>Daftar</a>
+              <a href="/member/login" className="btn-login btn-pill" onClick={closeMobileMenu}>Login</a>
+            </>
+          )}
+        </div>
+      </nav>
     </header>
   );
 }

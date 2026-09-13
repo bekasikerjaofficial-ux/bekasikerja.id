@@ -1,11 +1,23 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabase';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import { PSIKOTES_MODULES, TIER_ORDER, tierIndex } from '../../lib/packages';
-import { Lock, Play, CheckCircle2, ArrowLeft, Trophy, Target, Clock } from 'lucide-react';
+import { Lock, Play, CheckCircle2, Trophy, Target, Clock, RotateCcw, AlertTriangle } from 'lucide-react';
+
+const TEST_DURATION = 600; // 10 minutes in seconds
+const PASSING_SCORE = 60;
+
+function shuffleArray(arr) {
+  const shuffled = [...arr];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 export default function PsikotesPage() {
   const router = useRouter();
@@ -20,10 +32,14 @@ export default function PsikotesPage() {
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
-  const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [timer, setTimer] = useState(null);
   const [results, setResults] = useState([]);
+  const [isRemedial, setIsRemedial] = useState(false);
+  const [attemptCount, setAttemptCount] = useState(1);
+  const [timeExpired, setTimeExpired] = useState(false);
+
+  const startTimeRef = useRef(null);
+  const timerRef = useRef(null);
 
   useEffect(() => {
     let active = true;
@@ -38,6 +54,12 @@ export default function PsikotesPage() {
     };
     init();
     return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, []);
 
   const loadUserTier = async (userId) => {
@@ -62,7 +84,7 @@ export default function PsikotesPage() {
       .select('*')
       .eq('user_id', userId)
       .order('completed_at', { ascending: false })
-      .limit(10);
+      .limit(20);
     if (data) setResults(data);
   };
 
@@ -72,7 +94,7 @@ export default function PsikotesPage() {
     return tierIndex(tier) >= tierIndex(mod.minTier);
   };
 
-  const startModule = async (slug) => {
+  const startModule = async (slug, remedial = false) => {
     if (!user) { router.push('/member/login?next=/psikotes'); return; }
     if (!isUnlocked(slug)) return;
     const { data } = await supabase
@@ -80,19 +102,31 @@ export default function PsikotesPage() {
       .select('*')
       .eq('module_slug', slug)
       .eq('active', true)
-      .order('sort_order');
+      .order('sort_order', { ascending: true });
     if (!data?.length) return;
+
+    const shuffled = remedial ? shuffleArray(data) : data;
     setActiveModule(PSIKOTES_MODULES.find(m => m.slug === slug));
-    setQuestions(data);
+    setQuestions(shuffled);
     setCurrentQ(0);
     setAnswers([]);
     setSelected(null);
     setShowResult(false);
-    setStartTime(Date.now());
+    setIsRemedial(remedial);
+    setTimeExpired(false);
+    startTimeRef.current = Date.now();
     setElapsedTime(0);
-    // start timer
-    const t = setInterval(() => setElapsedTime(Math.floor((Date.now() - startTime) / 1000)), 1000);
-    setTimer(t);
+
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
+      setElapsedTime(elapsed);
+      if (elapsed >= TEST_DURATION) {
+        clearInterval(timerRef.current);
+        setTimeExpired(true);
+        handleFinish([...answers]); // auto-submit
+      }
+    }, 1000);
   };
 
   const handleAnswer = (answer) => { setSelected(answer); };
@@ -104,14 +138,13 @@ export default function PsikotesPage() {
     if (currentQ + 1 < questions.length) {
       setCurrentQ(currentQ + 1);
     } else {
-      finishTest(newAnswers);
+      handleFinish(newAnswers);
     }
   };
 
-  const finishTest = async (finalAnswers) => {
-    clearInterval(timer);
-    setTimer(null);
-    const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+  const handleFinish = async (finalAnswers) => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    const timeSpent = Math.floor((Date.now() - startTimeRef.current) / 1000);
     const correct = finalAnswers.filter(a => a.correct).length;
     const totalQ = questions.length;
     const scr = Math.round((correct / totalQ) * 100);
@@ -119,7 +152,6 @@ export default function PsikotesPage() {
     setCorrectCount(correct);
     setShowResult(true);
 
-    // save to DB
     if (user) {
       await supabase.from('psikotes_results').insert({
         user_id: user.id,
@@ -135,6 +167,7 @@ export default function PsikotesPage() {
   };
 
   const resetTest = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
     setActiveModule(null);
     setQuestions([]);
     setCurrentQ(0);
@@ -142,7 +175,23 @@ export default function PsikotesPage() {
     setSelected(null);
     setShowResult(false);
     setScore(0);
+    setIsRemedial(false);
+    setTimeExpired(false);
   };
+
+  const handleRemedial = () => {
+    setAttemptCount(prev => prev + 1);
+    startModule(activeModule.slug, true);
+  };
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const timeRemaining = TEST_DURATION - elapsedTime;
+  const timePercentage = (elapsedTime / TEST_DURATION) * 100;
 
   if (loading) {
     return (
@@ -167,19 +216,32 @@ export default function PsikotesPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <div>
                 <h2 className="h-section" style={{ fontSize: 20, margin: 0 }}>{activeModule.title}</h2>
-                <p className="text-muted" style={{ fontSize: 12, margin: 0 }}>Pertanyaan {currentQ + 1} dari {questions.length}</p>
+                <p className="text-muted" style={{ fontSize: 12, margin: 0 }}>
+                  Pertanyaan {currentQ + 1} dari {questions.length}
+                  {isRemedial && <span style={{ color: 'var(--hl-gold)', fontWeight: 700, marginLeft: 8 }}>• Remedial (Percobaan {attemptCount})</span>}
+                </p>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--hl-blue)', fontWeight: 700 }}>
-                <Clock size={16} /> {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: timeRemaining <= 60 ? 'var(--hl-red)' : 'var(--hl-blue)', fontWeight: 700 }}>
+                <Clock size={16} />
+                <span style={{ fontSize: 18, fontFamily: 'monospace' }}>{formatTime(timeRemaining)}</span>
               </div>
             </div>
-            {/* Progress */}
+
+            {/* Timer Progress Bar */}
             <div style={{ height: 6, background: 'var(--gray-200)', borderRadius: 9999, marginBottom: 24, overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${((currentQ + 1) / questions.length) * 100}%`, background: 'var(--hl-blue)', borderRadius: 9999, transition: '.3s' }} />
+              <div style={{
+                height: '100%',
+                width: `${Math.min(100, timePercentage)}%`,
+                background: timeRemaining <= 60 ? 'var(--hl-red)' : timeRemaining <= 120 ? 'var(--hl-gold)' : 'var(--hl-blue)',
+                borderRadius: 9999,
+                transition: 'width 1s linear'
+              }} />
             </div>
+
             <div style={{ fontSize: 18, fontWeight: 600, color: 'var(--gray-900)', marginBottom: 24 }}>
               {q.question_text}
             </div>
+
             <div style={{ display: 'grid', gap: 10, marginBottom: 24 }}>
               {q.options.map((opt, i) => (
                 <button
@@ -206,6 +268,7 @@ export default function PsikotesPage() {
                 </button>
               ))}
             </div>
+
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
               <button onClick={resetTest} className="btn-secondary">Batal</button>
               <button onClick={nextQuestion} disabled={!selected} className="btn-primary">
@@ -221,33 +284,57 @@ export default function PsikotesPage() {
 
   // Result View
   if (showResult) {
+    const passed = score >= PASSING_SCORE;
+    const hasCorrectAnswer = questions.some(q => q.correct_answer);
+
     return (
       <div>
         <SiteHeader brand="BekasiKerja.id" active="/psikotes" showSearch={false} />
         <main className="container section" style={{ maxWidth: 720 }}>
           <div className="panel" style={{ padding: 32, textAlign: 'center' }}>
-            <div style={{ width: 80, height: 80, borderRadius: '50%', background: score >= 70 ? '#e8f7ee' : '#fff0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-              <Trophy size={40} color={score >= 70 ? 'var(--hl-teal)' : 'var(--hl-red)'} />
+            {timeExpired && (
+              <div style={{ background: '#fff3cd', border: '1px solid #ffc107', color: '#856404', padding: 12, borderRadius: 8, marginBottom: 20, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                <AlertTriangle size={16} /> Waktu Habis! Jawaban otomatis disimpan.
+              </div>
+            )}
+
+            <div style={{ width: 80, height: 80, borderRadius: '50%', background: passed ? '#e8f7ee' : '#fff0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <Trophy size={40} color={passed ? 'var(--hl-teal)' : 'var(--hl-red)'} />
             </div>
             <h2 className="h-section" style={{ fontSize: 22, margin: 0 }}>Hasil {activeModule.title}</h2>
-            <div style={{ fontSize: 48, fontWeight: 800, color: score >= 70 ? 'var(--hl-teal)' : 'var(--hl-blue)', marginTop: 12 }}>{score}</div>
+            {isRemedial && <p style={{ color: 'var(--hl-gold)', fontWeight: 700, margin: '4px 0 0' }}>Percobaan ke-{attemptCount}</p>}
+
+            <div style={{ fontSize: 48, fontWeight: 800, color: passed ? 'var(--hl-teal)' : 'var(--hl-blue)', marginTop: 12 }}>{score}</div>
             <p className="text-muted" style={{ fontSize: 14 }}>Nilai</p>
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, margin: '24px 0' }}>
               <div>
                 <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-900)' }}>{correctCount}/{questions.length}</div>
                 <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>Jawaban Benar</div>
               </div>
               <div>
-                <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-900)' }}>{Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}</div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-900)' }}>{formatTime(elapsedTime)}</div>
                 <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>Waktu</div>
               </div>
               <div>
-                <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-900)' }}>{score >= 70 ? 'Lulus' : 'Belum'}</div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: passed ? 'var(--hl-teal)' : 'var(--hl-red)' }}>{passed ? 'LULUS' : 'BELUM LULUS'}</div>
                 <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>Status</div>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <button onClick={() => startModule(activeModule.slug)} className="btn-primary">Coba Lagi</button>
+
+            {!passed && (
+              <div style={{ background: '#fff3cd', border: '1px solid #ffc107', color: '#856404', padding: 16, borderRadius: 8, marginBottom: 20 }}>
+                <strong>Nilai belum mencapai batas kelulusan ({PASSING_SCORE}).</strong>
+                <p style={{ margin: '8px 0 0', fontSize: 13 }}>Kamu bisa mengulang tes ini. Soal akan diacak ulang agar kamu tidak sekadar menghapal jawaban.</p>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+              {!passed && hasCorrectAnswer && (
+                <button onClick={handleRemedial} className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  <RotateCcw size={16} /> Remedial (Soal Diacak)
+                </button>
+              )}
               <button onClick={resetTest} className="btn-secondary">Kembali ke Daftar</button>
             </div>
           </div>
@@ -265,13 +352,16 @@ export default function PsikotesPage() {
         <section className="panel" style={{ padding: 24 }}>
           <h1 className="h-display" style={{ fontSize: 22, margin: 0 }}>Tes Psikotes & Masuk Kerja</h1>
           <p className="text-muted" style={{ fontSize: 13, marginTop: 8 }}>
-            {user ? `Paket aktif: ${tier.toUpperCase()}. Login untuk menyimpan hasil.` : 'Login sebagai member untuk mengakses tes sesuai paketmu.'}
+            {user ? `Paket aktif: ${tier.toUpperCase()}.` : 'Login sebagai member untuk mengakses tes sesuai paketmu.'}
+          </p>
+          <p className="text-muted" style={{ fontSize: 12, marginTop: 4 }}>
+            <strong>Peraturan:</strong> Waktu pengerjaan 10 menit per modul. Nilai minimal kelulusan {PASSING_SCORE}. Jika belum lulus, kamu bisa remedial dengan soal yang diacak.
           </p>
 
           {!user && (
             <div style={{ marginTop: 16, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
               <a href="/member/login?next=/psikotes" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-                <ArrowLeft size={16} /> Login Member
+                Login Member
               </a>
               <a href="/member/register" className="btn-secondary" style={{ textDecoration: 'none' }}>Daftar Gratis</a>
             </div>
@@ -289,6 +379,7 @@ export default function PsikotesPage() {
                   {unlocked ? <Target size={18} color="var(--hl-teal)" /> : <Lock size={18} color="var(--gray-400)" />}
                 </div>
                 <p className="text-muted" style={{ fontSize: 12, margin: 0 }}>{m.desc}</p>
+                <p style={{ fontSize: 11, color: 'var(--gray-500)', margin: '4px 0 0' }}>⏱ 10 menit • 10 soal</p>
                 <div style={{ marginTop: 14 }}>
                   {unlocked ? (
                     <button onClick={() => startModule(m.slug)} className="btn-primary" style={{ width: '100%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
@@ -322,10 +413,10 @@ export default function PsikotesPage() {
                   <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'var(--gray-50)', borderRadius: 8, border: '1px solid var(--gray-200)' }}>
                     <div>
                       <div style={{ fontWeight: 600, fontSize: 13 }}>{mod?.title || r.module_slug}</div>
-                      <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>{new Date(r.completed_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })} &middot; {r.time_spent_seconds ? `${Math.floor(r.time_spent_seconds / 60)}m ${r.time_spent_seconds % 60}s` : '-'}</div>
+                      <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>{new Date(r.completed_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })} • {r.time_spent_seconds ? `${Math.floor(r.time_spent_seconds / 60)}m ${r.time_spent_seconds % 60}s` : '-'}</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontWeight: 700, fontSize: 18, color: r.score >= 70 ? 'var(--hl-teal)' : 'var(--hl-red)' }}>{r.score}</div>
+                      <div style={{ fontWeight: 700, fontSize: 18, color: r.score >= PASSING_SCORE ? 'var(--hl-teal)' : 'var(--hl-red)' }}>{r.score}</div>
                       <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>{r.correct_answers}/{r.total_questions}</div>
                     </div>
                   </div>

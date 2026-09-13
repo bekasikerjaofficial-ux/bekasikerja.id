@@ -1,10 +1,10 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../../lib/supabase';
 import Link from 'next/link';
-import SiteHeader from '../../components/SiteHeader';
-import SiteFooter from '../../components/SiteFooter';
+import SiteHeader from '../../../components/SiteHeader';
+import SiteFooter from '../../../components/SiteFooter';
 
 export default function ArtikelPage() {
   const params = useParams();

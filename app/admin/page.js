@@ -10,6 +10,7 @@ import {
   Settings, Plus, ClipboardList, Image, Save, Trash2,
   Edit2, Tag as TagIcon, FolderOpen, CheckCircle2, X,
   ChevronDown, ChevronUp, BarChart3, Users, Eye,
+  ChevronLeft, ChevronRight,
 } from 'lucide-react';
 
 // ---------- helpers ----------
@@ -22,6 +23,8 @@ const CAT_OPTIONS = [
   { value: 'Tips Karir', label: 'Tips Karir' },
   { value: 'Psikotes', label: 'Psikotes' },
 ];
+
+const POSTS_PER_PAGE = 10;
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
@@ -38,6 +41,12 @@ export default function AdminDashboard() {
     type: 'job', title: '', company: '', location: '', category: 'Manufaktur',
     deadline: '', image_url: '', content: '', tagInput: [],
   });
+
+  // Edit post state
+  const [editingPostId, setEditingPostId] = useState(null);
+
+  // Pagination state
+  const [postPage, setPostPage] = useState(0);
 
   // Category / tag CRUD
   const [categories, setCategories] = useState([]);
@@ -73,6 +82,7 @@ export default function AdminDashboard() {
     const guard = async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user) { window.location.href = '/nyosor/login'; return; }
+      if (data.user.user_metadata?.role !== 'admin') { window.location.href = '/'; return; }
       if (active) await fetchData();
     };
     guard();
@@ -124,11 +134,41 @@ export default function AdminDashboard() {
   const handleCreatePost = async (e) => {
     e.preventDefault();
     const payload = { ...postForm, tags: postForm.tagInput };
-    // Use selected category text directly (it's stored as text on posts.category)
     await supabase.from('posts').insert([payload]);
     alert('Postingan berhasil dipublikasikan!');
     setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Manufaktur', deadline: '', image_url: '', content: '', tagInput: [] });
     fetchData();
+  };
+
+  const handleUpdatePost = async (e) => {
+    e.preventDefault();
+    const payload = { ...postForm, tags: postForm.tagInput };
+    const { error } = await supabase.from('posts').update(payload).eq('id', editingPostId);
+    if (error) { alert('Gagal update postingan: ' + error.message); return; }
+    alert('Postingan berhasil diperbarui!');
+    setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Manufaktur', deadline: '', image_url: '', content: '', tagInput: [] });
+    setEditingPostId(null);
+    fetchData();
+  };
+
+  const handleEditPost = (post) => {
+    setEditingPostId(post.id);
+    setPostForm({
+      type: post.type || 'job',
+      title: post.title || '',
+      company: post.company || '',
+      location: post.location || '',
+      category: post.category || 'Manufaktur',
+      deadline: post.deadline || '',
+      image_url: post.image_url || '',
+      content: post.content || '',
+      tagInput: post.tags || post.tagInput || [],
+    });
+  };
+
+  const handleCancelEditPost = () => {
+    setEditingPostId(null);
+    setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Manufaktur', deadline: '', image_url: '', content: '', tagInput: [] });
   };
 
   const handleDeletePost = async (id) => {
@@ -137,6 +177,10 @@ export default function AdminDashboard() {
       fetchData();
     }
   };
+
+  // ---------- Pagination ----------
+  const totalPostPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+  const paginatedPosts = posts.slice(postPage * POSTS_PER_PAGE, (postPage + 1) * POSTS_PER_PAGE);
 
   // ---------- Category CRUD ----------
   const handleAddCategory = async () => {
@@ -232,9 +276,10 @@ export default function AdminDashboard() {
             <div className="admin-grid" style={{ gap: 24 }}>
               <section className="panel" style={{ padding: 24 }}>
                 <h2 className="h-section" style={{ fontSize: 18, paddingBottom: 12, borderBottom: '1px solid var(--gray-200)', marginBottom: 16, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                  <Plus size={18} /> Tambah Postingan Baru
+                  {editingPostId ? <Edit2 size={18} /> : <Plus size={18} />}
+                  {editingPostId ? 'Edit Postingan' : 'Tambah Postingan Baru'}
                 </h2>
-                <form onSubmit={handleCreatePost} style={{ display: 'grid', gap: 14 }}>
+                <form onSubmit={editingPostId ? handleUpdatePost : handleCreatePost} style={{ display: 'grid', gap: 14 }}>
                   <FormSelect label="Jenis Postingan" name="type" value={postForm.type} onChange={(e) => setPostForm({ ...postForm, type: e.target.value })} options={[{ value: 'job', label: 'Lowongan Kerja (Loker)' }, { value: 'news', label: 'Artikel Lifestyle / Berita' }]} placeholder="" />
                   <FormInput label="Judul" name="title" value={postForm.title} onChange={(e) => setPostForm({ ...postForm, title: e.target.value })} required placeholder="Judul postingan" />
 
@@ -265,9 +310,16 @@ export default function AdminDashboard() {
                     <textarea rows="4" required value={postForm.content} onChange={(e) => setPostForm({ ...postForm, content: e.target.value })} />
                   </div>
 
-                  <button type="submit" disabled={uploadingPostImg} className="btn-primary">
-                    {uploadingPostImg ? 'Tunggu Upload...' : 'Publish Postingan'}
-                  </button>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button type="submit" disabled={uploadingPostImg} className="btn-primary">
+                      {uploadingPostImg ? 'Tunggu Upload...' : editingPostId ? 'Update Postingan' : 'Publish Postingan'}
+                    </button>
+                    {editingPostId && (
+                      <button type="button" onClick={handleCancelEditPost} className="btn-secondary">
+                        Batal
+                      </button>
+                    )}
+                  </div>
                 </form>
               </section>
 
@@ -279,23 +331,52 @@ export default function AdminDashboard() {
                   <span style={{ color: 'var(--hl-blue)' }}>{posts.length} Content</span>
                 </h2>
                 <div style={{ display: 'grid', gap: 12, maxHeight: 520, overflowY: 'auto' }}>
-                  {posts.map((p) => (
+                  {paginatedPosts.map((p) => (
                     <div key={p.id} className="card" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 12, gap: 12 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         {p.image_url && <img src={p.image_url} alt="thumb" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 8 }} />}
                         <div>
                           <span className={`badge-tag ${p.type === 'job' ? 'job' : 'news'}`} style={{ marginBottom: 4 }}>{p.type === 'job' ? 'Lowongan' : 'Berita'}</span>
                           <strong style={{ color: 'var(--gray-900)', display: 'block', fontSize: 13 }}>{p.title}</strong>
-                          <span className="text-muted" style={{ fontSize: 11 }}>{p.company || p.category || ''}{p.tagInput && p.tagInput.length ? ' · ' + p.tagInput.join(', ') : ''}</span>
+                          <span className="text-muted" style={{ fontSize: 11 }}>{p.company || p.category || ''}{p.tags && p.tags.length ? ' · ' + p.tags.join(', ') : ''}</span>
                         </div>
                       </div>
-                      <button onClick={() => handleDeletePost(p.id)} className="btn-danger" style={{ padding: '8px 12px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                        <Trash2 size={14} /> Hapus
-                      </button>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button onClick={() => handleEditPost(p)} className="btn-secondary" style={{ padding: '8px 12px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                          <Edit2 size={14} /> Edit
+                        </button>
+                        <button onClick={() => handleDeletePost(p.id)} className="btn-danger" style={{ padding: '8px 12px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                          <Trash2 size={14} /> Hapus
+                        </button>
+                      </div>
                     </div>
                   ))}
                   {posts.length === 0 && <p className="text-muted" style={{ fontSize: 13 }}>Belum ada postingan.</p>}
                 </div>
+                {/* Pagination */}
+                {totalPostPages > 1 && (
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--gray-200)' }}>
+                    <button
+                      onClick={() => setPostPage(Math.max(0, postPage - 1))}
+                      disabled={postPage === 0}
+                      className="btn-secondary"
+                      style={{ padding: '6px 12px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 4, opacity: postPage === 0 ? 0.5 : 1 }}
+                    >
+                      <ChevronLeft size={14} /> Sebelumnya
+                    </button>
+                    <span style={{ fontSize: 12, color: 'var(--gray-700)', fontWeight: 600 }}>
+                      Halaman {postPage + 1} / {totalPostPages}
+                    </span>
+                    <button
+                      onClick={() => setPostPage(Math.min(totalPostPages - 1, postPage + 1))}
+                      disabled={postPage >= totalPostPages - 1}
+                      className="btn-secondary"
+                      style={{ padding: '6px 12px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 4, opacity: postPage >= totalPostPages - 1 ? 0.5 : 1 }}
+                    >
+                      Selanjutnya <ChevronRight size={14} />
+                    </button>
+                  </div>
+                )}
               </section>
             </div>
           </>
