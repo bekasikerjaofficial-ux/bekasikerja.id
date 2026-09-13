@@ -1,13 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Using unoptimized images for static compatibility
+  // All images served directly from /public
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'tbmdjqnshyogunoisrn.supabase.co',
-        pathname: '/storage/v1/object/public/**',
-      },
-    ],
+    unoptimized: true,
   },
 };
 
