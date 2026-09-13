@@ -154,8 +154,19 @@ export default function JobDetail() {
           </div>
         </div>
       </main>
-      <div style={{ textAlign: 'center', padding: 'var(--sp-8) var(--sp-6)', background: 'var(--hl-blue)', color: '#fff', borderRadius: 'var(--r-xl)', marginTop: 'var(--sp-8)' }}>
-        <Link href="/lowongan" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--fs-lg)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ textAlign: 'center', marginTop: 'var(--sp-8)' }}>
+        <Link
+          href="/lowongan"
+          className="btn-secondary"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            padding: 'var(--sp-3) var(--sp-6)',
+            fontSize: 14,
+            textDecoration: 'none',
+          }}
+        >
           ← Kembali ke Lowongan Kerja Terbaru
         </Link>
       </div>
