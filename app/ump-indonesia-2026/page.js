@@ -191,11 +191,6 @@ export default function UMPIndonesia2026() {
           </div>
         </div>
       </main>
-      <div style={{ textAlign: 'center', marginTop: '80px', marginBottom: '80px' }}>
-        <Link href="/" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: 'var(--sp-3) var(--sp-6)', fontSize: 14, textDecoration: 'none' }}>
-          ← Kembali ke Beranda
-        </Link>
-      </div>
       <SiteFooter brand="BekasiKerja.id" />
     </>
   )

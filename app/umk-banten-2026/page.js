@@ -94,19 +94,17 @@ export default function UMKBanten2026() {
             </div>
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: 32 }}>
-            <Link href="/lowongan" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
+          <div style={{ textAlign: 'center', marginTop: 32, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link href="/lowongan" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', fontSize: 14 }}>
               Cari Lowongan Kerja Terbaru
             </Link>
-            <p className="text-muted" style={{ marginTop: 12, fontSize: 13 }}>Pastikan upah tidak di bawah UMK Banten.</p>
+            <Link href="/" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', fontSize: 14 }}>
+              ← Kembali ke Beranda
+            </Link>
+            <p className="text-muted" style={{ marginTop: 12, fontSize: 13, width: '100%' }}>Pastikan upah tidak di bawah UMK Banten.</p>
           </div>
         </div>
       </main>
-      <div style={{ textAlign: 'center', marginTop: '80px', marginBottom: '80px' }}>
-        <Link href="/" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: 'var(--sp-3) var(--sp-6)', fontSize: 14, textDecoration: 'none' }}>
-          ← Kembali ke Beranda
-        </Link>
-      </div>
       <SiteFooter brand="BekasiKerja.id" />
     </>
   )

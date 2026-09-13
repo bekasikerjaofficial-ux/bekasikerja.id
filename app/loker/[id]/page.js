@@ -35,7 +35,7 @@ export default function PostDetailPage() {
     return (
       <div className="auth-wrap" style={{ flexDirection: 'column', gap: 16 }}>
         <p className="text-muted" style={{ fontSize: 14 }}>Konten tidak ditemukan.</p>
-        <Link href="/" style={{ color: 'var(--hl-blue)', fontWeight: 700, fontSize: 13 }}>← Kembali ke Beranda</Link>
+        <Link href="/" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, textDecoration: 'none' }}>← Kembali ke Beranda</Link>
       </div>
     );
   }
@@ -87,8 +87,10 @@ export default function PostDetailPage() {
           </div>
         )}
 
-        <div style={{ marginTop: 32 }}>
-          <Link href="/" style={{ color: 'var(--hl-blue)', fontWeight: 700, fontSize: 13 }}>← Kembali ke Beranda</Link>
+        <div style={{ marginTop: 32, textAlign: 'center' }}>
+          <Link href="/" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, textDecoration: 'none' }}>
+            ← Kembali ke Beranda
+          </Link>
         </div>
       </main>
 
