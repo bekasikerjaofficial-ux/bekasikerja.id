@@ -53,7 +53,7 @@ const umpData = [
 export default function UMPIndonesia2026() {
   return (
     <>
-      <SiteHeader brand="BekasiKerja.id" logoUrl="/logo.svg" active="/ump-indonesia-2026" searchPlaceholder="Cari artikel UMP..." showSearch={false} />
+      <SiteHeader brand="BekasiKerja.id" logoUrl="/logo.png" active="/ump-indonesia-2026" searchPlaceholder="Cari artikel UMP..." showSearch={false} />
       <section className="hero">
         <div className="container">
           <div>

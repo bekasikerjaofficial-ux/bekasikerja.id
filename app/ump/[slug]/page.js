@@ -18,7 +18,7 @@ export default function UmpProvincePage({ params }) {
   if (!item) notFound()
   const delta = item.ump2026 - item.ump2025
   return <>
-    <SiteHeader brand="BekasiKerja.id" logoUrl="/logo.svg" active="/ump-indonesia-2026" showSearch={false} />
+    <SiteHeader brand="BekasiKerja.id" logoUrl="/logo.png" active="/ump-indonesia-2026" showSearch={false} />
     <section className="hero"><div className="container"><div>
       <span className="badge">INFO UMP 2026</span>
       <h1>UMP {item.prov} 2026</h1>
