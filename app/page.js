@@ -274,6 +274,28 @@ export default function HomePage() {
             </div>
           </div>
         </Reveal>
+
+        {/* BERITA TERBARU — 3 berita terbaru yang bisa langsung dibaca */}
+        <Reveal as="section" className="container section" style={{ paddingTop: 0 }}>
+          <div className="section-head">
+            <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <Newspaper size={22} color="var(--hl-blue)" /> Berita Terbaru
+            </h2>
+            <a href="/ump-indonesia-2026" className="link-more">Lihat Semua Artikel ›</a>
+          </div>
+          {news.length === 0 ? (
+            <div className="panel" style={{ padding: 40, textAlign: 'center' }}>
+              <Newspaper size={40} color="var(--gray-300)" style={{ margin: '0 auto 12px' }} />
+              <p className="text-muted" style={{ fontSize: 14 }}>Belum ada artikel terbaru.</p>
+            </div>
+          ) : (
+            <div className="card-grid">
+              {news.slice(0, 3).map((item) => (
+                <NewsCard key={item.id} item={item} />
+              ))}
+            </div>
+          )}
+        </Reveal>
       </main>
 
       <SiteFooter brand={settings?.brand_name || 'BekasiKerja.id'} />

@@ -44,9 +44,14 @@ export function NewsCard({ item }) {
       <div className="body">
         <span className="badge-tag news">{item.category || 'Lifestyle'}</span>
         <h3>{item.title}</h3>
-        <p style={{ fontSize: 12, color: 'var(--gray-500)', margin: 0, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {item.content}
+        <p style={{ fontSize: 13, color: 'var(--gray-600)', margin: '8px 0 0', lineHeight: 1.6 }}>
+          {item.content?.substring(0, 200)}{item.content?.length > 200 ? '...' : ''}
         </p>
+        <div style={{ marginTop: 12 }}>
+          <span style={{ fontSize: 12, color: 'var(--hl-blue)', fontWeight: 600 }}>
+            Baca Selengkapnya →
+          </span>
+        </div>
       </div>
     </Link>
   );
