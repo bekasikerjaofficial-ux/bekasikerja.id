@@ -155,8 +155,8 @@ export default function JobDetail() {
         </div>
       </main>
       <div style={{ textAlign: 'center', padding: 'var(--sp-8) var(--sp-6)', background: 'var(--hl-blue)', color: '#fff', borderRadius: 'var(--r-xl)', marginTop: 'var(--sp-8)' }}>
-        <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--fs-lg)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-          ← Kembali ke Beranda
+        <Link href="/lowongan" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--fs-lg)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          ← Kembali ke Lowongan Kerja Terbaru
         </Link>
       </div>
       <SiteFooter brand="BekasiKerja.id" />
