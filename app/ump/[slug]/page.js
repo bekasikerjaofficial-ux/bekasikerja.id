@@ -44,9 +44,10 @@ export default function UmpProvincePage({ params }) {
         <p>UMP adalah batas upah minimum tingkat provinsi. Perusahaan wajib memperhatikan ketentuan upah minimum yang berlaku. Pekerja dengan masa kerja satu tahun atau lebih juga perlu melihat struktur dan skala upah perusahaan.</p>
         <p className="text-muted" style={{ fontSize: 12, marginTop: 24 }}>Catatan data: angka di artikel ini mengikuti dataset UMP 2025–2026 yang sudah digunakan pada artikel utama BekasiKerja.id. UMK kabupaten/kota dapat berbeda dan umumnya memiliki ketetapan tersendiri.</p>
       </article>
-      <div style={{ textAlign: 'center', marginTop: 24, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+      <div style={{ textAlign: 'center', marginTop: '80px', marginBottom: '80px' }}>
         <Link href="/ump-indonesia-2026" className="btn-secondary">← Lihat daftar seluruh provinsi</Link>
-        <Link href="/" className="btn-primary" style={{ textDecoration: 'none' }}>Kembali ke Beranda</Link>
+        <span style={{ margin: '0 8px', color: 'var(--gray-300)' }}>|</span>
+        <Link href="/" className="btn-secondary" style={{ textDecoration: 'none' }}>Kembali ke Beranda</Link>
       </div>
     </div></main>
     <SiteFooter brand="BekasiKerja.id" />

@@ -102,8 +102,8 @@ export default function UMKBanten2026() {
           </div>
         </div>
       </main>
-      <div style={{ textAlign: 'center', padding: 'var(--sp-8) var(--sp-6)', background: 'var(--hl-blue)', color: '#fff', borderRadius: 'var(--r-xl)', marginTop: 'var(--sp-8)' }}>
-        <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--fs-lg)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ textAlign: 'center', marginTop: '80px', marginBottom: '80px' }}>
+        <Link href="/" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: 'var(--sp-3) var(--sp-6)', fontSize: 14, textDecoration: 'none' }}>
           ← Kembali ke Beranda
         </Link>
       </div>

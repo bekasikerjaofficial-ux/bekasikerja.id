@@ -178,18 +178,21 @@ export default function UMPIndonesia2026() {
             </div>
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: 32 }}>
-            <Link href="/lowongan" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
+          <div style={{ textAlign: 'center', marginTop: 32, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link href="/lowongan" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', fontSize: 14 }}>
               Cari Lowongan Kerja Terbaru
             </Link>
-            <p className="text-muted" style={{ marginTop: 12, fontSize: 13 }}>
+            <Link href="/" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', fontSize: 14 }}>
+              ← Kembali ke Beranda
+            </Link>
+            <p className="text-muted" style={{ marginTop: 12, fontSize: 13, width: '100%' }}>
               Pastikan upah yang kamu terima tidak di bawah UMP/UMK daerah masing-masing.
             </p>
           </div>
         </div>
       </main>
-      <div style={{ textAlign: 'center', padding: 'var(--sp-8) var(--sp-6)', background: 'var(--hl-blue)', color: '#fff', borderRadius: 'var(--r-xl)', marginTop: 'var(--sp-8)' }}>
-        <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--fs-lg)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ textAlign: 'center', marginTop: '80px', marginBottom: '80px' }}>
+        <Link href="/" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: 'var(--sp-3) var(--sp-6)', fontSize: 14, textDecoration: 'none' }}>
           ← Kembali ke Beranda
         </Link>
       </div>
