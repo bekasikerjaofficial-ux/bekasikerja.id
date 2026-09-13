@@ -154,7 +154,7 @@ export default function JobDetail() {
           </div>
         </div>
       </main>
-      <div style={{ textAlign: 'center', marginTop: 'var(--sp-8)' }}>
+      <div style={{ textAlign: 'center', marginTop: '80px', marginBottom: '80px' }}>
         <Link
           href="/lowongan"
           className="btn-secondary"
