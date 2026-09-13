@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase';
 
 export default function SiteHeader({
   brand = 'BekasiKerja.id',
-  logoUrl = null,
+  logoUrl = '/logo.png',
   active = '/',
   searchPlaceholder = 'Cari lowongan, perusahaan, atau artikel...',
   showSearch = true,

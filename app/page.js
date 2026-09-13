@@ -54,7 +54,7 @@ export default function HomePage() {
       {/* HEADER */}
       <SiteHeader
         brand={settings?.brand_name || 'BekasiKerja.id'}
-        logoUrl={settings?.logo_url || null}
+        logoUrl={settings?.logo_url || '/logo.png'}
         active="/"
       />
 
