@@ -17,6 +17,10 @@ export default function MemberRegister() {
     setError('');
     setMsg('');
     if (!formData.name.trim()) return;
+    if (formData.password.length < 6) {
+      setError('Password minimal 6 karakter.');
+      return;
+    }
     setLoading(true);
 
     // Use the current window origin (production domain, not localhost).

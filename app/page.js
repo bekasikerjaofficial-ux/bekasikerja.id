@@ -122,7 +122,7 @@ export default function HomePage() {
                     Info loker terverifikasi kawasan Bekasi, Cikarang, &amp; Karawang
                   </p>
                 </div>
-                <a href="/#lowongan" className="link-more">Lihat Semua ›</a>
+                <a href="/lowongan" className="link-more">Lihat Semua ›</a>
               </div>
 
               {filteredJobs.length === 0 ? (

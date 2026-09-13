@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '../../../lib/supabase';
-import { Image, CheckCircle2 } from 'lucide-react';
+import { Image, CheckCircle2, Loader2 } from 'lucide-react';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -11,7 +11,10 @@ export default function AdminDashboard() {
     title: '', company: '', location: 'Cikarang', salary: '', type: 'Full-time', description: '',
   });
   const [imagePreview, setImagePreview] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -30,16 +33,52 @@ export default function AdminDashboard() {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) { alert('Ukuran gambar terlalu besar! Maksimal 2 MB.'); return; }
+      setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSubmit = (e) => {
+  const uploadImage = async (file) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const { error: uploadError } = await supabase.storage.from('images').upload(fileName, file);
+    if (uploadError) throw uploadError;
+    const { data } = supabase.storage.from('images').getPublicUrl(fileName);
+    return data.publicUrl;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
+    setSubmitting(true);
+    setError('');
+    try {
+      let imageUrl = null;
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile);
+      }
+      const { error: err } = await supabase.from('posts').insert({
+        type: 'job',
+        title: formData.title,
+        company: formData.company,
+        location: formData.location,
+        content: `${formData.description}\n\nGaji: ${formData.salary || 'N/A'}\nTipe: ${formData.type}`,
+        image_url: imageUrl,
+        deadline: null,
+        category: 'Manufaktur',
+        tags: [],
+      });
+      if (err) throw err;
+      setSubmitted(true);
+      setFormData({ title: '', company: '', location: 'Cikarang', salary: '', type: 'Full-time', description: '' });
+      setImagePreview(null);
+      setImageFile(null);
+      setTimeout(() => setSubmitted(false), 4000);
+    } catch (err) {
+      setError('Gagal menyimpan: ' + err.message);
+    }
+    setSubmitting(false);
   };
 
   const handleLogout = async () => {
@@ -74,22 +113,28 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {error && (
+            <div style={{ background: '#fff0f0', border: '1px solid #ffd0d0', color: 'var(--hl-red)', fontSize: 13, padding: 12, borderRadius: 8, margin: '16px 0', fontWeight: 700 }}>
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 16, marginTop: 16 }}>
             <div className="admin-grid" style={{ gap: 16 }}>
               <div className="field" style={{ margin: 0 }}>
                 <label>Judul Posisi Pekerjaan</label>
-                <input name="title" required placeholder="ex: Staff QC Inspector" onChange={handleChange} />
+                <input name="title" required placeholder="ex: Staff QC Inspector" value={formData.title} onChange={handleChange} />
               </div>
               <div className="field" style={{ margin: 0 }}>
                 <label>Nama Perusahaan / PT</label>
-                <input name="company" required placeholder="ex: PT Astra Honda Motor" onChange={handleChange} />
+                <input name="company" required placeholder="ex: PT Astra Honda Motor" value={formData.company} onChange={handleChange} />
               </div>
             </div>
 
             <div className="admin-grid" style={{ gap: 16 }}>
               <div className="field" style={{ margin: 0 }}>
                 <label>Lokasi Kawasan</label>
-                <select name="location" onChange={handleChange}>
+                <select name="location" value={formData.location} onChange={handleChange}>
                   <option value="Cikarang">Cikarang / EJIP / Jababeka</option>
                   <option value="Cibitung">Cibitung / MM2100</option>
                   <option value="Kota Bekasi">Kota Bekasi</option>
@@ -98,7 +143,7 @@ export default function AdminDashboard() {
               </div>
               <div className="field" style={{ margin: 0 }}>
                 <label>Kisaran Gaji</label>
-                <input name="salary" placeholder="ex: Rp 5.200.000 - Rp 6.000.000" onChange={handleChange} />
+                <input name="salary" placeholder="ex: Rp 5.200.000 - Rp 6.000.000" value={formData.salary} onChange={handleChange} />
               </div>
             </div>
 
@@ -106,14 +151,14 @@ export default function AdminDashboard() {
               <label style={{ fontWeight: 700, fontSize: 13, color: 'var(--gray-700)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <Image size={14} /> Upload Gambar / Logo Perusahaan
               </label>
-              <input type="file" accept="image/*" onChange={handleImageUpload} style={{ fontSize: 12 }} />
+              <input type="file" accept="image/*" onChange={handleImageUpload} style={{ fontSize: 12, display: 'block', marginTop: 8 }} />
               <span className="text-muted" style={{ fontSize: 11, display: 'block', marginTop: 4 }}>*Format JPG/PNG, maksimal 2MB</span>
               {imagePreview && (
                 <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 12, background: '#fff', padding: 8, borderRadius: 8, border: '1px solid var(--gray-200)' }}>
                   <img src={imagePreview} alt="Preview" style={{ width: 64, height: 64, objectFit: 'contain', borderRadius: 8, border: '1px solid var(--gray-200)' }} />
                   <div>
                     <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-800)', display: 'block' }}>Gambar Siap Diposting</span>
-                    <button type="button" onClick={() => setImagePreview(null)} style={{ fontSize: 11, color: 'var(--hl-red)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
+                    <button type="button" onClick={() => { setImagePreview(null); setImageFile(null); }} style={{ fontSize: 11, color: 'var(--hl-red)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
                       Hapus Gambar
                     </button>
                   </div>
@@ -122,11 +167,13 @@ export default function AdminDashboard() {
             </div>
 
             <div className="field" style={{ margin: 0 }}>
-              <label>Deskripsi &amp; Syarat Kualifikasi</label>
-              <textarea name="description" rows="5" placeholder="Tuliskan kualifikasi dan cara melamar..." onChange={handleChange} />
+              <label>Deskripsi & Syarat Kualifikasi</label>
+              <textarea name="description" rows="5" placeholder="Tuliskan kualifikasi dan cara melamar..." value={formData.description} onChange={handleChange} />
             </div>
 
-            <button type="submit" className="btn-primary">Publish Lowongan Kerja</button>
+            <button type="submit" disabled={submitting} className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              {uploading ? <><Loader2 size={16} className="spin" /> Mengunggah...</> : submitting ? <><Loader2 size={16} className="spin" /> Menyimpan...</> : 'Publish Lowongan Kerja'}
+            </button>
           </form>
         </section>
       </main>

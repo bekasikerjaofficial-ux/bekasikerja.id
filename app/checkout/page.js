@@ -18,10 +18,18 @@ export default function CheckoutPage() {
   useEffect(() => {
     let active = true;
     const slug = new URLSearchParams(window.location.search).get('paket');
-    const found = DEFAULT_PACKAGES.find((p) => p.slug === slug) || null;
-    if (active) setPkg(found);
 
     const init = async () => {
+      // Try DB first, then fallback to DEFAULT_PACKAGES
+      const { data: dbPkg } = await supabase
+        .from('packages')
+        .select('*')
+        .eq('slug', slug)
+        .eq('active', true)
+        .single();
+
+      if (active) setPkg(dbPkg || DEFAULT_PACKAGES.find((p) => p.slug === slug) || null);
+
       const { data } = await supabase.auth.getUser();
       if (!data.user) { window.location.href = '/member/login?next=/checkout?paket=' + slug; return; }
       if (active) setUser(data.user);
