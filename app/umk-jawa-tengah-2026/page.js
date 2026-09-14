@@ -52,19 +52,19 @@ export default function UMKJawaTengah2026() {
     <>
       <SiteHeader brand="BekasiKerja.id" active="/umk-jawa-tengah-2026" searchPlaceholder="Cari artikel UMK..." showSearch={false} />
       <div className="container" style={{ paddingTop: 12 }}><ArticleReaderCount slug="umk-jawa-tengah-2026" /></div>
-      <section className="hero">
+      <section className="hero region-hero">
         <div className="container">
           <div>
             <span className="badge">INFO KERJA WILAYAH</span>
             <h1><Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>UMK Jawa Tengah 2026</Link></h1>
             <p>Daftar lengkap Upah Minimum Kabupaten/Kota di seluruh wilayah Jawa Tengah. Update terbaru dari Keputusan Gubernur Jateng.</p>
-            <div className="stats">
-              <div className="stat"><div className="num">33+6</div><div className="lbl">Kabupaten/Kota</div></div>
-              <div className="stat"><div className="num">{formatRupiah(4963471)}</div><div className="lbl">UMK Tertinggi</div></div>
-              <div className="stat"><div className="num">{formatRupiah(umpJateng)}</div><div className="lbl">UMP Provinsi</div></div>
+            <div className="stats region-stats">
+              <div className="stat"><div className="num region-stat-num">33+6</div><div className="lbl">Kabupaten/Kota</div></div>
+              <div className="stat"><div className="num region-stat-num">{formatRupiah(4963471)}</div><div className="lbl">UMK Tertinggi</div></div>
+              <div className="stat"><div className="num region-stat-num">{formatRupiah(umpJateng)}</div><div className="lbl">UMP Provinsi</div></div>
             </div>
           </div>
-          <div><img className="illus" src="/placeholder.svg" alt="Kawasan industri Jawa Tengah" /></div>
+          <div><img className="illus region-illus" src="/placeholder.svg" alt="Kawasan industri Jawa Tengah" /></div>
         </div>
       </section>
 
