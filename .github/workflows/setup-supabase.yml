@@ -25,6 +25,13 @@ jobs:
           docker run --rm -i -e PGPASSWORD postgres:16-bullseye \
             psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f - < agentic/supabase-setup.sql
 
+      - name: Apply analytics schema (visitor tracking)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          docker run --rm -i -e PGPASSWORD postgres:16-bullseye \
+            psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f - < agentic/analytics.sql
+
       - name: Ensure admin user exists (Auth Admin API)
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
