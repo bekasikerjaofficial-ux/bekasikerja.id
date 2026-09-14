@@ -7,11 +7,15 @@ import Image from 'next/image';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter'
 import ShareButtons from '../../../components/ShareButtons';
+import { NewsCard } from '../../../components/Cards';
+import PackageCTA from '../../../components/PackageCTA';
+import { Newspaper } from 'lucide-react';
 
 export default function ArtikelPage() {
   const params = useParams();
   const id = params?.id;
   const [post, setPost] = useState(null);
+  const [relatedPosts, setRelatedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,6 +23,25 @@ export default function ArtikelPage() {
     const load = async () => {
       const { data } = await supabase.from('posts').select('*').eq('id', id).single();
       setPost(data);
+
+      if (data) {
+        const { data: candidates } = await supabase
+          .from('posts')
+          .select('*')
+          .eq('type', 'news')
+          .neq('id', id)
+          .order('created_at', { ascending: false })
+          .limit(8);
+
+        const sameCategory = (candidates || []).filter((item) => (
+          data.category && item.category === data.category
+        ));
+        const otherNews = (candidates || []).filter((item) => (
+          !data.category || item.category !== data.category
+        ));
+        setRelatedPosts([...sameCategory, ...otherNews].slice(0, 4));
+      }
+
       setLoading(false);
     };
     load();
@@ -74,12 +97,32 @@ export default function ArtikelPage() {
           {post.content}
         </article>
 
+        {relatedPosts.length > 0 && (
+          <section className="related-articles" aria-labelledby="related-title">
+            <div className="section-head">
+              <div>
+                <h2 id="related-title" className="related-title">
+                  <Newspaper size={20} color="var(--hl-blue)" /> Artikel Terkait
+                </h2>
+                <p className="text-muted related-subtitle">
+                  Berita dan tips karir lain yang mungkin bermanfaat untukmu.
+                </p>
+              </div>
+            </div>
+            <div className="related-grid">
+              {relatedPosts.map((item) => <NewsCard key={item.id} item={item} />)}
+            </div>
+          </section>
+        )}
+
         <div style={{ marginTop: 32, textAlign: 'center' }}>
           <Link href="/" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 14, textDecoration: 'none' }}>
             ← Kembali ke Beranda
           </Link>
         </div>
       </main>
+
+      <PackageCTA />
 
       <SiteFooter />
       <ShareButtons title={post?.title ? `${post.title} — BekasiKerja.id` : ''} />

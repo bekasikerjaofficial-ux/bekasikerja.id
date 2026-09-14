@@ -478,6 +478,35 @@ html.dark .panel { background: var(--gray-50); }
 @media (max-width: 600px)  { .slide { width: 85%; } .slider-head { margin-bottom: var(--sp-4); } }
 
 /* ============================================================
+   RELATED ARTICLES (article detail)
+   ============================================================ */
+.related-articles {
+  margin-top: var(--sp-10);
+  padding-top: var(--sp-8);
+  border-top: 1px solid var(--gray-200);
+}
+.related-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.related-subtitle { margin: 4px 0 0; font-size: var(--fs-sm); }
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+.related-grid .card { min-width: 0; }
+@media (max-width: 600px) {
+  .related-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
    SCROLL REVEAL (IntersectionObserver) — fade + rise
    ============================================================ */
 .reveal { opacity: 0; transform: translateY(60px) scale(0.98); transition: opacity .8s cubic-bezier(.22,.61,.36,1), transform .8s cubic-bezier(.22,.61,.36,1); will-change: opacity, transform; }
