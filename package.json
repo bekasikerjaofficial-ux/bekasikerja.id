@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "publish:ump": "node scripts/publish-ump.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.8",
