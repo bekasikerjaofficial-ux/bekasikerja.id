@@ -8,6 +8,22 @@ const START_DATE = '2026-10-01';
 const KSPI_LOW = 0.075;
 const KSPI_HIGH = 0.085;
 const SOURCE_URL = 'https://ekonomi.bisnis.com/read/20260907/12/2002105/buruh-kspi-usul-kenaikan-ump-2027-hingga-85';
+const LANDMARKS = {
+  Aceh: 'Masjid Raya Baiturrahman', 'Sumatera Utara': 'Danau Toba', 'Sumatera Barat': 'Jam Gadang',
+  Riau: 'Istana Siak', Jambi: 'Candi Muaro Jambi', 'Sumatera Selatan': 'Jembatan Ampera',
+  Bengkulu: 'Benteng Marlborough', Lampung: 'Menara Siger', 'Kep. Bangka Belitung': 'Pantai Tanjung Tinggi',
+  'Kepulauan Riau': 'Jembatan Barelang', 'DKI Jakarta': 'Monas', 'Jawa Barat': 'Gedung Sate',
+  'Jawa Tengah': 'Candi Borobudur', 'DI Yogyakarta': 'Tugu Yogyakarta', 'Jawa Timur': 'Jembatan Suramadu',
+  Banten: 'Masjid Agung Banten', Bali: 'Pura Ulun Danu Beratan', 'Nusa Tenggara Barat': 'Gunung Rinjani',
+  'Nusa Tenggara Timur': 'Komodo dan Pulau Padar', 'Kalimantan Barat': 'Tugu Khatulistiwa',
+  'Kalimantan Tengah': 'Jembatan Kahayan', 'Kalimantan Selatan': 'Pasar Terapung',
+  'Kalimantan Timur': 'IKN dan Istana Garuda', 'Kalimantan Utara': 'Taman Nasional Kayan Mentarang',
+  'Sulawesi Utara': 'Bunaken', 'Sulawesi Tengah': 'Jembatan Palu', 'Sulawesi Selatan': 'Rumah Tongkonan',
+  'Sulawesi Tenggara': 'Benteng Keraton Buton', Gorontalo: 'Menara Limboto', 'Sulawesi Barat': 'Pantai Manakarra',
+  Maluku: 'Jembatan Merah Putih Ambon', 'Maluku Utara': 'Gunung Gamalama', 'Papua Barat': 'Raja Ampat',
+  Papua: 'Pegunungan Jayawijaya', 'Papua Tengah': 'Danau Paniai', 'Papua Pegunungan': 'Lembah Baliem',
+  'Papua Selatan': 'Taman Nasional Wasur', 'Papua Barat Daya': 'Raja Ampat',
+};
 
 function loadEnvFile() {
   const envPath = path.join(root, '.env.local');
@@ -95,6 +111,37 @@ async function request(url, options = {}) {
   return body;
 }
 
+async function generateFeaturedImage(item) {
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (!openaiKey) throw new Error('OPENAI_API_KEY wajib tersedia untuk membuat featured image AI.');
+  const landmark = LANDMARKS[item.prov] || `ikon budaya ${item.prov}`;
+  const prompt = `Editorial featured image for an Indonesian employment news article about estimated provincial minimum wage (UMP) 2027 in ${item.prov}. Show an elegant stylized illustration of ${landmark}, a diverse Indonesian workforce and a subtle modern city/industry atmosphere. Clean navy, teal and warm accent palette, professional news website, no text, no numbers, no logos, no official seals, landscape 3:2 composition.`;
+  const response = await fetch('https://api.openai.com/v1/images/generations', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${openaiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'gpt-image-1', prompt, size: '1536x1024', quality: 'medium' }),
+  });
+  const body = await response.json();
+  if (!response.ok || !body?.data?.[0]?.b64_json) {
+    throw new Error(`OpenAI Images HTTP ${response.status}: ${body?.error?.message || 'respons kosong'}`);
+  }
+  const imagePath = `ump-2027/${item.slug}.png`;
+  const imageBytes = Buffer.from(body.data[0].b64_json, 'base64');
+  const uploadUrl = `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/images/${imagePath}`;
+  const upload = await fetch(uploadUrl, {
+    method: 'POST',
+    headers: {
+      apikey: serviceRoleKey,
+      Authorization: `Bearer ${serviceRoleKey}`,
+      'Content-Type': 'image/png',
+      'x-upsert': 'true',
+    },
+    body: imageBytes,
+  });
+  if (!upload.ok) throw new Error(`Supabase Storage HTTP ${upload.status}: ${await upload.text()}`);
+  return `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/images/${imagePath}`;
+}
+
 loadEnvFile();
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -119,13 +166,14 @@ if (!supabaseUrl || !serviceRoleKey) {
     } else {
       const low = Math.round(next.ump2026 * (1 + KSPI_LOW));
       const high = Math.round(next.ump2026 * (1 + KSPI_HIGH));
+      const imageUrl = await generateFeaturedImage(next);
       const inserted = await request(baseUrl, {
         method: 'POST',
         headers: { Prefer: 'return=representation' },
         body: JSON.stringify({
           type: 'news', title: next.title, company: 'BekasiKerja.id',
           category: 'UMP 2027 · Estimasi Usulan Buruh', content: buildContent(next, low, high),
-          image_url: null, location: next.prov, deadline: null,
+          image_url: imageUrl, location: next.prov, deadline: null,
         }),
       });
       console.log(JSON.stringify({ ok: true, status: 'published', article: next, estimated_range: { low, high }, row_id: inserted?.[0]?.id || null }));

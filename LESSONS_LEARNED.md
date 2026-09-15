@@ -8,6 +8,10 @@
 - `app/ump/[slug]/page.js` provides 38 prerendered province pages from `lib/ump-data.js`.
 - The main UMP table links to each province article.
 
+## Image generation
+
+- `OPENAI_API_KEY` wajib tersedia di runtime cron untuk membuat featured image. Key hanya digunakan server-side dan tidak boleh masuk ke client atau Git.
+
 ## Required production step
 
 Run `agentic/supabase-setup.sql` in the production Supabase SQL editor or through the existing setup workflow. The appended analytics section creates `page_visits`, `article_reads`, and the security-definer RPCs. It must be applied before the public tracker can write or the admin dashboard can read metrics.
