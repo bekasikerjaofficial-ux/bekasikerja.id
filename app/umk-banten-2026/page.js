@@ -5,6 +5,7 @@ import Link from 'next/link'
 import SiteHeader from '../../components/SiteHeader'
 import SiteFooter from '../../components/SiteFooter'
 import ArticleReaderCount from '../../components/ArticleReaderCount'
+import LatestNewsLinks from '../../components/LatestNewsLinks'
 
 const formatRupiah = (num) => {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num)
@@ -105,6 +106,7 @@ export default function UMKBanten2026() {
           </div>
         </div>
       </main>
+      <LatestNewsLinks />
       <SiteFooter brand="BekasiKerja.id" />
     </>
   )

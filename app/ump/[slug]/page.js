@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import SiteHeader from '../../../components/SiteHeader'
 import SiteFooter from '../../../components/SiteFooter'
 import ArticleReaderCount from '../../../components/ArticleReaderCount'
+import LatestNewsLinks from '../../../components/LatestNewsLinks'
 import { getUmpBySlug, umpData, formatRupiah } from '../../../lib/ump-data'
 
 export function generateStaticParams() { return umpData.map(({ slug }) => ({ slug })) }
@@ -49,6 +50,7 @@ export default function UmpProvincePage({ params }) {
         <Link href="/" className="btn-secondary" style={{ fontSize: 14, textDecoration: 'none' }}>Kembali ke Beranda</Link>
       </div>
     </div></main>
-    <SiteFooter brand="BekasiKerja.id" />
+      <LatestNewsLinks />
+      <SiteFooter brand="BekasiKerja.id" />
   </>
 }

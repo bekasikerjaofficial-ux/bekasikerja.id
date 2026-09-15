@@ -6,6 +6,7 @@ import Image from 'next/image'
 import SiteHeader from '../../components/SiteHeader'
 import SiteFooter from '../../components/SiteFooter'
 import ArticleReaderCount from '../../components/ArticleReaderCount'
+import LatestNewsLinks from '../../components/LatestNewsLinks'
 import ShareButtons from '../../components/ShareButtons'
 
 const formatRupiah = (num) => {
@@ -190,8 +191,9 @@ export default function UMPIndonesia2026() {
             <p className="text-muted" style={{ marginTop: 12, fontSize: 13, width: '100%' }}>
               Pastikan upah yang kamu terima tidak di bawah UMP/UMK daerah masing-masing.
             </p>
-          </div>
-        </div>
+            </div>
+            <LatestNewsLinks />
+            </div>
       </main>
       <SiteFooter brand="BekasiKerja.id" />
       <ShareButtons title="Daftar UMP Indonesia Tahun 2026 — BekasiKerja.id" />
