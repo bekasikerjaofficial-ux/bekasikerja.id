@@ -16,6 +16,7 @@ export default function ArtikelPage() {
   const id = params?.id;
   const [post, setPost] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState([]);
+  const [latestPosts, setLatestPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function ArtikelPage() {
           .order('created_at', { ascending: false })
           .limit(8);
 
+        setLatestPosts((candidates || []).slice(0, 3));
         const sameCategory = (candidates || []).filter((item) => (
           data.category && item.category === data.category
         ));
@@ -96,6 +98,22 @@ export default function ArtikelPage() {
         <article className="panel" style={{ marginTop: 24, padding: 24, fontSize: 14, lineHeight: 1.8, color: 'var(--gray-700)', whiteSpace: 'pre-line' }}>
           {post.content}
         </article>
+
+        {latestPosts.length > 0 && (
+          <section className="panel" aria-labelledby="latest-title" style={{ marginTop: 24, padding: 20 }}>
+            <h2 id="latest-title" className="related-title" style={{ marginBottom: 14 }}>
+              <Newspaper size={20} color="var(--hl-blue)" /> Berita Terbaru
+            </h2>
+            <div style={{ display: 'grid', gap: 10 }}>
+              {latestPosts.map((item) => (
+                <Link key={item.id} href={`/artikel/${item.id}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '12px 0', borderBottom: '1px solid var(--gray-200)', color: 'var(--gray-900)', textDecoration: 'none' }}>
+                  <span style={{ fontWeight: 700, fontSize: 14, lineHeight: 1.45 }}>{item.title}</span>
+                  <span style={{ flexShrink: 0, color: 'var(--hl-blue)', fontWeight: 700, fontSize: 12 }}>Baca →</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {relatedPosts.length > 0 && (
           <section className="related-articles" aria-labelledby="related-title">
