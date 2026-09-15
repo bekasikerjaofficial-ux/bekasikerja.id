@@ -159,7 +159,8 @@ export default function HomePage() {
           </div>
         </Reveal>
 
-        {/* ARTIKEL TERKINI — Section baru di bawah Lifestyle, bukan di slider */}
+        {/* ARTIKEL TERKINI LAMA — digantikan oleh query Berita Terbaru di bawah */}
+        {false && (
         <Reveal as="section" className="container section" style={{ paddingTop: 0 }}>
           <div className="section-head">
             <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
@@ -274,6 +275,7 @@ export default function HomePage() {
             </div>
           </div>
         </Reveal>
+        )}
 
         {/* BERITA TERBARU — 3 berita terbaru yang bisa langsung dibaca */}
         <Reveal as="section" className="container section" style={{ paddingTop: 0 }}>
