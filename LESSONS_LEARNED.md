@@ -10,7 +10,7 @@
 
 ## Image generation
 
-- `OPENAI_API_KEY` wajib tersedia di runtime cron untuk membuat featured image. Key hanya digunakan server-side dan tidak boleh masuk ke client atau Git.
+- `OPENAI_API_KEY` opsional di runtime cron. Jika tersedia, publisher membuat featured image AI; jika kosong, berita tetap dipublikasikan tanpa gambar dan dapat dilengkapi manual dari dashboard admin.
 
 ## Required production step
 

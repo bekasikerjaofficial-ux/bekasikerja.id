@@ -113,7 +113,7 @@ async function request(url, options = {}) {
 
 async function generateFeaturedImage(item) {
   const openaiKey = process.env.OPENAI_API_KEY;
-  if (!openaiKey) throw new Error('OPENAI_API_KEY wajib tersedia untuk membuat featured image AI.');
+  if (!openaiKey) return null;
   const landmark = LANDMARKS[item.prov] || `ikon budaya ${item.prov}`;
   const prompt = `Editorial featured image for an Indonesian employment news article about estimated provincial minimum wage (UMP) 2027 in ${item.prov}. Show an elegant stylized illustration of ${landmark}, a diverse Indonesian workforce and a subtle modern city/industry atmosphere. Clean navy, teal and warm accent palette, professional news website, no text, no numbers, no logos, no official seals, landscape 3:2 composition.`;
   const response = await fetch('https://api.openai.com/v1/images/generations', {
