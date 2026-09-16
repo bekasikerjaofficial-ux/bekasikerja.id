@@ -14,14 +14,10 @@ import {
 } from 'lucide-react';
 
 // ---------- helpers ----------
-const CAT_OPTIONS = [
-  { value: 'Manufaktur', label: 'Manufaktur' },
-  { value: 'Admin', label: 'Admin' },
-  { value: 'Engineering', label: 'Engineering' },
-  { value: 'Gudang', label: 'Gudang' },
-  { value: 'Logistik', label: 'Logistik' },
-  { value: 'Tips Karir', label: 'Tips Karir' },
-  { value: 'Psikotes', label: 'Psikotes' },
+const CONTENT_CATEGORIES = [
+  { value: 'Lowongan Kerja', label: 'Lowongan Kerja' },
+  { value: 'Tips (Jobdesk)', label: 'Tips (Jobdesk)' },
+  { value: 'Berita', label: 'Berita (Upah & informasi)' },
 ];
 
 const POSTS_PER_PAGE = 10;
@@ -38,7 +34,7 @@ export default function AdminDashboard() {
   });
 
   const [postForm, setPostForm] = useState({
-    type: 'job', title: '', company: '', location: '', category: 'Manufaktur',
+    type: 'job', title: '', company: '', location: '', category: 'Lowongan Kerja',
     deadline: '', image_url: '', content: '', tagInput: [],
   });
 
@@ -136,7 +132,7 @@ export default function AdminDashboard() {
     const payload = { ...postForm, tags: postForm.tagInput };
     await supabase.from('posts').insert([payload]);
     alert('Postingan berhasil dipublikasikan!');
-    setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Manufaktur', deadline: '', image_url: '', content: '', tagInput: [] });
+    setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Lowongan Kerja', deadline: '', image_url: '', content: '', tagInput: [] });
     fetchData();
   };
 
@@ -146,7 +142,7 @@ export default function AdminDashboard() {
     const { error } = await supabase.from('posts').update(payload).eq('id', editingPostId);
     if (error) { alert('Gagal update postingan: ' + error.message); return; }
     alert('Postingan berhasil diperbarui!');
-    setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Manufaktur', deadline: '', image_url: '', content: '', tagInput: [] });
+    setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Lowongan Kerja', deadline: '', image_url: '', content: '', tagInput: [] });
     setEditingPostId(null);
     fetchData();
   };
@@ -158,7 +154,7 @@ export default function AdminDashboard() {
       title: post.title || '',
       company: post.company || '',
       location: post.location || '',
-      category: post.category || 'Manufaktur',
+      category: post.category || 'Lowongan Kerja',
       deadline: post.deadline || '',
       image_url: post.image_url || '',
       content: post.content || '',
@@ -168,7 +164,7 @@ export default function AdminDashboard() {
 
   const handleCancelEditPost = () => {
     setEditingPostId(null);
-    setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Manufaktur', deadline: '', image_url: '', content: '', tagInput: [] });
+    setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Lowongan Kerja', deadline: '', image_url: '', content: '', tagInput: [] });
   };
 
   const handleDeletePost = async (id) => {
@@ -291,7 +287,7 @@ export default function AdminDashboard() {
                     </>
                   )}
 
-                  <FormSelect label="Kategori" name="category" value={postForm.category} onChange={(e) => setPostForm({ ...postForm, category: e.target.value })} options={CAT_OPTIONS} placeholder="Pilih kategori" />
+                  <FormSelect label="Kategori" name="category" value={postForm.category} onChange={(e) => setPostForm({ ...postForm, category: e.target.value })} options={CONTENT_CATEGORIES} placeholder="Pilih kategori" />
 
                   <div style={{ padding: 12, background: 'var(--gray-100)', border: '1px solid var(--gray-200)', borderRadius: 12, display: 'grid', gap: 8 }}>
                     <span style={{ fontWeight: 700, color: 'var(--gray-700)', fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 6 }}>

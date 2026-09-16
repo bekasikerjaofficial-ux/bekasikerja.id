@@ -172,7 +172,7 @@ if (!supabaseUrl || !serviceRoleKey) {
         headers: { Prefer: 'return=representation' },
         body: JSON.stringify({
           type: 'news', title: next.title, company: 'BekasiKerja.id',
-          category: 'UMP 2027 · Estimasi Usulan Buruh', content: buildContent(next, low, high),
+          category: 'Berita', content: buildContent(next, low, high),
           image_url: imageUrl, location: next.prov, deadline: null,
         }),
       });

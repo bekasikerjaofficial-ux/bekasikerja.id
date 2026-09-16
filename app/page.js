@@ -298,6 +298,18 @@ export default function HomePage() {
             </div>
           )}
         </Reveal>
+
+        {news.length > 3 && (
+          <Reveal as="section" className="container section" style={{ paddingTop: 0 }}>
+            <div className="section-head">
+              <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><Newspaper size={22} color="var(--hl-blue)" /> Arsip Berita</h2>
+              <span className="text-muted" style={{ fontSize: 13 }}>Berita sebelumnya tetap tersedia</span>
+            </div>
+            <div className="card-grid">
+              {news.slice(3).map((item) => <NewsCard key={item.id} item={item} />)}
+            </div>
+          </Reveal>
+        )}
       </main>
 
       <SiteFooter brand={settings?.brand_name || 'BekasiKerja.id'} />
