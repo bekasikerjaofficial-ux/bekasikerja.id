@@ -51,6 +51,14 @@ export default function AdminLoginPage() {
             {busy ? 'Memproses...' : 'Enter Dashboard'}
           </button>
         </form>
+        <div style={{ textAlign: 'center', marginTop: 16 }}>
+          <Link href="/nyosor/forgot-password" style={{ color: 'var(--gray-500)', fontSize: 12 }}>Lupa password admin?</Link>
+        </div>
+        <div style={{ textAlign: 'center', marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--gray-200)' }}>
+          <Link href="/" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, textDecoration: 'none' }}>
+            ← Kembali ke BekasiKerja.id
+          </Link>
+        </div>
       </div>
     </div>
   );
