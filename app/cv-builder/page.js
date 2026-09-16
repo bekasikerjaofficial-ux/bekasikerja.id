@@ -198,7 +198,7 @@ export default function CvBuilderPage() {
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 24, alignItems: 'start' }}>
+        <div className="cv-builder-layout" style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 24, alignItems: 'start' }}>
           {/* Sidebar: CV List */}
           <div className="panel" style={{ padding: 16, position: 'sticky', top: 80 }}>
             <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>

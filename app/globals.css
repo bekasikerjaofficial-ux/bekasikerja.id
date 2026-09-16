@@ -350,6 +350,40 @@ html.dark .chip { background: var(--gray-50); }
   .container { padding: 0 var(--sp-7); padding-left: max(var(--sp-7), env(safe-area-inset-left)); padding-right: max(var(--sp-7), env(safe-area-inset-right)); }
 }
 
+@media (max-width: 600px) {
+  .cv-builder-layout {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    gap: 16px !important;
+  }
+  .cv-builder-layout > * {
+    width: 100%;
+    min-width: 0;
+  }
+  .cv-builder-layout > aside,
+  .cv-builder-layout > div:first-child {
+    position: static !important;
+  }
+  .cv-builder-layout .admin-grid,
+  .cv-builder-layout [style*="grid-template-columns: 1fr 1fr"],
+  .cv-builder-layout [style*="grid-template-columns: 2fr 1fr 1fr auto"],
+  .cv-builder-layout [style*="grid-template-columns: 1fr 1fr auto"],
+  .cv-builder-layout [style*="grid-template-columns: 1fr 1fr 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  .cv-builder-layout [style*="grid-column: 1 / -1"] {
+    grid-column: auto !important;
+  }
+  .cv-builder-layout input,
+  .cv-builder-layout select,
+  .cv-builder-layout textarea {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
 /* ============ SECTION ============ */
 .section { padding-top: var(--sp-16); padding-bottom: var(--sp-16); }
 .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--sp-6); flex-wrap: wrap; gap: var(--sp-3); }
