@@ -204,17 +204,16 @@ Tanpa keduanya, halaman tetap ter-build & ter-render, tapi konten Supabase koson
 > membuat koneksi. URL dan anon key harus berasal dari project Supabase yang sama dengan
 > tabel `posts` berisi data production.
 
-### Publisher otomatis UMP 2027
+### Publisher otomatis UMP 2026
 
 Publisher dijalankan oleh GitHub Actions pada pukul 06:30, 11:30, dan 17:00 WIB.
-Tambahkan secrets repository berikut pada GitHub sebelum tanggal mulai publikasi:
+Tambahkan secrets repository berikut agar jadwal dapat menulis artikel ke Supabase:
 
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `OPENAI_API_KEY` (opsional; gambar bukan syarat publikasi)
 
-Publisher baru aktif mulai 1 Oktober 2026. Sebelum tanggal tersebut, workflow selesai
-Tanpa membuat artikel sesuai kebijakan jadwal.
+Setiap jadwal memilih provinsi berikutnya yang belum memiliki artikel UMP 2026.
 
 ---
 

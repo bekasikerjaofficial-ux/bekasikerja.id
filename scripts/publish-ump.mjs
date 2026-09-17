@@ -4,10 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const START_DATE = '2026-10-01';
-const KSPI_LOW = 0.075;
-const KSPI_HIGH = 0.085;
-const SOURCE_URL = 'https://ekonomi.bisnis.com/read/20260907/12/2002105/buruh-kspi-usul-kenaikan-ump-2027-hingga-85';
+const SOURCE_URL = 'https://www.bekasikerja.id/ump';
 const LANDMARKS = {
   Aceh: 'Masjid Raya Baiturrahman', 'Sumatera Utara': 'Danau Toba', 'Sumatera Barat': 'Jam Gadang',
   Riau: 'Istana Siak', Jambi: 'Candi Muaro Jambi', 'Sumatera Selatan': 'Jembatan Ampera',
@@ -65,31 +62,28 @@ function todayWib() {
   }).format(new Date());
 }
 
-function buildContent(item, low, high) {
-  const lowValue = item.ump2026 * (1 + KSPI_LOW);
-  const highValue = item.ump2026 * (1 + KSPI_HIGH);
+function buildContent(item) {
   return [
-    `# Estimasi UMP ${item.prov} 2027 Jika Sesuai Usulan Buruh`,
+    `# UMP ${item.prov} 2026: Besaran Upah Minimum Provinsi`,
     '',
-    `Berapa gaji UMR ${item.prov} 2027? Berikut simulasi estimasi UMP ${item.prov} 2027 apabila usulan kenaikan upah minimum dari KSPI sebesar 7,5% sampai 8,5% diterapkan.`,
+    `Berapa UMP ${item.prov} tahun 2026? Artikel ini merangkum besaran upah minimum provinsi, perbandingannya dengan tahun 2025, serta persentase perubahan yang tercatat.`,
     '',
-    `## Estimasi UMP ${item.prov} 2027`,
-    `Sebagai dasar simulasi, UMP ${item.prov} 2026 tercatat sebesar ${rupiah(item.ump2026)}. Dengan asumsi kenaikan 7,5%–8,5%, estimasi UMP ${item.prov} 2027 berada di kisaran ${rupiah(lowValue)} sampai ${rupiah(highValue)}.`,
+    `## Besaran UMP ${item.prov} 2026`,
+    `UMP ${item.prov} pada 2026 tercatat sebesar ${rupiah(item.ump2026)} per bulan. Angka ini menjadi dasar upah minimum tingkat provinsi dan berbeda dari UMK kabupaten atau kota.`,
     '',
+    `- UMP ${item.prov} 2025: ${rupiah(item.ump2025)}`,
     `- UMP ${item.prov} 2026: ${rupiah(item.ump2026)}`,
-    `- Estimasi kenaikan 7,5%: ${rupiah(low)} → ${rupiah(lowValue)}`,
-    `- Estimasi kenaikan 8,5%: ${rupiah(high)} → ${rupiah(highValue)}`,
+    `- Perubahan dibanding 2025: ${item.naik}`,
     '',
-    `## Dasar Usulan Kenaikan UMP 2027`,
-    'KSPI mengusulkan formula yang mempertimbangkan inflasi, pertumbuhan ekonomi, dan indeks tertentu atau alfa 0,9. Dalam pemberitaan yang menjadi rujukan, kisaran kenaikan yang disampaikan adalah 7,5%–8,5%.',
+    '## Bedanya UMP dan UMK',
+    `UMP berlaku untuk seluruh provinsi ${item.prov}. Kabupaten atau kota dapat memiliki UMK tersendiri dengan nilai yang berbeda, sehingga pencari kerja perlu melihat ketentuan wilayah tempat perusahaan berada.`,
     '',
-    '## Apakah Ini Angka Resmi?',
-    'Belum. Angka di atas adalah estimasi atau simulasi berdasarkan usulan buruh, bukan keputusan pemerintah. Nilai resmi UMP 2027 masih menunggu data BPS, pembahasan tripartit, dan keputusan gubernur masing-masing provinsi.',
+    '## Catatan untuk Pekerja',
+    'UMP merupakan batas minimum pengupahan sesuai ketentuan yang berlaku. Besaran gaji aktual dapat lebih tinggi berdasarkan jabatan, pengalaman, tunjangan, dan kebijakan perusahaan.',
     '',
-    '## Catatan UMP dan UMK',
-    `UMP berlaku pada tingkat provinsi. Nilai UMK kabupaten/kota di wilayah ${item.prov} dapat berbeda dan memiliki proses penetapan tersendiri. Pembaca perlu menunggu keputusan resmi sebelum menjadikan simulasi ini sebagai acuan pengupahan.`,
+    'Data UMP 2026 dirangkum dari data provinsi yang digunakan BekasiKerja.id. Periksa keputusan pemerintah daerah untuk kebutuhan administratif atau pengupahan resmi.',
     '',
-    `Sumber usulan KSPI: ${SOURCE_URL}`,
+    `Sumber data: ${SOURCE_URL}/${item.slug}`,
     `Artikel terkait: https://www.bekasikerja.id/ump/${item.slug}`,
   ].join('\n');
 }
@@ -115,7 +109,7 @@ async function generateFeaturedImage(item) {
   const openaiKey = process.env.OPENAI_API_KEY;
   if (!openaiKey) return null;
   const landmark = LANDMARKS[item.prov] || `ikon budaya ${item.prov}`;
-  const prompt = `Editorial featured image for an Indonesian employment news article about estimated provincial minimum wage (UMP) 2027 in ${item.prov}. Show an elegant stylized illustration of ${landmark}, a diverse Indonesian workforce and a subtle modern city/industry atmosphere. Clean navy, teal and warm accent palette, professional news website, no text, no numbers, no logos, no official seals, landscape 3:2 composition.`;
+  const prompt = `Editorial featured image for an Indonesian employment news article about provincial minimum wage (UMP) 2026 in ${item.prov}. Show an elegant stylized illustration of ${landmark}, a diverse Indonesian workforce and a subtle modern city/industry atmosphere. Clean navy, teal and warm accent palette, professional news website, no text, no numbers, no logos, no official seals, landscape 3:2 composition.`;
   const response = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { Authorization: `Bearer ${openaiKey}`, 'Content-Type': 'application/json' },
@@ -125,7 +119,7 @@ async function generateFeaturedImage(item) {
   if (!response.ok || !body?.data?.[0]?.b64_json) {
     throw new Error(`OpenAI Images HTTP ${response.status}: ${body?.error?.message || 'respons kosong'}`);
   }
-  const imagePath = `ump-2027/${item.slug}.png`;
+  const imagePath = `ump-2026/${item.slug}.png`;
   const imageBytes = Buffer.from(body.data[0].b64_json, 'base64');
   const storageBaseUrl = supabaseUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
   const uploadUrl = `${storageBaseUrl}/storage/v1/object/images/${imagePath}`;
@@ -148,36 +142,33 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const today = todayWib();
 
-if (today < START_DATE) process.exit(0);
 if (!supabaseUrl || !serviceRoleKey) {
   fail('NEXT_PUBLIC_SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY wajib tersedia di runtime.', 2);
 } else {
   const baseUrl = `${supabaseUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '')}/rest/v1/posts`;
   try {
-    const rows = await request(`${baseUrl}?select=title,type&title=like.UMP%20*%202027*`);
+    const rows = await request(`${baseUrl}?select=title&type=eq.news&limit=1000`);
     const existingTitles = new Set((rows || []).map((row) => row.title));
     const next = parseUmpData()
-      .map((item) => ({ ...item, title: `Estimasi UMP ${item.prov} 2027 Jika Sesuai Usulan Buruh` }))
+      .map((item) => ({ ...item, title: `UMP ${item.prov} 2026: Besaran Upah Minimum Provinsi` }))
       .find((item) => !existingTitles.has(item.title));
 
     if (!next) {
-      console.log(JSON.stringify({ ok: true, status: 'complete', message: 'Semua 38 provinsi sudah memiliki artikel estimasi UMP 2027.' }));
+      console.log(JSON.stringify({ ok: true, status: 'complete', message: 'Semua 38 provinsi sudah memiliki artikel UMP 2026.' }));
     } else if (process.env.PUBLISH_UMP_DRY_RUN === '1') {
-      console.log(JSON.stringify({ ok: true, status: 'dry-run', article: next, start_date: START_DATE, source: SOURCE_URL }));
+      console.log(JSON.stringify({ ok: true, status: 'dry-run', article: next, source: SOURCE_URL }));
     } else {
-      const low = Math.round(next.ump2026 * (1 + KSPI_LOW));
-      const high = Math.round(next.ump2026 * (1 + KSPI_HIGH));
       const imageUrl = await generateFeaturedImage(next);
       const inserted = await request(baseUrl, {
         method: 'POST',
         headers: { Prefer: 'return=representation' },
         body: JSON.stringify({
           type: 'news', title: next.title, company: 'BekasiKerja.id',
-          category: 'Berita', content: buildContent(next, low, high),
+          category: 'Berita', content: buildContent(next),
           image_url: imageUrl, location: next.prov, deadline: null,
         }),
       });
-      console.log(JSON.stringify({ ok: true, status: 'published', article: next, estimated_range: { low, high }, row_id: inserted?.[0]?.id || null }));
+      console.log(JSON.stringify({ ok: true, status: 'published', article: next, row_id: inserted?.[0]?.id || null }));
     }
   } catch (error) {
     fail(error instanceof Error ? error.message : String(error));

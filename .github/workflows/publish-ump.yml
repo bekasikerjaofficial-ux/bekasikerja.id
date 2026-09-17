@@ -1,4 +1,4 @@
-name: Publish UMP 2027 News
+name: Publish UMP 2026 News
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: publish-ump-2027
+  group: publish-ump-2026
   cancel-in-progress: false
 
 jobs:
