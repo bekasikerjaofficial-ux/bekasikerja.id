@@ -127,7 +127,8 @@ async function generateFeaturedImage(item) {
   }
   const imagePath = `ump-2027/${item.slug}.png`;
   const imageBytes = Buffer.from(body.data[0].b64_json, 'base64');
-  const uploadUrl = `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/images/${imagePath}`;
+  const storageBaseUrl = supabaseUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
+  const uploadUrl = `${storageBaseUrl}/storage/v1/object/images/${imagePath}`;
   const upload = await fetch(uploadUrl, {
     method: 'POST',
     headers: {
@@ -139,7 +140,7 @@ async function generateFeaturedImage(item) {
     body: imageBytes,
   });
   if (!upload.ok) throw new Error(`Supabase Storage HTTP ${upload.status}: ${await upload.text()}`);
-  return `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/images/${imagePath}`;
+  return `${storageBaseUrl}/storage/v1/object/public/images/${imagePath}`;
 }
 
 loadEnvFile();
@@ -151,7 +152,7 @@ if (today < START_DATE) process.exit(0);
 if (!supabaseUrl || !serviceRoleKey) {
   fail('NEXT_PUBLIC_SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY wajib tersedia di runtime.', 2);
 } else {
-  const baseUrl = `${supabaseUrl.replace(/\/$/, '')}/rest/v1/posts`;
+  const baseUrl = `${supabaseUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '')}/rest/v1/posts`;
   try {
     const rows = await request(`${baseUrl}?select=title,type&title=like.UMP%20*%202027*`);
     const existingTitles = new Set((rows || []).map((row) => row.title));
