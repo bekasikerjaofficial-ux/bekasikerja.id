@@ -14,8 +14,15 @@ export default function MemberResetPassword() {
   const [status, setStatus] = useState('verifying'); // verifying | ready | success | error
   const [message, setMessage] = useState('Memverifikasi link reset...');
   const [loading, setLoading] = useState(false);
+  const [returnPath, setReturnPath] = useState('/member/login');
 
   useEffect(() => {
+    const requestedNext = new URLSearchParams(window.location.search).get('next');
+    const safeNext = requestedNext && requestedNext.startsWith('/')
+      ? requestedNext
+      : '/member/login';
+    setReturnPath(safeNext);
+
     // Supabase password reset links contain a hash fragment with access_token
     const hash = window.location.hash;
     const params = new URLSearchParams(hash.substring(1));
@@ -72,7 +79,7 @@ export default function MemberResetPassword() {
 
     setStatus('success');
     setMessage('Password berhasil diubah! Anda akan diarahkan ke login...');
-    setTimeout(() => router.replace('/member/login'), 2500);
+    setTimeout(() => router.replace(returnPath), 2500);
   };
 
   return (
@@ -182,8 +189,8 @@ export default function MemberResetPassword() {
           <div style={{ textAlign: 'center', padding: '20px 0' }}>
             <XCircle size={48} color="#dc2626" style={{ margin: '0 auto 12px' }} />
             <p style={{ color: '#dc2626', fontWeight: 700, fontSize: 15, marginBottom: 16 }}>{message}</p>
-            <Link href="/member/forgot-password" className="btn-primary" style={{ display: 'inline-block', width: 'auto', padding: '10px 24px' }}>
-              Minta Link Baru
+            <Link href={returnPath === '/nyosor/login' ? '/nyosor/forgot-password' : '/member/forgot-password'} className="btn-primary" style={{ display: 'inline-block', width: 'auto', padding: '10px 24px' }}>
+              {returnPath === '/nyosor/login' ? 'Minta Link Admin Baru' : 'Minta Link Baru'}
             </Link>
           </div>
         )}

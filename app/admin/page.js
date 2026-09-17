@@ -78,7 +78,14 @@ export default function AdminDashboard() {
     const guard = async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user) { window.location.href = '/nyosor/login'; return; }
-      if (data.user.user_metadata?.role !== 'admin') { window.location.href = '/'; return; }
+      // Keep the UI guard aligned with the database RLS policy. The canonical
+      // admin check is the email whitelist in public.is_admin(); metadata role
+      // remains a compatibility fallback for users provisioned by CI/CD.
+      const { data: isAdmin } = await supabase.rpc('is_admin');
+      if (!isAdmin && data.user.user_metadata?.role !== 'admin') {
+        window.location.href = '/';
+        return;
+      }
       if (active) await fetchData();
     };
     guard();
