@@ -38,11 +38,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Validate required secrets
-        run: |
-          set -euo pipefail
-          [ -n "$NEXT_PUBLIC_SUPABASE_URL" ] || { echo '::error::SUPABASE_URL belum diset'; exit 1; }
-          [ -n "$SUPABASE_SERVICE_ROLE_KEY" ] || { echo '::error::SUPABASE_SERVICE_ROLE_KEY belum diset'; exit 1; }
-
       - name: Publish next province article
         run: npm run publish:ump
