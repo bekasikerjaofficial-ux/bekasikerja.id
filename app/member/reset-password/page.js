@@ -23,35 +23,34 @@ export default function MemberResetPassword() {
       : '/member/login';
     setReturnPath(safeNext);
 
-    // Supabase password reset links contain a hash fragment with access_token
-    const hash = window.location.hash;
-    const params = new URLSearchParams(hash.substring(1));
-    const accessToken = params.get('access_token');
-    const error = params.get('error');
+    const verifyResetLink = async () => {
+      const query = new URLSearchParams(window.location.search);
+      const hash = new URLSearchParams(window.location.hash.substring(1));
+      const error = query.get('error_description') || query.get('error') || hash.get('error_description') || hash.get('error');
+      if (error) throw new Error('Link reset password tidak valid atau sudah kedaluwarsa.');
 
-    if (error) {
-      setStatus('error');
-      setMessage('Link reset password tidak valid atau sudah kedaluwarsa.');
-      return;
-    }
-
-    if (!accessToken) {
-      setStatus('error');
-      setMessage('Token reset password tidak ditemukan. Pastikan Anda membuka link dari email.');
-      return;
-    }
-
-    // Set session so we can update the password
-    supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: params.get('refresh_token') || '',
-    }).then(({ error: sessErr }) => {
-      if (sessErr) {
-        setStatus('error');
-        setMessage('Gagal memverifikasi: ' + sessErr.message);
-      } else {
-        setStatus('ready');
+      // PKCE returns ?code=..., while implicit flow returns #access_token=....
+      const code = query.get('code');
+      if (code) {
+        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+        if (exchangeError) throw exchangeError;
+      } else if (hash.get('access_token')) {
+        const { error: sessionError } = await supabase.auth.setSession({
+          access_token: hash.get('access_token'),
+          refresh_token: hash.get('refresh_token') || '',
+        });
+        if (sessionError) throw sessionError;
       }
+
+      const { data, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (!data.session) throw new Error('Token reset password tidak ditemukan. Pastikan Anda membuka link dari email.');
+      setStatus('ready');
+    };
+
+    verifyResetLink().catch((verifyError) => {
+      setStatus('error');
+      setMessage('Gagal memverifikasi: ' + verifyError.message);
     });
   }, []);
 
