@@ -4,6 +4,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
+const PUBLISH_YEAR = process.env.UMP_YEAR || '2026';
+const START_DATE = process.env.UMP_START_DATE || '2026-09-17';
+const ESTIMATE_LOW = 0.075;
+const ESTIMATE_HIGH = 0.095;
 const SOURCE_URL = 'https://www.bekasikerja.id/ump';
 const LANDMARKS = {
   Aceh: 'Masjid Raya Baiturrahman', 'Sumatera Utara': 'Danau Toba', 'Sumatera Barat': 'Jam Gadang',
@@ -63,29 +67,42 @@ function todayWib() {
 }
 
 function buildContent(item) {
+  if (PUBLISH_YEAR === '2027') {
+    const lowValue = Math.round(item.ump2026 * (1 + ESTIMATE_LOW));
+    const highValue = Math.round(item.ump2026 * (1 + ESTIMATE_HIGH));
+    return [
+      `# Estimasi UMP ${item.prov} 2027: Simulasi Kenaikan 7,5%–9,5%`, '',
+      `Berapa perkiraan UMP ${item.prov} tahun 2027? Artikel ini menyajikan simulasi berdasarkan UMP 2026 dan rentang usulan kenaikan buruh KSPI sebesar 7,5% sampai 9,5%.`, '',
+      `## Simulasi UMP ${item.prov} 2027`,
+      `Jika kenaikan 7,5%–9,5% diterapkan, UMP ${item.prov} 2027 diperkirakan berada di kisaran ${rupiah(lowValue)} sampai ${rupiah(highValue)}.`, '',
+      `- UMP ${item.prov} 2026: ${rupiah(item.ump2026)}`,
+      `- Simulasi kenaikan 7,5%: ${rupiah(lowValue)}`,
+      `- Simulasi kenaikan 9,5%: ${rupiah(highValue)}`, '',
+      '## Apakah Ini Angka Resmi?',
+      'Belum. Ini hanya simulasi berdasarkan usulan KSPI, bukan keputusan pemerintah. Angka resmi UMP 2027 menunggu ketetapan pemerintah dan gubernur masing-masing provinsi.', '',
+      '## Catatan UMP dan UMK',
+      `UMP berlaku pada tingkat provinsi. UMK kabupaten atau kota di wilayah ${item.prov} dapat berbeda dan memiliki proses penetapan tersendiri.`, '',
+      'Sumber dasar simulasi: usulan kenaikan buruh KSPI sebesar 7,5%–9,5%.',
+      `Artikel terkait: https://www.bekasikerja.id/ump/${item.slug}`,
+    ].join('\\n');
+  }
   return [
-    `# UMP ${item.prov} 2026: Besaran Upah Minimum Provinsi`,
-    '',
-    `Berapa UMP ${item.prov} tahun 2026? Artikel ini merangkum besaran upah minimum provinsi, perbandingannya dengan tahun 2025, serta persentase perubahan yang tercatat.`,
-    '',
+    `# UMP ${item.prov} 2026: Besaran Upah Minimum Provinsi`, '',
+    `Berapa UMP ${item.prov} tahun 2026? Artikel ini merangkum besaran upah minimum provinsi, perbandingannya dengan tahun 2025, nominal kenaikan dalam rupiah, serta persentase perubahannya.`, '',
     `## Besaran UMP ${item.prov} 2026`,
-    `UMP ${item.prov} pada 2026 tercatat sebesar ${rupiah(item.ump2026)} per bulan. Angka ini menjadi dasar upah minimum tingkat provinsi dan berbeda dari UMK kabupaten atau kota.`,
-    '',
+    `UMP ${item.prov} pada 2026 tercatat sebesar ${rupiah(item.ump2026)} per bulan.`, '',
     `- UMP ${item.prov} 2025: ${rupiah(item.ump2025)}`,
     `- UMP ${item.prov} 2026: ${rupiah(item.ump2026)}`,
-    `- Perubahan dibanding 2025: ${item.naik}`,
-    '',
+    `- Nominal kenaikan: ${rupiah(item.ump2026 - item.ump2025)}`,
+    `- Persentase kenaikan: ${item.naik}`, '',
     '## Bedanya UMP dan UMK',
-    `UMP berlaku untuk seluruh provinsi ${item.prov}. Kabupaten atau kota dapat memiliki UMK tersendiri dengan nilai yang berbeda, sehingga pencari kerja perlu melihat ketentuan wilayah tempat perusahaan berada.`,
-    '',
+    `UMP berlaku untuk seluruh provinsi ${item.prov}. Kabupaten atau kota dapat memiliki UMK tersendiri dengan nilai yang berbeda.`, '',
     '## Catatan untuk Pekerja',
-    'UMP merupakan batas minimum pengupahan sesuai ketentuan yang berlaku. Besaran gaji aktual dapat lebih tinggi berdasarkan jabatan, pengalaman, tunjangan, dan kebijakan perusahaan.',
-    '',
-    'Data UMP 2026 dirangkum dari data provinsi yang digunakan BekasiKerja.id. Periksa keputusan pemerintah daerah untuk kebutuhan administratif atau pengupahan resmi.',
-    '',
+    'UMP merupakan batas minimum pengupahan. Gaji aktual dapat lebih tinggi sesuai jabatan, pengalaman, tunjangan, dan kebijakan perusahaan.', '',
+    'Data UMP 2026 dirangkum dari data provinsi yang digunakan BekasiKerja.id. Periksa keputusan pemerintah daerah untuk kebutuhan administratif atau pengupahan resmi.', '',
     `Sumber data: ${SOURCE_URL}/${item.slug}`,
     `Artikel terkait: https://www.bekasikerja.id/ump/${item.slug}`,
-  ].join('\n');
+  ].join('\\n');
 }
 
 async function request(url, options = {}) {
@@ -109,7 +126,7 @@ async function generateFeaturedImage(item) {
   const openaiKey = process.env.OPENAI_API_KEY;
   if (!openaiKey) return null;
   const landmark = LANDMARKS[item.prov] || `ikon budaya ${item.prov}`;
-  const prompt = `Editorial featured image for an Indonesian employment news article about provincial minimum wage (UMP) 2026 in ${item.prov}. Show an elegant stylized illustration of ${landmark}, a diverse Indonesian workforce and a subtle modern city/industry atmosphere. Clean navy, teal and warm accent palette, professional news website, no text, no numbers, no logos, no official seals, landscape 3:2 composition.`;
+  const prompt = `Editorial featured image for an Indonesian employment news article about ${PUBLISH_YEAR === '2027' ? 'estimated ' : ''}provincial minimum wage (UMP) ${PUBLISH_YEAR} in ${item.prov}. Show an elegant stylized illustration of ${landmark}, a diverse Indonesian workforce and a subtle modern city/industry atmosphere. Clean navy, teal and warm accent palette, professional news website, no text, no numbers, no logos, no official seals, landscape 3:2 composition.`;
   const response = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { Authorization: `Bearer ${openaiKey}`, 'Content-Type': 'application/json' },
@@ -119,7 +136,7 @@ async function generateFeaturedImage(item) {
   if (!response.ok || !body?.data?.[0]?.b64_json) {
     throw new Error(`OpenAI Images HTTP ${response.status}: ${body?.error?.message || 'respons kosong'}`);
   }
-  const imagePath = `ump-2026/${item.slug}.png`;
+  const imagePath = `ump-${PUBLISH_YEAR}/${item.slug}.png`;
   const imageBytes = Buffer.from(body.data[0].b64_json, 'base64');
   const storageBaseUrl = supabaseUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
   const uploadUrl = `${storageBaseUrl}/storage/v1/object/images/${imagePath}`;
@@ -142,6 +159,10 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const today = todayWib();
 
+if (today < START_DATE) {
+  console.log(JSON.stringify({ ok: true, status: 'waiting', publish_year: PUBLISH_YEAR, start_date: START_DATE }));
+  process.exit(0);
+}
 if (!supabaseUrl || !serviceRoleKey) {
   fail('NEXT_PUBLIC_SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY wajib tersedia di runtime.', 2);
 } else {
@@ -150,13 +171,15 @@ if (!supabaseUrl || !serviceRoleKey) {
     const rows = await request(`${baseUrl}?select=title&type=eq.news&limit=1000`);
     const existingTitles = new Set((rows || []).map((row) => row.title));
     const next = parseUmpData()
-      .map((item) => ({ ...item, title: `UMP ${item.prov} 2026: Besaran Upah Minimum Provinsi` }))
+      .map((item) => ({ ...item, title: PUBLISH_YEAR === '2027'
+        ? `Estimasi UMP ${item.prov} 2027: Simulasi Kenaikan 7,5%–9,5%`
+        : `UMP ${item.prov} 2026: Besaran Upah Minimum Provinsi` }))
       .find((item) => !existingTitles.has(item.title));
 
     if (!next) {
-      console.log(JSON.stringify({ ok: true, status: 'complete', message: 'Semua 38 provinsi sudah memiliki artikel UMP 2026.' }));
+      console.log(JSON.stringify({ ok: true, status: 'complete', message: `Semua 38 provinsi sudah memiliki artikel UMP ${PUBLISH_YEAR}.` }));
     } else if (process.env.PUBLISH_UMP_DRY_RUN === '1') {
-      console.log(JSON.stringify({ ok: true, status: 'dry-run', article: next, source: SOURCE_URL }));
+      console.log(JSON.stringify({ ok: true, status: 'dry-run', article: next, publish_year: PUBLISH_YEAR, source: SOURCE_URL }));
     } else {
       const imageUrl = await generateFeaturedImage(next);
       const inserted = await request(baseUrl, {

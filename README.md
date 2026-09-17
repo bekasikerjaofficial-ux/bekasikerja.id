@@ -206,8 +206,17 @@ Tanpa keduanya, halaman tetap ter-build & ter-render, tapi konten Supabase koson
 
 ### Publisher otomatis UMP 2026
 
-Publisher dijalankan oleh GitHub Actions pada pukul 06:30, 11:30, dan 17:00 WIB.
-Tambahkan secrets repository berikut agar jadwal dapat menulis artikel ke Supabase:
+Publisher dijalankan oleh GitHub Actions pada pukul 06:30, 11:30, dan 16:00 WIB mulai
+17 September 2026. Setiap jadwal memilih provinsi berikutnya yang belum memiliki artikel
+UMP 2026 dan memuat UMP tahun sebelumnya, nominal kenaikan rupiah, serta persentasenya.
+
+### Estimasi UMP 2027
+
+Seri kedua berjalan pada pukul 06:30, 11:30, dan 16:00 WIB mulai 1 Oktober 2026.
+Artikel diberi label estimasi dan menghitung rentang kenaikan 7,5%–9,5% dari UMP 2026;
+angka tersebut bukan keputusan resmi pemerintah.
+
+Untuk kedua seri, tambahkan secrets repository agar jadwal dapat menulis artikel ke Supabase:
 
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`

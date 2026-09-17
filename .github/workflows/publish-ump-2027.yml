@@ -1,4 +1,4 @@
-name: Publish UMP 2026 News
+name: Publish UMP 2027 Estimates
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: publish-ump-2026
+  group: publish-ump-2027
   cancel-in-progress: false
 
 jobs:
@@ -22,8 +22,8 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      UMP_YEAR: '2026'
-      UMP_START_DATE: '2026-09-17'
+      UMP_YEAR: '2027'
+      UMP_START_DATE: '2026-10-01'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
