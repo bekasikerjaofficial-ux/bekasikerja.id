@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { normalizeSupabaseUrl } from '../../../lib/supabase-url';
 
 // Webhook Midtrans: aktifkan membership saat settlement (QRIS dibayar).
 // Midtrans kirim POST ke /api/payment-webhook dengan body notification.
 export const runtime = 'nodejs';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseUrl = normalizeSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 // Midtrans signature verification (opsional tapi disarankan).

@@ -130,7 +130,8 @@ npm run start
 <summary>📋 Isi <code>.env.local</code></summary>
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=https://tbmdjqnshyogunoisrn.supabase.co
+# Salin Project URL atau Data API URL persis dari Supabase Dashboard
+NEXT_PUBLIC_SUPABASE_URL=isi_url_supabase_di_sini
 NEXT_PUBLIC_SUPABASE_ANON_KEY=paste_anon_key_asli_disini
 ```
 
@@ -192,11 +193,28 @@ Namun untuk data nyata, set env di **Vercel → Project → Settings → Environ
 
 | Key                              | Value                                  |
 | -------------------------------- | -------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`       | `https://tbmdjqnshyogunoisrn.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_URL`       | Project URL atau Data API URL dari Supabase (keduanya didukung) |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | anon key asli dari project Supabase    |
 
 Tanpa keduanya, halaman tetap ter-build & ter-render, tapi konten Supabase kosong
 (graceful fallback). Pastikan `agentic/supabase-setup.sql` sudah dijalankan dan RLS aktif.
+
+> **Penting:** Salin URL dari Supabase tanpa mengetik ulang. Jika Supabase menampilkan
+> URL berakhiran `/rest/v1/`, URL tersebut tetap valid; aplikasi menormalkannya sebelum
+> membuat koneksi. URL dan anon key harus berasal dari project Supabase yang sama dengan
+> tabel `posts` berisi data production.
+
+### Publisher otomatis UMP 2027
+
+Publisher dijalankan oleh GitHub Actions pada pukul 06:30, 11:30, dan 17:00 WIB.
+Tambahkan secrets repository berikut pada GitHub sebelum tanggal mulai publikasi:
+
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `OPENAI_API_KEY` (opsional; gambar bukan syarat publikasi)
+
+Publisher baru aktif mulai 1 Oktober 2026. Sebelum tanggal tersebut, workflow selesai
+Tanpa membuat artikel sesuai kebijakan jadwal.
 
 ---
 
