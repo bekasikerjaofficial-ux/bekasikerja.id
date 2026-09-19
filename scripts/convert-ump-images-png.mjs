@@ -19,7 +19,16 @@ function loadEnvFile() {
 }
 function esc(v) { return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 function svg(province, landmark) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675"><defs><linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#062b55"/><stop offset="1" stop-color="#008d9a"/></linearGradient><linearGradient id="ground" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f4b44d"/><stop offset="1" stop-color="#e87843"/></linearGradient></defs><rect width="1200" height="675" fill="url(#sky)"/><circle cx="1000" cy="130" r="82" fill="#ffd77a" opacity=".85"/><path d="M0 470 170 315 300 430 490 235 650 420 830 270 1200 500V675H0Z" fill="#123f63" opacity=".9"/><path d="M0 535Q260 455 500 535T1200 510V675H0Z" fill="url(#ground)"/><g fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity=".92"><path d="M310 505V385h55v120M278 385h120M330 315v70M305 345h50"/><path d="M550 520V410h100v110M535 410h130M570 365h60v45M585 330h30v35"/><path d="M785 520V390h80v130M770 390h110M805 350h40v40"/></g><text x="64" y="90" fill="#fff" font-family="Arial,sans-serif" font-size="30" font-weight="700">BEKASIKERJA.ID</text><text x="64" y="585" fill="#fff" font-family="Arial,sans-serif" font-size="42" font-weight="800">UMP 2026 — ${esc(province)}</text><text x="66" y="625" fill="#fff" font-family="Arial,sans-serif" font-size="25" opacity=".9">Landmark: ${esc(landmark)}</text></svg>`;
+  const art = {
+    Aceh: '<path d="M340 500V350h120v150M320 350h160M370 300h60v50M395 250h10v50M410 250h10v50"/><path d="M700 500V365h150v135M675 365h200M725 315h100v50"/>',
+    'Sumatera Utara': '<path d="M0 470 210 250 390 470M300 470 540 180 760 470M650 470 900 230 1200 470"/><path d="M0 520Q300 430 600 520T1200 510V675H0Z"/>',
+    'Sumatera Barat': '<path d="M510 500V300h180v200M480 300h240M560 230h80v70M595 170h10v60M565 205h70"/><path d="M250 510 360 420 470 510M730 510 840 420 950 510"/>',
+    Riau: '<path d="M370 500V330h460v170M330 330h540M430 260h340v70M500 210h200v50M560 170h80v40"/><path d="M250 510h700"/>',
+    Jambi: '<path d="M430 510V350l170-130 170 130v160M390 350h420M470 290h260M510 250h180"/><path d="M280 510h640"/>',
+    'Sumatera Selatan': '<path d="M210 410Q600 180 990 410M210 410Q600 640 990 410M300 360v100M450 290v240M600 250v320M750 290v240M900 360v100"/>',
+    Bengkulu: '<path d="M290 500V315h620v185M260 315h680M350 250h500v65M410 195h380v55M470 150h260v45M330 500h540"/>',
+  }[province] || '<path d="M260 510 470 260 680 510M600 510 820 220 1040 510M150 540h900"/>';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675"><defs><linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#062b55"/><stop offset="1" stop-color="#008d9a"/></linearGradient><linearGradient id="ground" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f4b44d"/><stop offset="1" stop-color="#e87843"/></linearGradient></defs><rect width="1200" height="675" fill="url(#sky)"/><circle cx="1000" cy="130" r="82" fill="#ffd77a" opacity=".85"/><path d="M0 470 170 315 300 430 490 235 650 420 830 270 1200 500V675H0Z" fill="#123f63" opacity=".9"/><path d="M0 535Q260 455 500 535T1200 510V675H0Z" fill="url(#ground)"/><g fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity=".94">${art}</g></svg>`;
 }
 loadEnvFile();
 const base = process.env.NEXT_PUBLIC_SUPABASE_URL.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');

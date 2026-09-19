@@ -61,7 +61,7 @@ export default function PostDetailPage() {
             alt={post.title}
             width={860}
             height={280}
-            style={{ width: '100%', height: 280, objectFit: 'cover', borderRadius: 16, border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-card)' }}
+            style={{ width: '100%', height: 'auto', aspectRatio: '16 / 9', objectFit: 'cover', borderRadius: 16, border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-card)' }}
           />
         )}
 
