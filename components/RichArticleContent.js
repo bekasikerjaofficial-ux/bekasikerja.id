@@ -41,8 +41,9 @@ function renderInline(text) {
   });
 }
 
-export default function RichArticleContent({ content }) {
-  const lines = String(content || '').replace(/\\n/g, '\n').split(/\r?\n/);
+export default function RichArticleContent({ content, hideApplyLinks = false }) {
+  const lines = String(content || '').replace(/\\+n/g, '\n').split(/\r?\n/)
+    .filter((line) => !(hideApplyLinks && /cara melamar:/i.test(line)));
   const blocks = [];
   let paragraph = [];
   let list = [];

@@ -44,6 +44,9 @@ export default function PostDetailPage() {
   }
 
   const isJob = post.type === 'job';
+  const applyUrl = isJob
+    ? post.content?.match(/https?:\/\/id\.jobstreet\.com\/[^\s)]+/)?.[0]
+    : '';
 
   return (
     <div>
@@ -79,10 +82,15 @@ export default function PostDetailPage() {
         {isJob && post.deadline && (
           <p style={{ fontSize: 12, color: 'var(--hl-red)', fontWeight: 700 }}>Batas lamar: {post.deadline}</p>
         )}
+        {isJob && applyUrl && (
+          <a className="job-apply-cta" href={applyUrl} target="_blank" rel="noopener noreferrer">
+            Lamaran cepat
+          </a>
+        )}
         <ShareButtons inline title={post?.title ? `${post.title} — BekasiKerja.id` : ''} />
 
         <article className="panel" style={{ marginTop: 24, padding: '28px 30px', color: 'var(--gray-700)' }}>
-          <RichArticleContent content={post.content} />
+          <RichArticleContent content={post.content} hideApplyLinks={isJob} />
         </article>
 
         {isJob && (
