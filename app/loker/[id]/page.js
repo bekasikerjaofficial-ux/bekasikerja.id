@@ -8,6 +8,7 @@ import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
 import { MapPin } from 'lucide-react'
 import ShareButtons from '../../../components/ShareButtons';
+import RichArticleContent from '../../../components/RichArticleContent';
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -78,9 +79,10 @@ export default function PostDetailPage() {
         {isJob && post.deadline && (
           <p style={{ fontSize: 12, color: 'var(--hl-red)', fontWeight: 700 }}>Batas lamar: {post.deadline}</p>
         )}
+        <ShareButtons inline title={post?.title ? `${post.title} — BekasiKerja.id` : ''} />
 
-        <article className="panel" style={{ marginTop: 24, padding: 24, fontSize: 14, lineHeight: 1.7, color: 'var(--gray-700)', whiteSpace: 'pre-line' }}>
-          {post.content}
+        <article className="panel" style={{ marginTop: 24, padding: '28px 30px', color: 'var(--gray-700)' }}>
+          <RichArticleContent content={post.content} />
         </article>
 
         {isJob && (
@@ -99,7 +101,6 @@ export default function PostDetailPage() {
       </main>
 
       <SiteFooter />
-      <ShareButtons title={post?.title ? `${post.title} — BekasiKerja.id` : ''} />
     </div>
   );
 }
