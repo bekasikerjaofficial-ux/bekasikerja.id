@@ -9,6 +9,8 @@ import SiteFooter from '../../../components/SiteFooter';
 import { MapPin } from 'lucide-react'
 import ShareButtons from '../../../components/ShareButtons';
 import RichArticleContent from '../../../components/RichArticleContent';
+import LatestNewsLinks from '../../../components/LatestNewsLinks';
+import PackageCTA from '../../../components/PackageCTA';
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -108,6 +110,9 @@ export default function PostDetailPage() {
           </Link>
         </div>
       </main>
+
+      <LatestNewsLinks />
+      <PackageCTA />
 
       <SiteFooter />
     </div>
