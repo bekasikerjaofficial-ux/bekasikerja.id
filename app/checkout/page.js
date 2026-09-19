@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
+import { packageDisplayName } from '../../lib/packages';
 import { DEFAULT_PACKAGES } from '../../lib/packages';
 import { QrCode, CheckCircle2, Loader2 } from 'lucide-react';
 
@@ -99,7 +100,7 @@ export default function CheckoutPage() {
           {!loading && pkg && (
             <>
               <div style={{ marginTop: 16, padding: 16, background: 'var(--gray-100)', borderRadius: 12, border: '1px solid var(--gray-200)' }}>
-                <strong style={{ color: 'var(--gray-900)', fontSize: 16 }}>Paket {pkg.name}</strong>
+                <strong style={{ color: 'var(--gray-900)', fontSize: 16 }}>Paket {packageDisplayName(pkg)}</strong>
                 <div className="text-muted" style={{ fontSize: 13 }}>
                   Rp {new Intl.NumberFormat('id-ID').format(pkg.price)} / {pkg.period}
                 </div>

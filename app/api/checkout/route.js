@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { createQrisCharge, isMidtransConfigured } from '../../../lib/midtrans';
+import { packageDisplayName } from '../../../lib/packages';
 import { normalizeSupabaseUrl } from '../../../lib/supabase-url';
 
 // Route handler (Node runtime) — membuat transaksi QRIS Midtrans untuk upgrade paket.
@@ -59,7 +60,7 @@ export async function POST(req) {
     const charge = await createQrisCharge({
       orderId,
       amount: pkg.price,
-      pkgName: pkg.name,
+      pkgName: packageDisplayName(pkg),
       userEmail: user.email,
       userName: (user.user_metadata && user.user_metadata.full_name) || pkg.name,
     });
