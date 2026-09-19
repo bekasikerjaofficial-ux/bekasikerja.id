@@ -9,6 +9,7 @@ import SiteFooter from '../../../components/SiteFooter'
 import ShareButtons from '../../../components/ShareButtons';
 import { NewsCard } from '../../../components/Cards';
 import PackageCTA from '../../../components/PackageCTA';
+import RichArticleContent from '../../../components/RichArticleContent';
 import { Newspaper } from 'lucide-react';
 
 export default function ArtikelPage() {
@@ -95,8 +96,8 @@ export default function ArtikelPage() {
           <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--gray-600)' }}>{post.company}</p>
         )}
 
-        <article className="panel" style={{ marginTop: 24, padding: 24, fontSize: 14, lineHeight: 1.8, color: 'var(--gray-700)', whiteSpace: 'pre-line' }}>
-          {post.content}
+        <article className="panel" style={{ marginTop: 24, padding: '28px 30px', color: 'var(--gray-700)' }}>
+          <RichArticleContent content={post.content} />
         </article>
 
         {latestPosts.length > 0 && (
