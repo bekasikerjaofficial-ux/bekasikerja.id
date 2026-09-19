@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import PackageCard from './PackageCard';
 import { DEFAULT_PACKAGES } from '../lib/packages';
 
-// Homepage CTA: 4 Paket Psikotes. Render dari DB bila ada, else fallback konstanta.
+// Homepage CTA: latihan psikotes dan paket persiapan tes kerja.
 export default function PackageCTA() {
   const [packages, setPackages] = useState(null);
 
@@ -29,7 +29,7 @@ export default function PackageCTA() {
       <div className="section-head">
         <div>
           <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            Paket Psikotes &amp; Tes Masuk Kerja
+            Besok psikotes? Latihan sekarang.
           </h2>
           <p className="text-muted" style={{ fontSize: 13, margin: 0 }}>
             Pilih paket sesuai kebutuhan persiapan tes kerjamu.
