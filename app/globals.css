@@ -75,6 +75,39 @@
   .rich-article-content h3 { font-size: 17px; }
 }
 
+.free-test-intro,
+.free-test-card,
+.free-test-result { padding: 32px; }
+
+.free-test-intro { text-align: center; }
+.free-test-intro .badge-tag { display: inline-flex; align-items: center; gap: 5px; }
+.free-test-lead { max-width: 620px; margin: 12px auto 20px; line-height: 1.7; }
+.free-test-points { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 18px; color: var(--gray-700); font-size: 13px; }
+.free-test-points span { display: inline-flex; align-items: center; gap: 6px; }
+.free-test-start { margin-top: 24px; }
+.free-test-progress { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--gray-600); font-size: 13px; }
+.free-test-progress strong { color: var(--gray-900); }
+.free-test-progress-bar { height: 7px; margin: 12px 0 28px; overflow: hidden; border-radius: 99px; background: var(--gray-200); }
+.free-test-progress-bar span { display: block; height: 100%; border-radius: inherit; background: var(--hl-blue-grad); transition: width .2s ease; }
+.free-test-question { margin: 0 0 24px; color: var(--gray-900); font-size: 24px; line-height: 1.4; }
+.free-test-options { display: grid; gap: 10px; margin-bottom: 24px; }
+.free-test-option { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 10px; background: #fff; color: var(--gray-800); cursor: pointer; font: inherit; text-align: left; transition: border-color .15s ease, background .15s ease; }
+.free-test-option:hover, .free-test-option.selected { border-color: var(--hl-blue); background: rgba(0, 92, 171, .06); }
+.free-test-option > span { display: inline-flex; width: 28px; height: 28px; align-items: center; justify-content: center; flex: 0 0 28px; border-radius: 50%; background: var(--gray-100); color: var(--hl-blue); font-weight: 800; }
+.free-test-option.selected > span { background: var(--hl-blue); color: #fff; }
+.free-test-result { text-align: center; }
+.free-test-result .badge-tag { display: inline-flex; margin: 14px auto 0; }
+.free-test-score { margin: 4px 0; color: var(--hl-blue); font-size: 44px; font-weight: 800; }
+.free-test-result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 22px; }
+.free-test-result-actions a { text-decoration: none; }
+
+@media (max-width: 640px) {
+  .free-test-intro, .free-test-card, .free-test-result { padding: 22px 18px; }
+  .free-test-question { font-size: 20px; }
+  .free-test-points { align-items: flex-start; flex-direction: column; margin: 0 auto; width: fit-content; }
+}
+
+
 /* ============================================================
    BekasiKerja Design System
    Source: github.com/hernanda-git/heylaw-design-system (BCA skin)

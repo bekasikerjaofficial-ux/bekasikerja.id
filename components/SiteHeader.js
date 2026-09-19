@@ -59,6 +59,7 @@ export default function SiteHeader({
   const navLinks = [
     { href: '/', label: 'Beranda', key: '/' },
     { href: '/#lowongan', label: 'Lowongan', key: '/#lowongan' },
+    { href: '/tes-gratis', label: 'Tes Gratis', key: '/tes-gratis' },
     { href: '/paket', label: 'Paket', key: '/paket' },
     { href: '/#lifestyle', label: 'Lifestyle', key: '/#lifestyle' },
     { href: '/ump-indonesia-2026', label: 'Artikel', key: '/ump-indonesia-2026' },
