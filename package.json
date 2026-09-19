@@ -9,6 +9,7 @@
     "lint": "next lint",
     "publish:ump": "node scripts/publish-ump.mjs",
     "publish:job": "node scripts/publish-job.mjs",
+    "backfill:ump-images": "node scripts/backfill-ump-images.mjs",
     "cleanup:examples": "node scripts/delete-example-posts.mjs"
   },
   "dependencies": {

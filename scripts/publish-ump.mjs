@@ -60,6 +60,28 @@ function rupiah(value) {
   }).format(Math.round(value));
 }
 
+function escapeXml(value) {
+  return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;');
+}
+
+function fallbackLandmarkSvg(item) {
+  const province = escapeXml(item.prov);
+  const landmark = escapeXml(LANDMARKS[item.prov] || `ikon budaya ${item.prov}`);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675"><defs><linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#062b55"/><stop offset="1" stop-color="#008d9a"/></linearGradient><linearGradient id="ground" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f4b44d"/><stop offset="1" stop-color="#e87843"/></linearGradient></defs><rect width="1200" height="675" fill="url(#sky)"/><circle cx="1000" cy="130" r="82" fill="#ffd77a" opacity=".85"/><path d="M0 470 170 315 300 430 490 235 650 420 830 270 1200 500V675H0Z" fill="#123f63" opacity=".9"/><path d="M0 535Q260 455 500 535T1200 510V675H0Z" fill="url(#ground)"/><g fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity=".92"><path d="M310 505V385h55v120M278 385h120M330 315v70M305 345h50"/><path d="M550 520V410h100v110M535 410h130M570 365h60v45M585 330h30v35"/><path d="M785 520V390h80v130M770 390h110M805 350h40v40"/></g><text x="64" y="90" fill="#fff" font-family="Arial,sans-serif" font-size="30" font-weight="700">BEKASIKERJA.ID</text><text x="64" y="585" fill="#fff" font-family="Arial,sans-serif" font-size="42" font-weight="800">UMP ${PUBLISH_YEAR} — ${province}</text><text x="66" y="625" fill="#fff" font-family="Arial,sans-serif" font-size="25" opacity=".9">Landmark: ${landmark}</text></svg>`;
+}
+
+async function uploadFallbackFeaturedImage(item) {
+  const imagePath = `ump-${PUBLISH_YEAR}/${item.slug}.svg`;
+  const storageBaseUrl = supabaseUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
+  const upload = await fetch(`${storageBaseUrl}/storage/v1/object/images/${imagePath}`, {
+    method: 'POST',
+    headers: { apikey: serviceRoleKey, Authorization: `Bearer ${serviceRoleKey}`, 'Content-Type': 'image/svg+xml', 'x-upsert': 'true' },
+    body: fallbackLandmarkSvg(item),
+  });
+  if (!upload.ok) throw new Error(`Supabase Storage fallback HTTP ${upload.status}: ${await upload.text()}`);
+  return `${storageBaseUrl}/storage/v1/object/public/images/${imagePath}`;
+}
+
 function todayWib() {
   return new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit',
@@ -124,7 +146,7 @@ async function request(url, options = {}) {
 
 async function generateFeaturedImage(item) {
   const openaiKey = process.env.OPENAI_API_KEY;
-  if (!openaiKey) return null;
+  if (!openaiKey) return uploadFallbackFeaturedImage(item);
   const landmark = LANDMARKS[item.prov] || `ikon budaya ${item.prov}`;
   const prompt = `Editorial featured image for an Indonesian employment news article about ${PUBLISH_YEAR === '2027' ? 'estimated ' : ''}provincial minimum wage (UMP) ${PUBLISH_YEAR} in ${item.prov}. Show an elegant stylized illustration of ${landmark}, a diverse Indonesian workforce and a subtle modern city/industry atmosphere. Clean navy, teal and warm accent palette, professional news website, no text, no numbers, no logos, no official seals, landscape 3:2 composition.`;
   const response = await fetch('https://api.openai.com/v1/images/generations', {
