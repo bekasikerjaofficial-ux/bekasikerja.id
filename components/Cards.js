@@ -43,7 +43,7 @@ export function JobCard({ job }) {
 // NewsCard — sidebar / lifestyle card
 function getNewsExcerpt(content = '') {
   const clean = String(content)
-    .replace(/\\\\n/g, ' ')
+    .replace(/\\+n/g, ' ')
     .replace(/\r?\n/g, ' ')
     .replace(/^#{1,6}\s+/gm, '')
     .replace(/\*\*([^*]+)\*\*/g, '$1')
