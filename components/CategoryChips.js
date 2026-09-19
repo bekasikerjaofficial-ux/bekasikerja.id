@@ -1,17 +1,19 @@
 'use client';
 import React from 'react';
-import { Factory, Briefcase, Wrench, Package, Truck, BookOpen, Brain } from 'lucide-react';
+import { Factory, Briefcase, Wrench, Package, Truck, BookOpen, Brain, UserRound, ShoppingBag } from 'lucide-react';
 
-// Category chips — visual pill row (ornamen), klik scroll ke #lowongan
-// (sesuai pilihan user: visual aja, bukan filter data live)
+// Shortcut chips for key destinations and job categories.
 const CATS = [
-  { icon: Factory, label: 'Manufaktur' },
-  { icon: Briefcase, label: 'Admin' },
-  { icon: Wrench, label: 'Engineering' },
-  { icon: Package, label: 'Gudang' },
-  { icon: Truck, label: 'Logistik' },
-  { icon: BookOpen, label: 'Tips Karir' },
-  { icon: Brain, label: 'Psikotes' },
+  { icon: Brain, label: 'Tes Gratis', href: '/tes-gratis' },
+  { icon: UserRound, label: 'Member', href: '/member/register' },
+  { icon: ShoppingBag, label: 'Beli Paket', href: '/paket' },
+  { icon: Factory, label: 'Manufaktur', href: '/#lowongan' },
+  { icon: Briefcase, label: 'Admin', href: '/#lowongan' },
+  { icon: Wrench, label: 'Engineering', href: '/#lowongan' },
+  { icon: Package, label: 'Gudang', href: '/#lowongan' },
+  { icon: Truck, label: 'Logistik', href: '/#lowongan' },
+  { icon: BookOpen, label: 'Tips Karir', href: '/#lifestyle' },
+  { icon: Brain, label: 'Psikotes', href: '/psikotes' },
 ];
 
 export default function CategoryChips() {
@@ -21,7 +23,7 @@ export default function CategoryChips() {
         {CATS.map((c) => {
           const Icon = c.icon;
           return (
-            <a key={c.label} href="/#lowongan" className="chip">
+            <a key={c.label} href={c.href} className="chip">
               <Icon size={15} strokeWidth={2} />
               <span>{c.label}</span>
             </a>
