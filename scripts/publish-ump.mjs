@@ -2,6 +2,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const root = process.cwd();
 const PUBLISH_YEAR = process.env.UMP_YEAR || '2026';
@@ -71,12 +72,17 @@ function fallbackLandmarkSvg(item) {
 }
 
 async function uploadFallbackFeaturedImage(item) {
-  const imagePath = `ump-${PUBLISH_YEAR}/${item.slug}.svg`;
+  const imagePath = `ump-${PUBLISH_YEAR}/${item.slug}.png`;
   const storageBaseUrl = supabaseUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
+  const tempDir = fs.mkdtempSync(path.join('/tmp', 'ump-image-'));
+  const svgPath = path.join(tempDir, `${item.slug}.svg`);
+  const pngPath = path.join(tempDir, `${item.slug}.png`);
+  fs.writeFileSync(svgPath, fallbackLandmarkSvg(item));
+  execFileSync('convert', [svgPath, '-resize', '1200x675!', pngPath]);
   const upload = await fetch(`${storageBaseUrl}/storage/v1/object/images/${imagePath}`, {
     method: 'POST',
-    headers: { apikey: serviceRoleKey, Authorization: `Bearer ${serviceRoleKey}`, 'Content-Type': 'image/svg+xml', 'x-upsert': 'true' },
-    body: fallbackLandmarkSvg(item),
+    headers: { apikey: serviceRoleKey, Authorization: `Bearer ${serviceRoleKey}`, 'Content-Type': 'image/png', 'x-upsert': 'true' },
+    body: fs.readFileSync(pngPath),
   });
   if (!upload.ok) throw new Error(`Supabase Storage fallback HTTP ${upload.status}: ${await upload.text()}`);
   return `${storageBaseUrl}/storage/v1/object/public/images/${imagePath}`;
