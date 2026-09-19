@@ -14,7 +14,7 @@ const WhatsAppIcon = ({ size = 20 }) => (
   </svg>
 )
 
-export default function ShareButtons({ title = '', url: propUrl = '' }) {
+export default function ShareButtons({ title = '', url: propUrl = '', inline = false }) {
   const [copied, setCopied] = useState(false)
   const [shareUrl, setShareUrl] = useState('')
   const [shareTitle, setShareTitle] = useState('')
@@ -75,22 +75,28 @@ export default function ShareButtons({ title = '', url: propUrl = '' }) {
 
   return (
     <div
+      aria-label="Bagikan artikel"
       style={{
-        position: 'fixed',
-        left: 16,
-        top: '50%',
-        transform: 'translateY(-50%)',
+        position: inline ? 'static' : 'fixed',
+        left: inline ? undefined : 16,
+        top: inline ? undefined : '50%',
+        transform: inline ? undefined : 'translateY(-50%)',
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: inline ? 'row' : 'column',
+        alignItems: 'center',
         gap: 8,
-        zIndex: 1000,
+        zIndex: inline ? undefined : 1000,
         background: '#fff',
-        padding: 8,
-        borderRadius: 16,
-        boxShadow: '0 4px 24px rgba(0,0,0,.12)',
+        padding: inline ? '10px 0' : 8,
+        borderRadius: inline ? 0 : 16,
+        boxShadow: inline ? 'none' : '0 4px 24px rgba(0,0,0,.12)',
         border: '1px solid var(--gray-200)',
+        borderLeft: inline ? 'none' : '1px solid var(--gray-200)',
+        borderRight: inline ? 'none' : '1px solid var(--gray-200)',
+        borderTop: inline ? '1px solid var(--gray-200)' : '1px solid var(--gray-200)',
       }}
     >
+      {inline && <span style={{ color: 'var(--gray-600)', fontSize: 12, fontWeight: 700, marginRight: 4 }}>Bagikan:</span>}
       {shareLinks.map((link) => (
         <a
           key={link.name}

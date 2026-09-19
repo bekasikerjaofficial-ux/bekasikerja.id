@@ -95,6 +95,7 @@ export default function ArtikelPage() {
         {post.company && (
           <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--gray-600)' }}>{post.company}</p>
         )}
+        <ShareButtons inline title={post?.title ? `${post.title} — BekasiKerja.id` : ''} />
 
         <article className="panel" style={{ marginTop: 24, padding: '28px 30px', color: 'var(--gray-700)' }}>
           <RichArticleContent content={post.content} />
@@ -144,7 +145,6 @@ export default function ArtikelPage() {
       <PackageCTA />
 
       <SiteFooter />
-      <ShareButtons title={post?.title ? `${post.title} — BekasiKerja.id` : ''} />
     </div>
   );
 }
