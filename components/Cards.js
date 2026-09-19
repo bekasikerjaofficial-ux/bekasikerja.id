@@ -41,6 +41,18 @@ export function JobCard({ job }) {
 }
 
 // NewsCard — sidebar / lifestyle card
+function getNewsExcerpt(content = '') {
+  const clean = String(content)
+    .replace(/\\\\n/g, ' ')
+    .replace(/\r?\n/g, ' ')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/^-\s+/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return clean.length > 200 ? `${clean.slice(0, 200).trim()}...` : clean;
+}
+
 export function NewsCard({ item }) {
   return (
     <Link href={`/artikel/${item.id}`} className="card">
@@ -59,7 +71,7 @@ export function NewsCard({ item }) {
         <span className="badge-tag news">{item.category || 'Lifestyle'}</span>
         <h3>{item.title}</h3>
         <p style={{ fontSize: 13, color: 'var(--gray-600)', margin: '8px 0 0', lineHeight: 1.6 }}>
-          {item.content?.substring(0, 200)}{item.content?.length > 200 ? '...' : ''}
+          {getNewsExcerpt(item.content)}
         </p>
         <div style={{ marginTop: 12 }}>
           <span style={{ fontSize: 12, color: 'var(--hl-blue)', fontWeight: 600 }}>
