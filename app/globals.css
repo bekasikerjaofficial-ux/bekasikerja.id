@@ -32,6 +32,18 @@
 
 .rich-article-content li { margin: 7px 0; padding-left: 4px; }
 
+.rich-article-content .article-source-link {
+  color: var(--hl-blue);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+.rich-article-content .article-source-link:hover {
+  color: var(--hl-blue-dark);
+}
+
 @media (max-width: 640px) {
   .rich-article-content { font-size: 14px; line-height: 1.75; }
   .rich-article-content h2 { font-size: 19px; }

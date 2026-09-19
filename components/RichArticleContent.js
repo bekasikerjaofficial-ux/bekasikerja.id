@@ -3,12 +3,30 @@
 import React from 'react';
 
 function renderInline(text) {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((part, index) => (
-    part.startsWith('**') && part.endsWith('**')
-      ? <strong key={index}>{part.slice(2, -2)}</strong>
-      : <React.Fragment key={index}>{part}</React.Fragment>
-  ));
+  const parts = text.split(/(\*\*[^*]+\*\*|https?:\/\/[^\s)]+)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={index}>{part.slice(2, -2)}</strong>;
+    }
+    if (/^https?:\/\//i.test(part)) {
+      const trailing = part.match(/[.,;:!?]+$/)?.[0] || '';
+      const href = trailing ? part.slice(0, -trailing.length) : part;
+      return (
+        <React.Fragment key={index}>
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="article-source-link"
+          >
+            {href}
+          </a>
+          {trailing}
+        </React.Fragment>
+      );
+    }
+    return <React.Fragment key={index}>{part}</React.Fragment>;
+  });
 }
 
 export default function RichArticleContent({ content }) {
