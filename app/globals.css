@@ -28,6 +28,7 @@
 .rich-article-content ul {
   margin: 8px 0 18px;
   padding-left: 24px;
+  list-style: disc;
 }
 
 .rich-article-content li { margin: 7px 0; padding-left: 4px; }

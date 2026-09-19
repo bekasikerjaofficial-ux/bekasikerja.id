@@ -2,6 +2,18 @@
 
 import React from 'react';
 
+function getLinkLabel(href) {
+  try {
+    const url = new URL(href);
+    if (url.hostname.includes('jobstreet.com')) return 'JobStreet';
+    if (url.hostname === 'www.bekasikerja.id' && url.pathname.startsWith('/ump/')) return 'Lihat sumber data';
+    if (url.hostname.endsWith('bekasikerja.id')) return 'Buka tautan terkait';
+  } catch {
+    // Keep a safe fallback for malformed URLs; href is still validated by the protocol check.
+  }
+  return 'Buka sumber';
+}
+
 function renderInline(text) {
   const parts = text.split(/(\*\*[^*]+\*\*|https?:\/\/[^\s)]+)/g);
   return parts.map((part, index) => {
@@ -19,7 +31,7 @@ function renderInline(text) {
             rel="noopener noreferrer"
             className="article-source-link"
           >
-            {href}
+            {getLinkLabel(href)}
           </a>
           {trailing}
         </React.Fragment>
