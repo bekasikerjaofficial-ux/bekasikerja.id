@@ -5,7 +5,7 @@ import React from 'react';
 function getLinkLabel(href) {
   try {
     const url = new URL(href);
-    if (url.hostname.includes('jobstreet.com')) return 'JobStreet';
+    if (url.hostname.includes('jobstreet.com')) return 'Klik untuk melamar';
     if (url.hostname === 'www.bekasikerja.id' && url.pathname.startsWith('/ump/')) return 'Lihat sumber data';
     if (url.hostname.endsWith('bekasikerja.id')) return 'Buka tautan terkait';
   } catch {
