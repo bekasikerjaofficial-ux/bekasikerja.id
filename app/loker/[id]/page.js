@@ -17,12 +17,20 @@ export default function PostDetailPage() {
   const id = params?.id;
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [coverLetter, setCoverLetter] = useState('');
+  const [applyMessage, setApplyMessage] = useState('');
 
   useEffect(() => {
     if (!id) return;
     const load = async () => {
-      const { data } = await supabase.from('posts').select('*').eq('id', id).single();
-      setPost(data);
+      const { data: legacyPost } = await supabase.from('posts').select('*').eq('id', id).single();
+      if (legacyPost) {
+        setPost(legacyPost);
+      } else if (String(id).startsWith('employer-')) {
+        const employerId = String(id).replace(/^employer-/, '');
+        const { data: employerJob } = await supabase.from('employer_jobs').select('*, companies(name, logo_url)').eq('id', employerId).eq('status', 'active').single();
+        if (employerJob) setPost({ ...employerJob, id, type: 'job', company: employerJob.companies?.name, image_url: employerJob.companies?.logo_url, deadline: employerJob.application_deadline, content: employerJob.description || '', title: employerJob.title });
+      }
       setLoading(false);
     };
     load();
@@ -46,6 +54,7 @@ export default function PostDetailPage() {
   }
 
   const isJob = post.type === 'job';
+  const isEmployerJob = String(post.id).startsWith('employer-');
   const applyUrl = isJob
     ? post.content?.match(/https?:\/\/(?:id\.jobstreet\.com|www\.linkedin\.com)\/[^\s)\\\\]+/)?.[0]
     : '';
@@ -89,6 +98,23 @@ export default function PostDetailPage() {
         <article className="panel" style={{ marginTop: 24, padding: '28px 30px', color: 'var(--gray-700)' }}>
           <RichArticleContent content={post.content} hideApplyLinks={isJob} />
         </article>
+
+        {isEmployerJob && (
+          <form className="panel" style={{ marginTop: 24, padding: 24 }} onSubmit={async (event) => {
+            event.preventDefault();
+            setApplyMessage('Mengirim lamaran...');
+            const { data: sessionData } = await supabase.auth.getSession();
+            if (!sessionData.session) { setApplyMessage('Silakan login terlebih dahulu untuk melamar.'); return; }
+            const response = await fetch(`/api/jobs/${post.id.replace('employer-', '')}/apply`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sessionData.session.access_token}` }, body: JSON.stringify({ coverLetter }) });
+            const payload = await response.json().catch(() => ({}));
+            setApplyMessage(response.ok ? 'Lamaran berhasil dikirim.' : (payload.error || 'Lamaran gagal dikirim.'));
+          }}>
+            <h2 className="h-section" style={{ marginTop: 0 }}>Lamar Lowongan Ini</h2>
+            <div className="field"><label>Pesan lamaran (opsional)</label><textarea rows="4" value={coverLetter} onChange={(event) => setCoverLetter(event.target.value)} placeholder="Ceritakan secara singkat pengalaman yang relevan." /></div>
+            <button className="btn-primary" type="submit">Kirim Lamaran</button>
+            {applyMessage && <p className="text-muted" style={{ fontSize: 13 }}>{applyMessage}</p>}
+          </form>
+        )}
 
         {isJob && applyUrl && (
           <a className="job-apply-cta" href={applyUrl} target="_blank" rel="noopener noreferrer">

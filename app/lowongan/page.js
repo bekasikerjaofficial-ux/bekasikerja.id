@@ -5,11 +5,14 @@ import { mergeJobs } from '../../lib/static-jobs';
 export const dynamic = 'force-dynamic';
 
 export default async function LowonganPage() {
-  const { data } = await supabase
+  const [{ data }, { data: employerJobs }] = await Promise.all([supabase
     .from('posts')
     .select('*')
     .eq('type', 'job')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false }), supabase
+    .from('published_employer_jobs')
+    .select('*')
+    .order('created_at', { ascending: false })]);
 
-  return <LowonganClient initialJobs={mergeJobs(data || [])} />;
+  return <LowonganClient initialJobs={mergeJobs([...(employerJobs || []), ...(data || [])])} />;
 }
