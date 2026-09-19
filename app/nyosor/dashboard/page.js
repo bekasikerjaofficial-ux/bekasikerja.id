@@ -15,6 +15,7 @@ export default function AdminDashboard() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -22,7 +23,8 @@ export default function AdminDashboard() {
       const { data } = await supabase.auth.getUser();
       if (!active) return;
       if (!data.user) router.replace('/nyosor/login');
-      if (data.user?.user_metadata?.role !== 'admin') router.replace('/');
+      const { data: isAdmin } = await supabase.rpc('is_admin');
+      if (!isAdmin) router.replace('/');
     };
     guard();
     return () => { active = false; };

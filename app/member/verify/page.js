@@ -14,39 +14,24 @@ export default function MemberVerify() {
     const verifyEmail = async () => {
       if (typeof window === 'undefined') return;
 
-      // Supabase verification link contains hash fragment like:
-      // #access_token=...&refresh_token=...&expires_at=...&token_type=bearer&type=signup
-      const hash = window.location.hash;
-      if (!hash) {
-        setStatus('error');
-        setMessage('Link verifikasi tidak valid atau sudah kedaluwarsa.');
-        return;
-      }
-
-      // Parse hash params
-      const params = new URLSearchParams(hash.substring(1));
-      const accessToken = params.get('access_token');
-      const refreshToken = params.get('refresh_token');
-      const type = params.get('type');
-
-      if (!accessToken) {
-        setStatus('error');
-        setMessage('Token verifikasi tidak ditemukan.');
-        return;
-      }
-
       try {
-        // Set session from the tokens in the hash
-        const { error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        });
+        const query = new URLSearchParams(window.location.search);
+        const hash = new URLSearchParams(window.location.hash.substring(1));
+        const callbackError = query.get('error_description') || query.get('error') || hash.get('error_description') || hash.get('error');
+        if (callbackError) throw new Error('Link verifikasi tidak valid atau sudah kedaluwarsa.');
+        if (!query.get('code') && !hash.get('access_token')) throw new Error('Token verifikasi tidak ditemukan.');
 
-        if (error) {
-          console.error('[verify] setSession error:', error);
-          setStatus('error');
-          setMessage('Gagal memverifikasi: ' + error.message);
-          return;
+        const { data: existing, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
+        if (!existing.session && query.get('code')) {
+          const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(query.get('code'));
+          if (exchangeError) throw exchangeError;
+        } else if (!existing.session && hash.get('access_token')) {
+          const { error: setError } = await supabase.auth.setSession({
+            access_token: hash.get('access_token'),
+            refresh_token: hash.get('refresh_token') || '',
+          });
+          if (setError) throw setError;
         }
 
         // Mark email as confirmed via getUser (forces a session refresh)

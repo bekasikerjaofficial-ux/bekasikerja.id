@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '../../../lib/supabase';
+import { getSafeInternalPath } from '../../../lib/safe-redirect';
 import { CheckCircle2, XCircle, Loader2, Eye, EyeOff } from 'lucide-react';
 
 export default function MemberResetPassword() {
@@ -18,9 +19,7 @@ export default function MemberResetPassword() {
 
   useEffect(() => {
     const requestedNext = new URLSearchParams(window.location.search).get('next');
-    const safeNext = requestedNext && requestedNext.startsWith('/')
-      ? requestedNext
-      : '/member/login';
+    const safeNext = getSafeInternalPath(requestedNext, '/member/login');
     setReturnPath(safeNext);
 
     const verifyResetLink = async () => {
@@ -31,12 +30,19 @@ export default function MemberResetPassword() {
 
       // PKCE returns ?code=..., while implicit flow returns #access_token=....
       const code = query.get('code');
+      const accessToken = hash.get('access_token');
+      if (!code && !accessToken) throw new Error('Token reset password tidak ditemukan. Pastikan Anda membuka link dari email.');
+      const { data: existing, error: existingError } = await supabase.auth.getSession();
+      if (existingError) throw existingError;
       if (code) {
-        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-        if (exchangeError) throw exchangeError;
-      } else if (hash.get('access_token')) {
+        // detectSessionInUrl may have consumed the code during client startup.
+        if (!existing.session) {
+          const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          if (exchangeError) throw exchangeError;
+        }
+      } else if (accessToken) {
         const { error: sessionError } = await supabase.auth.setSession({
-          access_token: hash.get('access_token'),
+          access_token: accessToken,
           refresh_token: hash.get('refresh_token') || '',
         });
         if (sessionError) throw sessionError;

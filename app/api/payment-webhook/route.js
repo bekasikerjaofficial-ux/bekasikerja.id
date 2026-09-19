@@ -23,8 +23,11 @@ export async function POST(req) {
   try {
     const payload = await req.json();
 
-    // Verifikasi signature bila env diset
-    if (process.env.MIDTRANS_SERVER_KEY && !verifySignature(payload)) {
+    // Settlement must never be accepted without signature verification.
+    if (!process.env.MIDTRANS_SERVER_KEY) {
+      return NextResponse.json({ error: 'Payment webhook belum dikonfigurasi' }, { status: 503 });
+    }
+    if (!verifySignature(payload)) {
       return NextResponse.json({ error: 'invalid signature' }, { status: 403 });
     }
 
@@ -50,19 +53,22 @@ export async function POST(req) {
       // Aktifkan (atau perpanjang) membership otomatis
       const expiresAt = new Date();
       expiresAt.setMonth(expiresAt.getMonth() + 3); // periode 3 bulan
-      await sb.from('memberships').upsert([{
+      const { error: membershipError } = await sb.from('memberships').upsert([{
         user_id: order.user_id,
         package_id: order.package_id,
         status: 'active',
         started_at: new Date().toISOString(),
         expires_at: expiresAt.toISOString(),
       }], { onConflict: 'user_id,package_id' });
-      await sb.from('membership_orders').update({ status: 'paid', paid_at: new Date().toISOString() }).eq('order_id', orderId);
+      if (membershipError) throw membershipError;
+      const { error: orderUpdateError } = await sb.from('membership_orders').update({ status: 'paid', paid_at: new Date().toISOString() }).eq('order_id', orderId);
+      if (orderUpdateError) throw orderUpdateError;
       return NextResponse.json({ ok: true, activated: true });
     }
 
     if (TERMINATED) {
-      await sb.from('membership_orders').update({ status: 'cancelled' }).eq('order_id', orderId);
+      const { error: cancelError } = await sb.from('membership_orders').update({ status: 'cancelled' }).eq('order_id', orderId);
+      if (cancelError) throw cancelError;
     }
 
     return NextResponse.json({ ok: true, status });

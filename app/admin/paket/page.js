@@ -22,6 +22,8 @@ export default function AdminPaket() {
     const guard = async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user) { window.location.href = '/nyosor/login'; return; }
+      const { data: isAdmin } = await supabase.rpc('is_admin');
+      if (!isAdmin) { window.location.href = '/'; return; }
       if (active) await fetchData();
     };
     guard();

@@ -1,24 +1,17 @@
-name: Delete Example Posts
+name: List Production Posts
 
 on:
   workflow_dispatch:
-    inputs:
-      example_post_ids:
-        description: 'Tepat 7 ID posting contoh, dipisahkan koma'
-        required: true
-        type: string
 
 permissions:
   contents: read
 
 jobs:
-  cleanup:
+  list:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      EXAMPLE_POST_IDS: ${{ inputs.example_post_ids }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,4 +19,4 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run cleanup:examples
+      - run: node scripts/list-posts-admin.mjs

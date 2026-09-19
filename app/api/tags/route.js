@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { normalizeSupabaseUrl } from '../../../lib/supabase-url';
+import { requireAdmin } from '../../../lib/server-auth';
 
 const supabaseUrl = normalizeSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -20,7 +21,8 @@ export async function GET() {
 }
 
 export async function POST(req) {
-  if (!supabaseServiceKey) return NextResponse.json({ error: 'Service role key missing' }, { status: 500 });
+  const auth = await requireAdmin(req);
+  if (auth.error) return auth.error;
   const sb = adminClient();
   const { name } = await req.json();
   if (!name) return NextResponse.json({ error: 'name wajib' }, { status: 400 });

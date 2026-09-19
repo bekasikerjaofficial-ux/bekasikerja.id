@@ -45,7 +45,10 @@ export default function CheckoutPage() {
     const iv = setInterval(async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user) return;
-      const res = await fetch('/api/checkout/status?order=' + encodeURIComponent(orderId));
+      const { data: sessionData } = await supabase.auth.getSession();
+      const res = await fetch('/api/checkout/status?order=' + encodeURIComponent(orderId), {
+        headers: sessionData.session ? { Authorization: `Bearer ${sessionData.session.access_token}` } : {},
+      });
       if (res.ok) {
         const j = await res.json();
         if (j.paid) {
@@ -62,9 +65,13 @@ export default function CheckoutPage() {
     setError('');
     if (!pkg || !pkg.price) { setError('Paket gratis tidak butuh pembayaran.'); return; }
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
       const res = await fetch('/api/checkout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(sessionData.session ? { Authorization: `Bearer ${sessionData.session.access_token}` } : {}),
+        },
         body: JSON.stringify({ packageSlug: pkg.slug }),
       });
       const j = await res.json();

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '../../../../lib/supabase';
+import { getSafeInternalPath } from '../../../../lib/safe-redirect';
 
 export default function MemberAuthCallback() {
   const [error, setError] = useState('');
@@ -13,10 +14,12 @@ export default function MemberAuthCallback() {
     const finishLogin = async () => {
       const params = new URLSearchParams(window.location.search);
       const nextParam = params.get('next') || '/member/dashboard';
-      const next = nextParam.startsWith('/') ? nextParam : '/member/dashboard';
+      const next = getSafeInternalPath(nextParam, '/member/dashboard');
       const code = params.get('code');
+      const callbackError = params.get('error_description') || params.get('error');
 
       try {
+        if (callbackError) throw new Error('Provider membatalkan proses login.');
         // detectSessionInUrl may already have exchanged the PKCE code while the
         // browser client initialized. Reuse that session before exchanging again.
         const { data: current, error: sessionError } = await supabase.auth.getSession();

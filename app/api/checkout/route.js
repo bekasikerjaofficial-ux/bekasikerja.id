@@ -23,10 +23,12 @@ export async function POST(req) {
     }
 
     // Auth user dari session Supabase (bawa cookie lewat anon client)
+    const accessToken = req.headers.get('authorization')?.replace(/^Bearer\s+/i, '');
+    if (!accessToken) return NextResponse.json({ error: 'Login dulu' }, { status: 401 });
     const sbUser = createClient(supabaseUrl, supabaseAnonKey, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
-    const { data: u } = await sbUser.auth.getUser();
+    const { data: u } = await sbUser.auth.getUser(accessToken);
     const user = u?.user;
     if (!user) return NextResponse.json({ error: 'Login dulu' }, { status: 401 });
 
@@ -45,13 +47,14 @@ export async function POST(req) {
     const orderId = `bk-${user.id.slice(0, 8)}-${pkg.slug}-${Date.now()}`;
 
     // Simpan order (pending) — dipakai webhook untuk mengaitkan ke membership
-    await sbAdmin.from('membership_orders').insert([{
+    const { error: orderInsertError } = await sbAdmin.from('membership_orders').insert([{
       order_id: orderId,
       user_id: user.id,
       package_id: pkg.id,
       amount: pkg.price,
       status: 'pending',
     }]);
+    if (orderInsertError) throw orderInsertError;
 
     const charge = await createQrisCharge({
       orderId,

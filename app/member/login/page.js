@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../../lib/supabase';
 import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
+import { getSafeInternalPath } from '../../../lib/safe-redirect';
 
 export default function MemberLogin() {
   const [email, setEmail] = useState('');
@@ -17,7 +18,7 @@ export default function MemberLogin() {
     if (params.get('success') === '1') {
       setSuccess(true);
       // If there's a next param, redirect there
-      const next = params.get('next') || '/member/dashboard';
+      const next = getSafeInternalPath(params.get('next'), '/member/dashboard');
       setTimeout(() => { window.location.href = next; }, 1500);
     }
   }, []);
@@ -39,7 +40,7 @@ export default function MemberLogin() {
     setError('');
     setLoading(true);
     const params = new URLSearchParams(window.location.search);
-    const next = params.get('next') || '/member/dashboard';
+    const next = getSafeInternalPath(params.get('next'), '/member/dashboard');
     const redirectTo = `${window.location.origin}/member/auth/callback?next=${encodeURIComponent(next)}`;
     const { error: err } = await supabase.auth.signInWithOAuth({
       provider: 'google',
