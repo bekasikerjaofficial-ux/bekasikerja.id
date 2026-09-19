@@ -50,9 +50,17 @@ export async function POST(req) {
     const TERMINATED = status === 'expire' || status === 'cancel' || status === 'deny';
 
     if (PAID && order.status !== 'paid') {
-      // Aktifkan (atau perpanjang) membership otomatis
+      // Durasi mengikuti paket yang dibeli, bukan hardcode.
+      const { data: pkg, error: pkgError } = await sb
+        .from('packages')
+        .select('period')
+        .eq('id', order.package_id)
+        .single();
+      if (pkgError) throw pkgError;
+      const durationMatch = String(pkg?.period || '').match(/(\d+)\s*bulan/i);
+      const durationMonths = durationMatch ? Number(durationMatch[1]) : 0;
       const expiresAt = new Date();
-      expiresAt.setMonth(expiresAt.getMonth() + 3); // periode 3 bulan
+      if (durationMonths > 0) expiresAt.setMonth(expiresAt.getMonth() + durationMonths);
       const { error: membershipError } = await sb.from('memberships').upsert([{
         user_id: order.user_id,
         package_id: order.package_id,
