@@ -82,16 +82,17 @@ export default function PostDetailPage() {
         {isJob && post.deadline && (
           <p style={{ fontSize: 12, color: 'var(--hl-red)', fontWeight: 700 }}>Batas lamar: {post.deadline}</p>
         )}
-        {isJob && applyUrl && (
-          <a className="job-apply-cta" href={applyUrl} target="_blank" rel="noopener noreferrer">
-            Lamaran cepat
-          </a>
-        )}
         <ShareButtons inline title={post?.title ? `${post.title} — BekasiKerja.id` : ''} />
 
         <article className="panel" style={{ marginTop: 24, padding: '28px 30px', color: 'var(--gray-700)' }}>
           <RichArticleContent content={post.content} hideApplyLinks={isJob} />
         </article>
+
+        {isJob && applyUrl && (
+          <a className="job-apply-cta" href={applyUrl} target="_blank" rel="noopener noreferrer">
+            Lamaran cepat
+          </a>
+        )}
 
         {isJob && (
           <div style={{ marginTop: 24, padding: 16, background: 'rgba(0,92,171,.06)', border: '1px solid rgba(0,92,171,.2)', borderRadius: 16, fontSize: 13, color: 'var(--hl-blue-dark)' }}>
