@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       example_post_ids:
-        description: 'Tepat 7 ID posting contoh, dipisahkan koma'
+        description: 'Tepat 5 ID posting contoh, dipisahkan koma'
         required: true
         type: string
 

@@ -9,8 +9,8 @@ if (!baseUrl || !serviceKey) {
   console.error(JSON.stringify({ ok: false, error: 'Supabase production URL dan service-role key wajib tersedia.' }));
   process.exit(2);
 }
-if (ids.length !== 7 || ids.some((id) => !/^\d+$/.test(id))) {
-  console.error(JSON.stringify({ ok: false, error: 'Isi EXAMPLE_POST_IDS dengan tepat 7 ID numerik posting contoh.' }));
+if (ids.length !== 5 || ids.some((id) => !/^\d+$/.test(id))) {
+  console.error(JSON.stringify({ ok: false, error: 'Isi EXAMPLE_POST_IDS dengan tepat 5 ID numerik posting contoh.' }));
   process.exit(2);
 }
 
@@ -23,8 +23,8 @@ const filter = ids.join(',');
 const response = await fetch(`${baseUrl}/rest/v1/posts?select=id,title,type&id=in.(${filter})&order=id.asc`, { headers });
 const rows = await response.json();
 if (!response.ok) throw new Error(`Supabase HTTP ${response.status}: ${JSON.stringify(rows)}`);
-if (!Array.isArray(rows) || rows.length !== 7) {
-  throw new Error(`Penghapusan dibatalkan: hanya ditemukan ${Array.isArray(rows) ? rows.length : 'data tidak valid'} dari 7 ID yang diminta.`);
+if (!Array.isArray(rows) || rows.length !== 5) {
+  throw new Error(`Penghapusan dibatalkan: hanya ditemukan ${Array.isArray(rows) ? rows.length : 'data tidak valid'} dari 5 ID yang diminta.`);
 }
 
 console.log(JSON.stringify({ ok: true, action: 'deleting_explicit_example_posts', posts: rows }));

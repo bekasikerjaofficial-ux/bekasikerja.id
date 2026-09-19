@@ -100,9 +100,7 @@ export default function HomePage() {
 
         {/* FEATURED SLIDER (carousel of top jobs) */}
         <Reveal as="section" className="container section" style={{ paddingTop: 0 }}>
-          <FeaturedSlider jobs={jobs.slice(0, 8)} staticJobs={[
-            { id: 'sam-putra-inti-people-culture-head', title: 'People and Culture Head', company: 'PT. Sam Putra Inti', location: 'Bekasi, Jawa Barat', image_url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80', content: 'Lowongan People and Culture Head di PT. Sam Putra Inti. Gaji Rp8-10jt/bulan, Full Time. Kirim lamaran sekarang!' }
-          ]} />
+          <FeaturedSlider jobs={jobs.slice(0, 8)} staticJobs={[]} />
         </Reveal>
 
         {/* 4 PAKET CTA PSIKOTES */}
