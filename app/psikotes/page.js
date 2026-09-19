@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabase';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
-import { PSIKOTES_MODULES, TIER_ORDER, tierIndex } from '../../lib/packages';
+import { PSIKOTES_MODULES, TIER_ORDER, tierIndex, packageDisplayName } from '../../lib/packages';
 import { Lock, Play, CheckCircle2, Trophy, Target, Clock, RotateCcw, AlertTriangle } from 'lucide-react';
 
 const TEST_DURATION = 600; // 10 minutes in seconds
@@ -352,7 +352,7 @@ export default function PsikotesPage() {
         <section className="panel" style={{ padding: 24 }}>
           <h1 className="h-display" style={{ fontSize: 22, margin: 0 }}>Tes Psikotes & Masuk Kerja</h1>
           <p className="text-muted" style={{ fontSize: 13, marginTop: 8 }}>
-            {user ? `Paket aktif: ${tier.toUpperCase()}.` : 'Login sebagai member untuk mengakses tes sesuai paketmu.'}
+            {user ? `Paket aktif: ${packageDisplayName(tier)}.` : 'Login sebagai member untuk mengakses tes sesuai paketmu.'}
           </p>
           <p className="text-muted" style={{ fontSize: 12, marginTop: 4 }}>
             <strong>Peraturan:</strong> Waktu pengerjaan 10 menit per modul. Nilai minimal kelulusan {PASSING_SCORE}. Jika belum lulus, kamu bisa remedial dengan soal yang diacak.
@@ -391,7 +391,7 @@ export default function PsikotesPage() {
                       className="btn-secondary"
                       style={{ width: '100%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, textDecoration: 'none', textAlign: 'center' }}
                     >
-                      <Lock size={14} /> {user ? `Butuh Paket ${requiredTier.toUpperCase()}` : 'Login'}
+                      <Lock size={14} /> {user ? `Butuh Paket ${packageDisplayName(requiredTier)}` : 'Login'}
                     </a>
                   )}
                 </div>

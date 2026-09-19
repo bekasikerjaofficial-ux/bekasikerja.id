@@ -90,7 +90,7 @@ create policy "images_admin_write" on storage.objects
 -- ============================================================
 
 -- ============================================================
--- PAKET MEMBERSHIP & PSIKOTES (concept doc: Gratis/Hemat/Sultan/Have)
+-- PAKET MEMBERSHIP & PSIKOTES (concept doc: Gratis/Basic/Pro/Premium)
 -- TIDAK ada seed data — diisi via /admin/paket.
 -- ============================================================
 

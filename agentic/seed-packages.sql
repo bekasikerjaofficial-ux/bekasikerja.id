@@ -27,7 +27,7 @@ values
     false, 0, true
   ),
   (
-    'hemat', 'Hemat', 25000, '3 bulan',
+    'hemat', 'Basic', 25000, '3 bulan',
     'Persiapan dasar tes masuk kerja',
     'CV gratis + Matematika Dasar + Tes Logika Dasar.',
     '[
@@ -41,9 +41,9 @@ values
     false, 1, true
   ),
   (
-    'sultan', 'Sultan', 35000, '3 bulan',
+    'sultan', 'Pro', 35000, '3 bulan',
     'Paket paling laku untuk psikotes lengkap',
-    'Paket Hemat + Ketelitian + Psikotes Umum.',
+    'Paket Basic + Ketelitian + Psikotes Umum.',
     '[
       {"text":"Akses lowongan kerja terverifikasi","included":true},
       {"text":"Pembuat CV gratis","included":true},
@@ -56,9 +56,9 @@ values
     true, 2, true
   ),
   (
-    'have', 'Have', 50000, '3 bulan',
+    'have', 'Premium', 50000, '3 bulan',
     'Semua tes, tanpa batas',
-    'Paket Sultan + English Test, Case Study, dll.',
+    'Paket Pro + English Test, Case Study, dll.',
     '[
       {"text":"Akses lowongan kerja terverifikasi","included":true},
       {"text":"Pembuat CV gratis","included":true},

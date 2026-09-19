@@ -32,7 +32,7 @@
 |---|---|
 | `/` | Beranda (slider + grid loker/news) |
 | `/lowongan` | Daftar lowongan |
-| `/paket` | Paket keanggotaan (Gratis/Hemat/Sultan/Have) |
+| `/paket` | Paket keanggotaan (Gratis/Basic/Pro/Premium) |
 | `/checkout` | Pembayaran |
 | `/loker/[id]` | Detail lowongan |
 | `/admin` | Dashboard CRUD |
@@ -77,7 +77,7 @@
 | Search loker | Plugin (SearchWP / FacetWP) ATAU custom REST API endpoint |
 | Auth admin | WP native roles/caps + custom login page (non-`wp-admin` agar UX tetap rapi) |
 | Auth member | WP native `wp_users` + membership plugin |
-| Paket keanggotaan (Gratis/Hemat/Sultan/Have) | WooCommerce Products (virtual) ATAU custom post type `paket` |
+| Paket keanggotaan (Gratis/Basic/Pro/Premium) | WooCommerce Products (virtual) ATAU custom post type `paket` |
 | Midtrans QRIS pembayaran | **WooCommerce + Midtrans Official Plugin** (rekomendasi utama) — ini bisa full menggantikan custom `checkout/` route dan `membership_orders` tabel |
 | CV Builder | Page template (standalone) |
 | Cookie consent | Plugin (CookieYes / Complianz) |

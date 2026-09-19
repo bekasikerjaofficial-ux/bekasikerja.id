@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '../../../lib/supabase';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
+import { packageDisplayName } from '../../../lib/packages';
 import { User, FileText, Trophy, CreditCard, Settings, LogOut, ChevronRight, Calendar, Target } from 'lucide-react';
 
 export default function MemberDashboard() {
@@ -124,7 +125,7 @@ export default function MemberDashboard() {
           <div style={{ background: 'var(--hl-blue-grad)', color: '#fff', padding: '16px 20px', borderRadius: 12, marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <div style={{ fontSize: 12, opacity: .8 }}>Paket Aktif</div>
-              <div style={{ fontSize: 18, fontWeight: 700 }}>Paket {membership.packages.name}</div>
+              <div style={{ fontSize: 18, fontWeight: 700 }}>Paket {packageDisplayName(membership.packages)}</div>
             </div>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: 12, opacity: .8 }}>Berlaku hingga</div>

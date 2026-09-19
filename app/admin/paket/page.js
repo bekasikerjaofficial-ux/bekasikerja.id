@@ -119,7 +119,7 @@ export default function AdminPaket() {
             <form onSubmit={editingId ? handleUpdate : handleCreate} style={{ display: 'grid', gap: 14 }}>
               <div className="field" style={{ margin: 0 }}>
                 <label>Slug (unik, lowercase)</label>
-                <input type="text" required placeholder="hemat" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} />
+                <input type="text" required placeholder="basic" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} />
               </div>
               <div className="field" style={{ margin: 0 }}>
                 <label>Nama Paket</label>

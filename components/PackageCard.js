@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { Check, X, Star } from 'lucide-react';
+import { packageDisplayName } from '../lib/packages';
 
 function formatPrice(price, period) {
   if (!price || price === 0) return 'Gratis';
@@ -18,7 +19,7 @@ export default function PackageCard({ pkg, ctaHref }) {
       {pkg.popular && (
         <span className="pkg-badge"><Star size={13} /> Terlaris</span>
       )}
-      <h3 className="pkg-name">{pkg.name}</h3>
+      <h3 className="pkg-name">{packageDisplayName(pkg)}</h3>
       <div className="pkg-price">{formatPrice(pkg.price, pkg.period)}</div>
       {pkg.tagline && <p className="pkg-tagline">{pkg.tagline}</p>}
       {pkg.description && <p className="pkg-desc">{pkg.description}</p>}

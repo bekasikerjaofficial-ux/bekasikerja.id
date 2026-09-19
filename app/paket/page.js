@@ -53,9 +53,9 @@ export default function PaketPage() {
             </h2>
             <ul style={{ display: 'grid', gap: 10, fontSize: 14, margin: 0, paddingLeft: 18 }}>
               <li><strong>Gratis</strong> — lihat lowongan &amp; buat CV, tanpa tes.</li>
-              <li><strong>Hemat</strong> — + Matematika Dasar &amp; Tes Logika Dasar.</li>
-              <li><strong>Sultan</strong> — + Ketelitian &amp; Psikotes Umum.</li>
-              <li><strong>Have</strong> — semua di atas + English Test &amp; Case Study.</li>
+              <li><strong>Basic</strong> — + Matematika Dasar &amp; Tes Logika Dasar.</li>
+              <li><strong>Pro</strong> — + Ketelitian &amp; Psikotes Umum.</li>
+              <li><strong>Premium</strong> — semua di atas + English Test &amp; Case Study.</li>
             </ul>
             <p className="text-muted" style={{ fontSize: 12, marginTop: 12 }}>
               Pembayaran &amp; aktivasi paket berbayar saat ini dikelola oleh admin.
