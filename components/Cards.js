@@ -4,6 +4,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { MapPin, CalendarClock, Newspaper } from 'lucide-react';
 
+function formatPostedDate(value) {
+  if (!value) return '';
+  return new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(value));
+}
+
 // JobCard — card grid item, HeyLaw card style + BCA token
 export function JobCard({ job }) {
   return (
@@ -19,8 +24,8 @@ export function JobCard({ job }) {
             loading="lazy"
             style={{ borderRadius: 12, objectFit: 'cover', border: '1px solid var(--gray-200)' }}
           />
-          <div>
-            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700 }}>{job.title}</h3>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, overflowWrap: 'anywhere', wordBreak: 'break-word' }}>{job.title}</h3>
             <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: 'var(--gray-500)' }}>{job.company}</p>
           </div>
         </div>
@@ -35,6 +40,11 @@ export function JobCard({ job }) {
             <CalendarClock size={12} /> {job.deadline || 'Secepatnya'}
           </span>
         </div>
+        {formatPostedDate(job.created_at) && (
+          <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 8 }}>
+            Diposting {formatPostedDate(job.created_at)}
+          </div>
+        )}
       </div>
     </Link>
   );
@@ -69,7 +79,12 @@ export function NewsCard({ item }) {
       </div>
       <div className="body">
         <span className="badge-tag news">{item.category || 'Lifestyle'}</span>
-        <h3>{item.title}</h3>
+        <h3 style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}>{item.title}</h3>
+        {formatPostedDate(item.created_at) && (
+          <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 4 }}>
+            Diposting {formatPostedDate(item.created_at)}
+          </div>
+        )}
         <p style={{ fontSize: 13, color: 'var(--gray-600)', margin: '8px 0 0', lineHeight: 1.6 }}>
           {getNewsExcerpt(item.content)}
         </p>

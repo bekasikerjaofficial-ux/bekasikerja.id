@@ -522,7 +522,7 @@ html.dark .card { background: var(--gray-50); }
 .badge-tag.job { background: var(--hl-blue); }
 .badge-tag.news { background: var(--hl-gold); color: var(--gray-900); }
 .card h3 { font-family: var(--font-body); font-size: var(--fs-md); font-weight: 600; color: var(--gray-900); line-height: 1.35; margin-bottom: var(--sp-3); }
-.card .meta { display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--gray-500); margin-top: auto; padding-top: var(--sp-3); border-top: 1px solid var(--gray-100); }
+.card .meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; font-size: var(--fs-xs); color: var(--gray-500); margin-top: auto; padding-top: var(--sp-3); border-top: 1px solid var(--gray-100); }
 .card .meta .deadline { color: var(--hl-red); font-weight: 700; }
 
 /* ============ SIDEBAR (articles) ============ */

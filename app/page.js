@@ -12,6 +12,6 @@ export default async function HomePage() {
   ]);
   const posts = allPosts || [];
   const jobs = mergeJobs([...((employerJobs || [])), ...posts.filter((post) => post.type === 'job').slice(0, 6)]);
-  const news = posts.filter((post) => post.type === 'news').slice(0, 6);
+  const news = posts.filter((post) => post.type === 'news').sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)).slice(0, 6);
   return <HomePageClient initialSettings={settings || null} initialJobs={jobs} initialNews={news} />;
 }
