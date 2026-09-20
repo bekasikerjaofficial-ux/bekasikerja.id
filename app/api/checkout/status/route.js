@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { normalizeSupabaseUrl } from '../../../../lib/supabase-url';
 
+const PAYMENT_MAINTENANCE = process.env.PAYMENT_MAINTENANCE !== 'false';
+
 // Status poll fallback untuk client (bila webhook belum ke-fire).
 export const runtime = 'nodejs';
 
@@ -10,6 +12,7 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export async function GET(req) {
+  if (PAYMENT_MAINTENANCE) return NextResponse.json({ error: 'Pembayaran online sedang dalam maintenance.' }, { status: 503 });
   const order = new URL(req.url).searchParams.get('order');
   if (!order) return NextResponse.json({ error: 'order wajib' }, { status: 400 });
   if (!supabaseUrl || !supabaseServiceKey) return NextResponse.json({ error: 'env' }, { status: 500 });

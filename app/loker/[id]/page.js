@@ -20,6 +20,10 @@ export default function PostDetailPage() {
   const [loading, setLoading] = useState(true);
   const [coverLetter, setCoverLetter] = useState('');
   const [applyMessage, setApplyMessage] = useState('');
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportDetails, setReportDetails] = useState('');
+  const [reportMessage, setReportMessage] = useState('');
 
   useEffect(() => {
     if (!id) return;
@@ -140,6 +144,42 @@ export default function PostDetailPage() {
             <strong>Cara melamar:</strong> Kirim CV &amp; berkas ke email HRD perusahaan, atau datang
             langsung ke alamat kawasan industri tertera. Pastikan melengkapi persyaratan sebelum
             batas waktu lamaran.
+          </div>
+        )}
+
+        {isJob && (
+          <div style={{ marginTop: 18, textAlign: 'center' }}>
+            <button type="button" className="report-job-button" onClick={() => setReportOpen((value) => !value)}>
+              Laporkan Lowongan Ini
+            </button>
+            {reportOpen && (
+              <form className="panel report-job-form" onSubmit={async (event) => {
+                event.preventDefault(); setReportMessage('Mengirim laporan...');
+                const { data: sessionData } = await supabase.auth.getSession();
+                const response = await fetch('/api/job-reports', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', ...(sessionData.session ? { Authorization: `Bearer ${sessionData.session.access_token}` } : {}) },
+                  body: JSON.stringify({ jobRef: String(post.id), reason: reportReason, details: reportDetails }),
+                });
+                const payload = await response.json().catch(() => ({}));
+                setReportMessage(response.ok ? 'Laporan sudah diterima.' : (payload.error || 'Laporan belum dapat dikirim.'));
+                if (response.ok) { setReportReason(''); setReportDetails(''); }
+              }}>
+                <label htmlFor="report-reason">Alasan laporan</label>
+                <select id="report-reason" required value={reportReason} onChange={(event) => setReportReason(event.target.value)}>
+                  <option value="">Pilih alasan</option>
+                  <option value="penipuan">Penipuan</option>
+                  <option value="meminta_uang">Meminta uang</option>
+                  <option value="data_mencurigakan">Data perusahaan mencurigakan</option>
+                  <option value="informasi_tidak_sesuai">Informasi tidak sesuai</option>
+                  <option value="lainnya">Lainnya</option>
+                </select>
+                <label htmlFor="report-details">Keterangan (opsional)</label>
+                <textarea id="report-details" rows="3" maxLength={1000} value={reportDetails} onChange={(event) => setReportDetails(event.target.value)} placeholder="Jelaskan masalahnya secara singkat." />
+                <button type="submit" className="btn-secondary">Kirim Laporan</button>
+                {reportMessage && <p className="text-muted" style={{ fontSize: 12 }}>{reportMessage}</p>}
+              </form>
+            )}
           </div>
         )}
 

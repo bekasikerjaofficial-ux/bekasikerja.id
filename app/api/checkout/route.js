@@ -6,6 +6,7 @@ import { normalizeSupabaseUrl } from '../../../lib/supabase-url';
 
 // Route handler (Node runtime) — membuat transaksi QRIS Midtrans untuk upgrade paket.
 export const runtime = 'nodejs';
+const PAYMENT_MAINTENANCE = process.env.PAYMENT_MAINTENANCE !== 'false';
 
 const supabaseUrl = normalizeSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -13,6 +14,9 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 export async function POST(req) {
   try {
+    if (PAYMENT_MAINTENANCE) {
+      return NextResponse.json({ error: 'Pembayaran online sedang dalam maintenance.' }, { status: 503 });
+    }
     const { packageSlug } = await req.json();
     if (!packageSlug) return NextResponse.json({ error: 'packageSlug wajib' }, { status: 400 });
 

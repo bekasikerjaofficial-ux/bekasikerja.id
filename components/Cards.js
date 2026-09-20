@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, CalendarClock, Newspaper } from 'lucide-react';
+import { MapPin, CalendarClock, Newspaper, BadgeCheck } from 'lucide-react';
 import { postPath } from '../lib/post-url';
 
 function formatPostedDate(value) {
@@ -15,7 +15,12 @@ export function JobCard({ job }) {
   return (
     <Link href={postPath('job', job)} className="card">
       <div className="body">
-        <span className="badge-tag job">Lowongan</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span className="badge-tag job">Lowongan</span>
+          {(job.verification_status === 'verified' || job.company_verified === true) && (
+            <span className="verified-badge" title="Perusahaan terverifikasi"><BadgeCheck size={13} /> Terverifikasi</span>
+          )}
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
           <Image
             src={job.image_url || '/placeholder.svg'}
