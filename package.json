@@ -12,6 +12,7 @@
     "publish:glovis-job": "node scripts/publish-glovis-job.mjs",
     "publish:aspire-job": "node scripts/publish-aspire-job.mjs",
     "publish:linkedin-hcss": "node scripts/publish-linkedin-hcss.mjs",
+    "publish:facebook": "node scripts/publish-facebook.mjs",
     "publish:inaura-pjt": "node scripts/publish-inaura-pjt-job.mjs",
     "publish:hijrahfood-human-capital": "node scripts/publish-hijrahfood-human-capital-job.mjs",
     "publish:advantis-hrbp": "node scripts/publish-advantis-hrbp-job.mjs",
