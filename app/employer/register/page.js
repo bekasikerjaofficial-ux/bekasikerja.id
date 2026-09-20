@@ -13,7 +13,7 @@ export default function EmployerRegister() {
     e.preventDefault(); setLoading(true); setError(''); setMessage('');
     const { data, error: err } = await supabase.auth.signUp({ email: form.email, password: form.password, options: { data: { full_name: form.name, account_type: 'employer' }, emailRedirectTo: `${window.location.origin}/employer/onboarding` } });
     if (err) { setError(err.message); setLoading(false); return; }
-    if (!data.session) { setMessage('Pendaftaran berhasil. Cek email untuk verifikasi, lalu masuk kembali untuk melengkapi profil perusahaan.'); setLoading(false); return; }
+    if (!data.session) { setForm({ name: '', email: '', password: '', city: '', industry: '', hrWhatsapp: '' }); setMessage('Pendaftaran berhasil. Cek email untuk verifikasi, lalu masuk kembali untuk melengkapi profil perusahaan.'); setLoading(false); return; }
     const session = data.session;
     const response = await fetch('/api/employer/onboarding', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` }, body: JSON.stringify({ name: form.name, industry: form.industry, city: form.city, hrWhatsapp: form.hrWhatsapp, hrEmail: form.email }) });
     if (!response.ok) { const payload = await response.json().catch(() => ({})); setError(payload.error || 'Profil perusahaan gagal dibuat.'); setLoading(false); return; }
