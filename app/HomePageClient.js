@@ -24,6 +24,20 @@ export default function HomePageClient({ initialSettings = null, initialJobs = [
   const filteredNews = news.filter(
     (n) => !query || [n.title, n.category].join(' ').toLowerCase().includes(query.toLowerCase())
   );
+  const classifyNews = (item) => {
+    const value = [item.title, item.category, item.content].join(' ').toLowerCase();
+    return /(ump|umk|upah minimum|perburuhan|ketenagakerjaan|hubungan industrial|disnaker|bpjs ketenagakerjaan)/i.test(value)
+      ? 'berita'
+      : 'lifestyle';
+  };
+  const berita = filteredNews.filter((item) => classifyNews(item) === 'berita');
+  const lifestyle = filteredNews.filter((item) => classifyNews(item) === 'lifestyle');
+  const latest = [
+    ...filteredJobs.map((item) => ({ ...item, contentType: 'job' })),
+    ...filteredNews.map((item) => ({ ...item, contentType: classifyNews(item) })),
+  ]
+    .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
+    .slice(0, 4);
 
   return (
     <div>
@@ -120,21 +134,24 @@ export default function HomePageClient({ initialSettings = null, initialJobs = [
               )}
             </section>
 
-            {/* SIDEBAR: LIFESTYLE & ARTICLES */}
+            {/* SIDEBAR: BERITA + LIFESTYLE */}
             <aside id="lifestyle" className="side scroll-mt-20">
               <div className="panel" style={{ padding: 16 }}>
                 <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  <Newspaper size={18} color="var(--hl-blue)" /> Berita
+                </h3>
+                {berita.length === 0 ? <p className="text-muted" style={{ fontSize: 13 }}>Belum ada berita.</p> : berita.slice(0, 4).map((item) => <SidebarItem key={item.id} item={item} />)}
+                <a href="/ump-indonesia-2026" className="btn-secondary" style={{ display: 'block', textAlign: 'center', marginTop: 12, textDecoration: 'none' }}>
+                  Lihat Berita Lainnya
+                </a>
+              </div>
+              <div className="panel" style={{ padding: 16, marginTop: 16 }}>
+                <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                   <Newspaper size={18} color="var(--hl-blue)" /> Lifestyle &amp; Tips Karir
                 </h3>
-                {filteredNews.length === 0 ? (
-                  <p className="text-muted" style={{ fontSize: 13 }}>Belum ada artikel.</p>
-                ) : (
-                  filteredNews.map((item) => (
-                    <SidebarItem key={item.id} item={item} />
-                  ))
-                )}
+                {lifestyle.length === 0 ? <p className="text-muted" style={{ fontSize: 13 }}>Belum ada artikel lifestyle.</p> : lifestyle.slice(0, 4).map((item) => <SidebarItem key={item.id} item={item} />)}
                 <a href="/ump-indonesia-2026" className="btn-secondary" style={{ display: 'block', textAlign: 'center', marginTop: 12, textDecoration: 'none' }}>
-                  Lihat Artikel Lainnya
+                  Lihat Tips Karir Lainnya
                 </a>
               </div>
             </aside>
@@ -259,39 +276,25 @@ export default function HomePageClient({ initialSettings = null, initialJobs = [
         </Reveal>
         )}
 
-        {/* BERITA TERBARU — 3 berita terbaru yang bisa langsung dibaca */}
+        {/* BERITA TERBARU — 4 posting terbaru lintas kategori */}
         <Reveal as="section" className="container section" style={{ paddingTop: 0 }}>
           <div className="section-head">
             <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
               <Newspaper size={22} color="var(--hl-blue)" /> Berita Terbaru
             </h2>
-            <a href="/ump-indonesia-2026" className="link-more">Lihat Semua Artikel ›</a>
+            <span className="text-muted" style={{ fontSize: 13 }}>4 posting terbaru dari 3 kategori</span>
           </div>
-          {news.length === 0 ? (
+          {latest.length === 0 ? (
             <div className="panel" style={{ padding: 40, textAlign: 'center' }}>
               <Newspaper size={40} color="var(--gray-300)" style={{ margin: '0 auto 12px' }} />
-              <p className="text-muted" style={{ fontSize: 14 }}>Belum ada artikel terbaru.</p>
+              <p className="text-muted" style={{ fontSize: 14 }}>Belum ada posting terbaru.</p>
             </div>
           ) : (
             <div className="card-grid">
-              {news.slice(0, 3).map((item) => (
-                <NewsCard key={item.id} item={item} />
-              ))}
+              {latest.map((item) => item.contentType === 'job' ? <JobCard key={`job-${item.id}`} job={item} /> : <NewsCard key={`news-${item.id}`} item={item} />)}
             </div>
           )}
         </Reveal>
-
-        {news.length > 3 && (
-          <Reveal as="section" className="container section" style={{ paddingTop: 0 }}>
-            <div className="section-head">
-              <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><Newspaper size={22} color="var(--hl-blue)" /> Arsip Berita</h2>
-              <span className="text-muted" style={{ fontSize: 13 }}>Berita sebelumnya tetap tersedia</span>
-            </div>
-            <div className="card-grid">
-              {news.slice(3).map((item) => <NewsCard key={item.id} item={item} />)}
-            </div>
-          </Reveal>
-        )}
       </main>
 
       <SiteFooter brand={settings?.brand_name || 'BekasiKerja.id'} />
