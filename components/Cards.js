@@ -3,6 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MapPin, CalendarClock, Newspaper } from 'lucide-react';
+import { postPath } from '../lib/post-url';
 
 function formatPostedDate(value) {
   if (!value) return '';
@@ -12,7 +13,7 @@ function formatPostedDate(value) {
 // JobCard — card grid item, HeyLaw card style + BCA token
 export function JobCard({ job }) {
   return (
-    <Link href={`/loker/${job.id}`} className="card">
+    <Link href={postPath('job', job)} className="card">
       <div className="body">
         <span className="badge-tag job">Lowongan</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
@@ -65,7 +66,7 @@ function getNewsExcerpt(content = '') {
 
 export function NewsCard({ item }) {
   return (
-    <Link href={`/artikel/${item.id}`} className="card">
+    <Link href={postPath('news', item)} className="card">
       <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9' }}>
         <Image
           src={item.image_url || '/placeholder.svg'}
@@ -101,7 +102,7 @@ export function NewsCard({ item }) {
 // SidebarItem — compact article row (HeyLaw sidebar)
 export function SidebarItem({ item }) {
   return (
-    <a href={`/artikel/${item.id}`} className="item">
+    <a href={postPath('news', item)} className="item">
       <div style={{ position: 'relative', width: 60, height: 60, flexShrink: 0 }}>
         <Image
           src={item.image_url || '/placeholder.svg'}

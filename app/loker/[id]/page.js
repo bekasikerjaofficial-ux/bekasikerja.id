@@ -11,10 +11,11 @@ import ShareButtons from '../../../components/ShareButtons';
 import RichArticleContent from '../../../components/RichArticleContent';
 import LatestNewsLinks from '../../../components/LatestNewsLinks';
 import PackageCTA from '../../../components/PackageCTA';
+import { postIdFromParam } from '../../../lib/post-url';
 
 export default function PostDetailPage() {
   const params = useParams();
-  const id = params?.id;
+  const id = postIdFromParam(params?.id);
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [coverLetter, setCoverLetter] = useState('');
