@@ -7,6 +7,8 @@ import { packageDisplayName } from '../../lib/packages';
 import { DEFAULT_PACKAGES } from '../../lib/packages';
 import { QrCode, CheckCircle2, Loader2 } from 'lucide-react';
 
+const PAYMENT_MAINTENANCE = process.env.NEXT_PUBLIC_PAYMENT_MAINTENANCE !== 'false';
+
 export default function CheckoutPage() {
   const [user, setUser] = useState(null);
   const [pkg, setPkg] = useState(null);
@@ -99,6 +101,12 @@ export default function CheckoutPage() {
 
           {!loading && pkg && (
             <>
+              {PAYMENT_MAINTENANCE && (
+                <div className="payment-maintenance" role="status">
+                  <strong>Pembelian online sedang dalam persiapan.</strong>
+                  <span>Paket tetap tersedia. Pembayaran akan dibuka setelah integrasi pihak ketiga selesai.</span>
+                </div>
+              )}
               <div style={{ marginTop: 16, padding: 16, background: 'var(--gray-100)', borderRadius: 12, border: '1px solid var(--gray-200)' }}>
                 <strong style={{ color: 'var(--gray-900)', fontSize: 16 }}>Paket {packageDisplayName(pkg)}</strong>
                 <div className="text-muted" style={{ fontSize: 13 }}>
@@ -107,7 +115,7 @@ export default function CheckoutPage() {
               </div>
 
               {!qr && (
-                <button className="btn-primary" style={{ width: '100%', marginTop: 20, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }} onClick={handlePay}>
+                <button disabled={PAYMENT_MAINTENANCE} className="btn-primary" style={{ width: '100%', marginTop: 20, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: PAYMENT_MAINTENANCE ? .55 : 1, cursor: PAYMENT_MAINTENANCE ? 'not-allowed' : 'pointer' }} onClick={handlePay}>
                   <QrCode size={18} /> Bayar dengan QRIS
                 </button>
               )}
