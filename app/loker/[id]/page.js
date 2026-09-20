@@ -11,7 +11,7 @@ import ShareButtons from '../../../components/ShareButtons';
 import RichArticleContent from '../../../components/RichArticleContent';
 import LatestNewsLinks from '../../../components/LatestNewsLinks';
 import PackageCTA from '../../../components/PackageCTA';
-import { postIdFromParam } from '../../../lib/post-url';
+import { postIdFromParam, slugifyTitle } from '../../../lib/post-url';
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -24,7 +24,14 @@ export default function PostDetailPage() {
   useEffect(() => {
     if (!id) return;
     const load = async () => {
-      const { data: legacyPost } = await supabase.from('posts').select('*').eq('id', id).single();
+      let legacyPost = null;
+      if (!String(id).startsWith('employer-') && !/^\d+$/.test(String(id))) {
+        const { data: candidates } = await supabase.from('posts').select('*').eq('type', 'job').limit(1000);
+        legacyPost = (candidates || []).find((item) => slugifyTitle(item.title) === String(id)) || null;
+      } else {
+        const { data } = await supabase.from('posts').select('*').eq('id', id).single();
+        legacyPost = data;
+      }
       if (legacyPost) {
         setPost(legacyPost);
       } else if (String(id).startsWith('employer-')) {

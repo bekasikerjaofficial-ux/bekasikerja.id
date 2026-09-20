@@ -11,7 +11,7 @@ import { NewsCard } from '../../../components/Cards';
 import PackageCTA from '../../../components/PackageCTA';
 import RichArticleContent from '../../../components/RichArticleContent';
 import { Newspaper } from 'lucide-react';
-import { postIdFromParam, postPath } from '../../../lib/post-url';
+import { postIdFromParam, postPath, slugifyTitle } from '../../../lib/post-url';
 
 export default function ArtikelPage() {
   const params = useParams();
@@ -24,7 +24,14 @@ export default function ArtikelPage() {
   useEffect(() => {
     if (!id) return;
     const load = async () => {
-      const { data } = await supabase.from('posts').select('*').eq('id', id).single();
+      let data = null;
+      if (/^\d+$/.test(String(id))) {
+        const response = await supabase.from('posts').select('*').eq('id', id).single();
+        data = response.data;
+      } else {
+        const response = await supabase.from('posts').select('*').eq('type', 'news').limit(1000);
+        data = (response.data || []).find((item) => slugifyTitle(item.title) === String(id)) || null;
+      }
       setPost(data);
 
       if (data) {
