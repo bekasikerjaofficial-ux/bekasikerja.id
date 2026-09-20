@@ -571,10 +571,11 @@ html.dark .chip { background: var(--gray-50); }
 
 /* ============ SPLIT (main + sidebar) ============ */
 .split { display: grid; grid-template-columns: 1fr 340px; gap: var(--sp-8); }
+.split > * { min-width: 0; }
 @media (max-width: 1024px) { .split { grid-template-columns: 1fr; } }
 
 /* ============ CARD GRID (jobs) ============ */
-.card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); }
+.card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-4); min-width: 0; }
 .card-grid .stagger { display: flex; }
 .card-grid .stagger > .card { width: 100%; }
 @media (max-width: 1024px) { .card-grid { grid-template-columns: repeat(2,1fr); } }
@@ -582,19 +583,20 @@ html.dark .chip { background: var(--gray-50); }
 
 /* ============ CARD ============ */
 .card {
+  min-width: 0;
   background: #fff; border: 1px solid var(--gray-200); border-radius: var(--r-lg);
   overflow: hidden; box-shadow: var(--shadow-card); transition: transform .15s, box-shadow .15s; display: flex; flex-direction: column;
 }
 html.dark .card { background: var(--gray-50); }
 .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card-hover); }
 .card .thumb { aspect-ratio: 16/9; background: var(--gray-100); object-fit: cover; width: 100%; }
-.card .body { padding: var(--sp-4); display: flex; flex-direction: column; flex: 1; }
+.card .body { min-width: 0; padding: var(--sp-4); display: flex; flex-direction: column; flex: 1; }
 .badge-tag {
   display: inline-block; font-size: var(--fs-xs); font-weight: 700; padding: var(--sp-1) var(--sp-3); border-radius: var(--r-pill); color: #fff; align-self: flex-start; margin-bottom: var(--sp-2);
 }
 .badge-tag.job { background: var(--hl-blue); }
 .badge-tag.news { background: var(--hl-gold); color: var(--gray-900); }
-.card h3 { font-family: var(--font-body); font-size: var(--fs-md); font-weight: 600; color: var(--gray-900); line-height: 1.35; margin-bottom: var(--sp-3); }
+.card h3 { min-width: 0; overflow-wrap: anywhere; word-break: break-word; font-family: var(--font-body); font-size: var(--fs-md); font-weight: 600; color: var(--gray-900); line-height: 1.35; margin-bottom: var(--sp-3); }
 .card .meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; font-size: var(--fs-xs); color: var(--gray-500); margin-top: auto; padding-top: var(--sp-3); border-top: 1px solid var(--gray-100); }
 .card .meta .deadline { color: var(--hl-red); font-weight: 700; }
 
