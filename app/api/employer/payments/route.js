@@ -1,0 +1,3 @@
+import { NextResponse } from 'next/server';
+import { requireEmployer } from '../../../../lib/employer-auth';
+export async function GET(request){const auth=await requireEmployer(request);if(auth.error)return auth.error;const {data,error}=await auth.db.from('employer_payments').select('*, employer_subscriptions(employer_packages(name,slug))').in('subscription_id',(await auth.db.from('employer_subscriptions').select('id').eq('company_id',auth.company.id)).data?.map(x=>x.id)||[]).order('created_at',{ascending:false});if(error)return NextResponse.json({error:error.message},{status:400});return NextResponse.json({payments:data||[]});}

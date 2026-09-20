@@ -29,7 +29,12 @@ export default function PostDetailPage() {
       } else if (String(id).startsWith('employer-')) {
         const employerId = String(id).replace(/^employer-/, '');
         const { data: employerJob } = await supabase.from('employer_jobs').select('*, companies(name, logo_url)').eq('id', employerId).eq('status', 'active').single();
-        if (employerJob) setPost({ ...employerJob, id, type: 'job', company: employerJob.companies?.name, image_url: employerJob.companies?.logo_url, deadline: employerJob.application_deadline, content: employerJob.description || '', title: employerJob.title });
+        if (employerJob) {
+          setPost({ ...employerJob, id, type: 'job', company: employerJob.companies?.name, image_url: employerJob.companies?.logo_url, deadline: employerJob.application_deadline, content: employerJob.description || '', title: employerJob.title });
+          const sessionKey = window.localStorage.getItem('bk_view_session') || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+          window.localStorage.setItem('bk_view_session', sessionKey);
+          fetch(`/api/employer/jobs/${employerId}/view`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: sessionKey }) }).catch(() => {});
+        }
       }
       setLoading(false);
     };

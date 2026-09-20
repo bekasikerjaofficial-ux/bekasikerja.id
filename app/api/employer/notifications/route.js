@@ -1,0 +1,4 @@
+import { NextResponse } from 'next/server';
+import { requireEmployer } from '../../../../lib/employer-auth';
+export async function GET(request){const auth=await requireEmployer(request);if(auth.error)return auth.error;const {data,error}=await auth.db.from('employer_notifications').select('*').eq('user_id',auth.user.id).order('created_at',{ascending:false}).limit(50);if(error)return NextResponse.json({error:error.message},{status:400});return NextResponse.json({notifications:data||[]});}
+export async function PATCH(request){const auth=await requireEmployer(request);if(auth.error)return auth.error;const body=await request.json();let query=auth.db.from('employer_notifications').update({is_read:true}).eq('user_id',auth.user.id);if(body.id)query=query.eq('id',body.id);const {error}=await query;if(error)return NextResponse.json({error:error.message},{status:400});return NextResponse.json({success:true});}
