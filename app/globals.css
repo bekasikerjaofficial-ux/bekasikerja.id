@@ -841,3 +841,6 @@ html.dark .panel { background: var(--gray-50); }
 .employer-status.pending_review, .employer-status.screening, .employer-status.interview { background: #fff4df; color: #9a6500; }
 @media (max-width: 900px) { .employer-shell { grid-template-columns: 1fr; } .employer-sidebar { border-right: 0; border-bottom: 1px solid var(--gray-200); padding: 16px; } .employer-sidebar nav { display: flex !important; overflow-x: auto; } .employer-nav { white-space: nowrap; } .employer-stat-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 520px) { .employer-main { padding: 20px 14px; } .employer-topbar { align-items: flex-start; } .employer-stat-grid { gap: 10px; } .employer-stat { padding: 14px; } .employer-stat .value { font-size: 23px; } }
+
+.free-test-timer { color: var(--hl-red); font-variant-numeric: tabular-nums; }
+.free-test-timeout { color: var(--hl-red); font-size: 13px; font-weight: 700; }

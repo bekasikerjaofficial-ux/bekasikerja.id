@@ -33,7 +33,7 @@ export default function MemberLogin() {
       setError(err.message);
       return;
     }
-    window.location.href = '/member/dashboard';
+    window.location.href = getSafeInternalPath(new URLSearchParams(window.location.search).get('next'), '/member/dashboard');
   };
 
   const handleGoogleLogin = async () => {
