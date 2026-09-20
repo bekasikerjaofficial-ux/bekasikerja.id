@@ -13,6 +13,7 @@
     "publish:aspire-job": "node scripts/publish-aspire-job.mjs",
     "publish:linkedin-hcss": "node scripts/publish-linkedin-hcss.mjs",
     "publish:inaura-pjt": "node scripts/publish-inaura-pjt-job.mjs",
+    "publish:hijrahfood-human-capital": "node scripts/publish-hijrahfood-human-capital-job.mjs",
     "backfill:ump-images": "node scripts/backfill-ump-images.mjs",
     "cleanup:examples": "node scripts/delete-example-posts.mjs"
   },
