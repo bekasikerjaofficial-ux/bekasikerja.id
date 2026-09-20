@@ -38,22 +38,21 @@ const post = {
     '## Ringkasan Posisi',
     'Posisi ini berperan sebagai mitra HR bagi unit bisnis yang ditugaskan, mencakup rekrutmen, payroll, orientasi karyawan, pengembangan, hubungan kerja, serta pelaporan kondisi HR.', '',
     '## Kualifikasi',
-    '- Memiliki pengalaman sebagai Human Resources Business Partner.',
-    '- Memahami proses rekrutmen, administrasi sebelum dan sesudah penerimaan, serta orientasi karyawan baru.',
-    '- Memiliki pengalaman Training Needs Analysis menjadi bagian dari kebutuhan posisi.',
-    '- Mampu mengolah data HR dan menyiapkan laporan maupun presentasi.',
-    '- Mampu berkoordinasi dengan kepala departemen dan Group HR.', '',
+    'Sumber lowongan tidak mencantumkan persyaratan pendidikan atau pengalaman tambahan di luar pertanyaan lamaran yang tersedia.', '',
     '## Tanggung Jawab Utama',
-    '- Mengelola proses rekrutmen dan memastikan kelengkapan dokumen penerimaan untuk unit bisnis yang ditugaskan.',
-    '- Memastikan karyawan baru mendapatkan orientasi terhadap organisasi.',
-    '- Menangani perhitungan payroll bulanan.',
-    '- Menjadi penghubung bagi karyawan dan manajer di unit bisnis terkait.',
-    '- Mengidentifikasi kebutuhan pelatihan bersama kepala departemen dan memastikan tindak lanjutnya.',
-    '- Memelihara struktur organisasi unit terkait bersama Group HR.',
-    '- Menyiapkan laporan dan presentasi mengenai kondisi HR berdasarkan pengumpulan serta analisis data.',
-    '- Memastikan persyaratan hukum terkait pekerja outsourcing terpenuhi.',
-    '- Mengelola performance management system (PMS) bersama Group HR.',
-    '- Menjalankan tugas lain yang relevan sesuai arahan manajemen.', '',
+    '- Handle all other areas for the assigned unit',
+    '- Ensure new recruites within the assigned SBU are oriented to the organisation',
+    '- Prepare reports and presentations on company HR climate by gathering and analyzing relevant data',
+    '- Manage the recruitment process',
+    '- Ensure all legal requirements are met with regards to subcontracted workers',
+    '- Handle monthly payroll calculation',
+    '- Manage the PMS of the company in coordination with group HR assigned by giving the relevant awarenes',
+    '- Ensure identified training needs of staff in the assigned SBU are addressed by working closely with group HR',
+    '- Acts as a point of contact for the employees and managers in the assigned business unit',
+    '- Perform additional duties commensurate with the current role, as and when requested by management',
+    '- Ensure necessary training for staff are provided by identifying the required training need along with department heads',
+    '- Maintain the organisation structures of assigned unit in coordination with group HR by periodicall',
+    '- Ensure pre and post recruitment formalities for assigned SBU such as preparation of recruitment related documents', '',
     '## Informasi Lowongan',
     'Perusahaan: PT Advantis Akaza Indonesia. Posisi full time dengan penempatan di Cikarang Barat, Jawa Barat. Kisaran gaji yang tercantum pada sumber adalah Rp20.000.000–Rp25.000.000 per bulan.', '',
     `Sumber lowongan: ${sourceUrl}`,
@@ -88,7 +87,7 @@ const verifyResponse = await fetch(`${endpoint}?select=id,title,type,company,loc
 if (!verifyResponse.ok) throw new Error(`Gagal memverifikasi posting: HTTP ${verifyResponse.status}`);
 const verified = await verifyResponse.json();
 const saved = verified?.[0];
-if (verified.length !== 1 || saved.title !== post.title || saved.type !== 'job' || saved.company !== post.company || saved.location !== post.location || !String(saved.content).includes(sourceUrl) || !String(saved.content).includes('- Mengelola proses rekrutmen dan memastikan kelengkapan dokumen penerimaan untuk unit bisnis yang ditugaskan.')) {
+if (verified.length !== 1 || saved.title !== post.title || saved.type !== 'job' || saved.company !== post.company || saved.location !== post.location || !String(saved.content).includes(sourceUrl) || !String(saved.content).includes('- Manage the recruitment process')) {
   throw new Error('Verifikasi read-back posting gagal.');
 }
 console.log(JSON.stringify({ ok: true, status: 'published', row_id: saved.id, title: saved.title, type: saved.type, company: saved.company, location: saved.location, source_url: sourceUrl }));
