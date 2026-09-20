@@ -576,8 +576,8 @@ html.dark .chip { background: var(--gray-50); }
 
 /* ============ CARD GRID (jobs) ============ */
 .card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-4); min-width: 0; }
-.card-grid .stagger { display: flex; }
-.card-grid .stagger > .card { width: 100%; }
+.card-grid .stagger { display: flex; min-width: 0; }
+.card-grid .stagger > .card { width: 100%; max-width: 100%; }
 @media (max-width: 1024px) { .card-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 600px)  { .card-grid { grid-template-columns: 1fr; } }
 
