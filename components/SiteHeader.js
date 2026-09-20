@@ -84,6 +84,9 @@ export default function SiteHeader({
         </nav>
 
         <div className="header-actions">
+          <a href="/employer/register" className="btn-primary btn-pill" style={{ textDecoration: 'none', fontSize: 12, padding: '9px 14px', whiteSpace: 'nowrap' }}>
+            Pasang Lowongan
+          </a>
           <button
             className="theme-toggle"
             onClick={toggleTheme}
@@ -151,6 +154,9 @@ export default function SiteHeader({
           ))}
         </div>
         <div className="mobile-auth-btns">
+          <a href="/employer/register" className="btn-primary btn-pill" onClick={closeMobileMenu} style={{ textDecoration: 'none', textAlign: 'center' }}>
+            Pasang Lowongan
+          </a>
           {user ? (
             <>
               <a href="/member/dashboard" className="btn-outline btn-pill" onClick={closeMobileMenu}>Dashboard</a>
