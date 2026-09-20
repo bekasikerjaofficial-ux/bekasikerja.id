@@ -637,7 +637,7 @@ html.dark .panel { background: var(--gray-50); }
 .slider-arrow:hover:not(:disabled) { background: var(--hl-blue); color: #fff; transform: translateY(-1px); }
 .slider-arrow:disabled { opacity: .4; cursor: not-allowed; }
 .slider-track {
-  display: flex; gap: var(--sp-4);
+  display: flex; align-items: stretch; gap: var(--sp-4);
   overflow-x: auto; scroll-snap-type: x mandatory;
   padding-bottom: var(--sp-2);
   scrollbar-width: none; -ms-overflow-style: none;
@@ -645,7 +645,8 @@ html.dark .panel { background: var(--gray-50); }
 }
 .slider-track::-webkit-scrollbar { display: none; }
 .slider-track:focus-visible { outline: 2px solid var(--hl-blue-light); outline-offset: 4px; border-radius: var(--r-md); }
-.slide { flex: 0 0 auto; width: calc((100% - var(--sp-4) * 2) / 3); scroll-snap-align: start; }
+.slide { flex: 0 0 auto; display: flex; width: calc((100% - var(--sp-4) * 2) / 3); scroll-snap-align: start; }
+.slide > .card { height: 100%; width: 100%; }
 .slider-dots { display: flex; justify-content: center; gap: var(--sp-2); margin-top: var(--sp-5); }
 .slider-dot {
   width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0;
