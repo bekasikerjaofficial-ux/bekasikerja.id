@@ -17,6 +17,7 @@
     "publish:hijrahfood-human-capital": "node scripts/publish-hijrahfood-human-capital-job.mjs",
     "publish:advantis-hrbp": "node scripts/publish-advantis-hrbp-job.mjs",
     "publish:shinto-ga-ehs": "node scripts/publish-shinto-ga-ehs-job.mjs",
+    "publish:aditya-birla-hr-ir": "node scripts/publish-aditya-birla-section-head-hr-ir-job.mjs",
     "backfill:ump-images": "node scripts/backfill-ump-images.mjs",
     "cleanup:examples": "node scripts/delete-example-posts.mjs"
   },
