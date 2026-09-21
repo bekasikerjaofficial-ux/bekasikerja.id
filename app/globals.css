@@ -891,7 +891,7 @@ html.dark .panel { background: var(--gray-50); }
 .package-section-heading h2 { margin: 5px 0 0; font-size: clamp(24px, 4vw, 34px); }
 .package-section-heading p { max-width: 340px; margin: 0; color: var(--gray-500); font-size: var(--fs-sm); }
 .eyebrow { color: var(--hl-blue); font-size: var(--fs-xs); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.package-grid-three { align-items: stretch; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.package-grid-three { align-items: stretch; grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .package-grid-three .pkg-card.popular { transform: scale(1.035); z-index: 1; }
 .package-grid-three .pkg-card.popular:hover { transform: scale(1.055) translateY(-3px); }
 .pkg-price-row { display: flex; align-items: center; gap: 8px; min-height: 22px; margin-top: 8px; }

@@ -23,7 +23,7 @@ export default function PackageCTA() {
   }, []);
 
   const list = packages || DEFAULT_PACKAGES;
-  const marketingList = ['gratis', 'sultan', 'have']
+  const marketingList = ['gratis', 'hemat', 'sultan', 'have']
     .map((slug) => list.find((pkg) => pkg.slug === slug))
     .filter(Boolean);
 

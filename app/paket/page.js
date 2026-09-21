@@ -16,7 +16,7 @@ const FAQS = [
 
 function selectMarketingPackages(source) {
   const bySlug = new Map(source.map((pkg) => [pkg.slug, pkg]));
-  const wanted = ['gratis', 'sultan', 'have'];
+  const wanted = ['gratis', 'hemat', 'sultan', 'have'];
   return wanted.map((slug) => bySlug.get(slug)).filter(Boolean);
 }
 

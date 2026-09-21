@@ -1,11 +1,12 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight, Brain, Check, GraduationCap, Sparkles, Star } from 'lucide-react';
+import { ArrowRight, BookOpen, Brain, Check, GraduationCap, Sparkles, Star } from 'lucide-react';
 import { packageDisplayName } from '../lib/packages';
 
 const PACKAGE_VISUALS = {
   gratis: { label: 'Mulai Gratis', format: 'Akses dasar karier', icon: Sparkles },
+  hemat: { label: 'Basic', format: 'Latihan matematika & logika', icon: BookOpen },
   sultan: { label: 'Paling Populer', format: 'Persiapan psikotes lengkap', icon: Brain },
   have: { label: 'Ultimate VIP', format: 'Semua modul karier', icon: GraduationCap },
 };
