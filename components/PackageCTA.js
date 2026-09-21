@@ -23,6 +23,9 @@ export default function PackageCTA() {
   }, []);
 
   const list = packages || DEFAULT_PACKAGES;
+  const marketingList = ['gratis', 'sultan', 'have']
+    .map((slug) => list.find((pkg) => pkg.slug === slug))
+    .filter(Boolean);
 
   return (
     <section className="container section" id="paket-cta">
@@ -37,8 +40,8 @@ export default function PackageCTA() {
         </div>
         <a href="/paket" className="link-more">Lihat Semua Paket ›</a>
       </div>
-      <div className="package-grid">
-        {list.map((pkg) => (
+      <div className="package-grid package-grid-three">
+        {marketingList.map((pkg) => (
           <PackageCard key={pkg.slug || pkg.id} pkg={pkg} />
         ))}
       </div>
