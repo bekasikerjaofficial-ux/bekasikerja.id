@@ -25,8 +25,9 @@ export default function HomePageClient({ initialSettings = null, initialJobs = [
     (n) => !query || [n.title, n.category].join(' ').toLowerCase().includes(query.toLowerCase())
   );
   const classifyNews = (item) => {
+    if (item.category === 'Lifestyle & Tips Karir') return 'lifestyle';
     const value = [item.title, item.category, item.content].join(' ').toLowerCase();
-    return /(ump|umk|upah minimum|perburuhan|ketenagakerjaan|hubungan industrial|disnaker|bpjs ketenagakerjaan)/i.test(value)
+    return /\b(ump|umk|upah minimum|perburuhan|ketenagakerjaan|hubungan industrial|disnaker|bpjs ketenagakerjaan)\b/i.test(value)
       ? 'berita'
       : 'lifestyle';
   };
