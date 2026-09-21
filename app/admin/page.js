@@ -337,7 +337,7 @@ export default function AdminDashboard() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         {p.image_url && <img src={p.image_url} alt="thumb" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 8 }} />}
                         <div>
-                          <span className={`badge-tag ${p.type === 'job' ? 'job' : 'news'}`} style={{ marginBottom: 4 }}>{p.type === 'job' ? 'Lowongan' : 'Berita'}</span>
+                          <span className={`badge-tag ${p.type === 'job' ? 'job' : 'news'}`} style={{ marginBottom: 4 }}>{p.type === 'job' ? 'Lowongan' : p.category === 'Lifestyle & Tips Karir' ? 'Lifestyle' : 'Berita'}</span>
                           <strong style={{ color: 'var(--gray-900)', display: 'block', fontSize: 13 }}>{p.title}</strong>
                           <span className="text-muted" style={{ fontSize: 11 }}>{p.company || p.category || ''}{p.tags && p.tags.length ? ' · ' + p.tags.join(', ') : ''}</span>
                         </div>
