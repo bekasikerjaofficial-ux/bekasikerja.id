@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight, Brain, Check, GraduationCap, Sparkles, Star, X } from 'lucide-react';
+import { ArrowRight, Brain, Check, GraduationCap, Sparkles, Star } from 'lucide-react';
 import { packageDisplayName } from '../lib/packages';
 
 const PACKAGE_VISUALS = {
@@ -57,14 +57,15 @@ export default function PackageCard({ pkg, ctaHref }) {
         <a href={href} className={isPopular ? 'btn-primary pkg-cta' : 'btn-secondary pkg-cta'}>
           {ctaLabel} <ArrowRight size={15} />
         </a>
-        <ul className="pkg-features" aria-label={`Benefit paket ${packageDisplayName(pkg)}`}>
-          {features.map((feature, i) => (
-            <li key={i} className={feature.included ? 'inc' : 'exc'}>
-              {feature.included ? <Check size={16} className="ic" aria-hidden="true" /> : <X size={16} className="ic" aria-hidden="true" />}
+        <ul className="pkg-features" aria-label={`Benefit utama paket ${packageDisplayName(pkg)}`}>
+          {features.filter((feature) => feature.included).slice(0, 3).map((feature, i) => (
+            <li key={i} className="inc">
+              <Check size={16} className="ic" aria-hidden="true" />
               <span>{feature.text}</span>
             </li>
           ))}
         </ul>
+        <a href={href} className="pkg-detail">Lihat Detail <ArrowRight size={14} aria-hidden="true" /></a>
       </div>
     </article>
   );

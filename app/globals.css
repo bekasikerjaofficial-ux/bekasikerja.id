@@ -930,3 +930,35 @@ html.dark .panel { background: var(--gray-50); }
   .package-faq { display: block; padding: 34px 0 52px; }
   .package-faq-heading { margin-bottom: 22px; }
 }
+
+/* Compact two-column mobile pricing cards. */
+@media (max-width: 600px) {
+  .package-pricing-section { padding-left: 8px; padding-right: 8px; }
+  .package-section-heading h2 { font-size: 23px; }
+  .package-grid-three { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .package-grid-three .pkg-card.popular { order: -1; }
+  .package-grid-three .pkg-card.popular, .package-grid-three .pkg-card.popular:hover { transform: none; }
+  .pkg-card { min-width: 0; border-radius: 12px; }
+  .pkg-card-visual { min-height: 112px; padding: 10px; }
+  .pkg-category-badge { max-width: 100%; padding: 4px 6px; font-size: 9px; gap: 3px; }
+  .pkg-category-badge svg { width: 11px; height: 11px; }
+  .pkg-format { margin: 10px 0 3px; font-size: 9px; line-height: 1.2; }
+  .pkg-visual-title { max-width: 66%; font-size: 17px; }
+  .pkg-visual-icon { right: 8px; bottom: 8px; width: 44px; height: 44px; border-radius: 14px; }
+  .pkg-visual-icon svg { width: 28px; height: 28px; }
+  .pkg-card-content { min-width: 0; padding: 10px; }
+  .pkg-price-label { overflow: hidden; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+  .pkg-price-row { min-height: 17px; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
+  .pkg-old-price { font-size: 9px; }
+  .pkg-discount { padding: 3px 5px; font-size: 8px; }
+  .pkg-price { font-size: 18px; word-break: break-word; }
+  .pkg-price small { display: block; margin-top: 2px; font-size: 9px; }
+  .pkg-tagline, .pkg-desc { display: none; }
+  .pkg-cta { min-height: 32px; margin-top: 9px; padding: 8px 5px; border-radius: 8px; font-size: 10px; line-height: 1.1; }
+  .pkg-cta svg { width: 12px; height: 12px; }
+  .pkg-features { gap: 5px; margin-top: 10px; }
+  .pkg-features li { gap: 4px; font-size: 10px; line-height: 1.25; }
+  .pkg-features li .ic { width: 12px; height: 12px; margin-top: 0; }
+  .pkg-detail { margin-top: auto; padding-top: 10px; font-size: 10px; }
+  .pkg-detail svg { width: 12px; height: 12px; }
+}
