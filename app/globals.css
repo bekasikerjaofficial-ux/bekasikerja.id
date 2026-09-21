@@ -925,7 +925,7 @@ html.dark .panel { background: var(--gray-50); }
   .package-section-heading p { margin-top: 8px; }
   .package-grid-three { display: grid; grid-template-columns: 1fr; gap: 18px; }
   .package-grid-three .pkg-card.popular, .package-grid-three .pkg-card.popular:hover { transform: none; }
-  .package-grid-three .pkg-card.popular { order: -1; }
+  .package-grid-three .pkg-card.popular { order: initial; }
   .package-trust { grid-template-columns: 1fr; padding-top: 24px; padding-bottom: 34px; }
   .package-faq { display: block; padding: 34px 0 52px; }
   .package-faq-heading { margin-bottom: 22px; }
@@ -936,7 +936,7 @@ html.dark .panel { background: var(--gray-50); }
   .package-pricing-section { padding-left: 8px; padding-right: 8px; }
   .package-section-heading h2 { font-size: 23px; }
   .package-grid-three { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .package-grid-three .pkg-card.popular { order: -1; }
+  .package-grid-three .pkg-card.popular { order: initial; }
   .package-grid-three .pkg-card.popular, .package-grid-three .pkg-card.popular:hover { transform: none; }
   .pkg-card { min-width: 0; border-radius: 12px; }
   .pkg-card-visual { min-height: 112px; padding: 10px; }
