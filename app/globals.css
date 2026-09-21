@@ -880,3 +880,53 @@ html.dark .panel { background: var(--gray-50); }
 
 .free-test-timer { color: var(--hl-red); font-variant-numeric: tabular-nums; }
 .free-test-timeout { color: var(--hl-red); font-size: 13px; font-weight: 700; }
+
+/* Membership pricing refresh: three-tier conversion layout */
+.package-hero { background: linear-gradient(135deg, #003d73 0%, #007f89 100%); color: #fff; padding: 52px 0 48px; }
+.package-hero .badge { background: rgba(255,255,255,.16); color: #fff; border-color: rgba(255,255,255,.28); }
+.package-hero h1 { max-width: 720px; margin: 16px 0 10px; color: #fff; font-size: clamp(30px, 5vw, 52px); line-height: 1.06; }
+.package-hero p { max-width: 650px; margin: 0; color: rgba(255,255,255,.86); font-size: var(--fs-lg); }
+.package-pricing-section { padding-top: 46px; }
+.package-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
+.package-section-heading h2 { margin: 5px 0 0; font-size: clamp(24px, 4vw, 34px); }
+.package-section-heading p { max-width: 340px; margin: 0; color: var(--gray-500); font-size: var(--fs-sm); }
+.eyebrow { color: var(--hl-blue); font-size: var(--fs-xs); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.package-grid-three { align-items: stretch; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.package-grid-three .pkg-card.popular { transform: scale(1.035); z-index: 1; }
+.package-grid-three .pkg-card.popular:hover { transform: scale(1.055) translateY(-3px); }
+.pkg-price-row { display: flex; align-items: center; gap: 8px; min-height: 22px; margin-top: 8px; }
+.pkg-old-price { color: var(--gray-400); font-size: var(--fs-sm); text-decoration: line-through; }
+.pkg-discount { display: inline-flex; padding: 4px 7px; border-radius: var(--r-pill); background: #e5f7ed; color: #168044; font-size: 11px; font-weight: 800; }
+.pkg-price small { font-family: inherit; color: var(--gray-500); font-size: var(--fs-sm); font-weight: 600; }
+.pkg-features { flex: 1; }
+.pkg-features li.exc { color: var(--gray-400); }
+.pkg-features li.exc .ic { color: var(--gray-300); }
+.package-trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding-top: 30px; padding-bottom: 48px; }
+.package-trust > div { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; padding: 16px; border: 1px solid var(--gray-200); border-radius: var(--r-md); background: #fff; }
+.package-trust svg { grid-row: span 2; color: var(--hl-teal); }
+.package-trust strong { font-size: var(--fs-sm); }
+.package-trust span { color: var(--gray-500); font-size: 12px; }
+.package-faq { display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; padding: 48px 0 72px; border-top: 1px solid var(--gray-200); }
+.package-faq-heading h2 { margin: 12px 0 8px; font-size: clamp(24px, 4vw, 34px); }
+.package-faq-heading p { margin: 0; color: var(--gray-500); }
+.faq-list { display: grid; gap: 10px; }
+.faq-item { overflow: hidden; border: 1px solid var(--gray-200); border-radius: var(--r-md); background: #fff; }
+.faq-item.open { border-color: rgba(0,92,171,.35); box-shadow: 0 5px 18px rgba(0,0,0,.05); }
+.faq-question { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; padding: 17px 18px; border: 0; background: transparent; color: var(--gray-900); cursor: pointer; text-align: left; font: inherit; font-weight: 700; }
+.faq-question svg { flex-shrink: 0; color: var(--hl-blue); transition: transform .2s; }
+.faq-item.open .faq-question svg { transform: rotate(180deg); }
+.faq-answer { margin: -4px 18px 17px; color: var(--gray-600); font-size: var(--fs-sm); line-height: 1.6; }
+@media (max-width: 760px) {
+  .package-hero { padding: 32px 0 30px; }
+  .package-hero h1 { font-size: 30px; }
+  .package-hero p { font-size: var(--fs-sm); }
+  .package-pricing-section { padding-top: 30px; }
+  .package-section-heading { display: block; margin-bottom: 20px; }
+  .package-section-heading p { margin-top: 8px; }
+  .package-grid-three { display: grid; grid-template-columns: 1fr; gap: 18px; }
+  .package-grid-three .pkg-card.popular, .package-grid-three .pkg-card.popular:hover { transform: none; }
+  .package-grid-three .pkg-card.popular { order: -1; }
+  .package-trust { grid-template-columns: 1fr; padding-top: 24px; padding-bottom: 34px; }
+  .package-faq { display: block; padding: 34px 0 52px; }
+  .package-faq-heading { margin-bottom: 22px; }
+}
