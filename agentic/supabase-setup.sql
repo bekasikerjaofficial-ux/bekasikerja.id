@@ -44,15 +44,20 @@ on conflict (id) do nothing;
 -- Public = read only. Write = hanya admin (email di-whitelist).
 -- ============================================================
 
--- Ganti dengan email admin Supabase Auth kamu:
+-- Email admin utama; app_metadata.role = admin juga diterima untuk user
+-- yang dibuat oleh Auth Admin API/CI. app_metadata tidak bisa diubah user biasa.
 create or replace function public.admin_emails()
 returns text[] language sql stable as $$
   select array['admin@bekasikerja.id'];
 $$;
 
 create or replace function public.is_admin()
-returns boolean language sql stable security definer as $$
-  select coalesce(auth.email() = any(public.admin_emails()), false);
+returns boolean language sql stable security definer set search_path = public as $$
+  select coalesce(
+    lower(auth.email()) = any(public.admin_emails())
+    or (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin',
+    false
+  );
 $$;
 
 -- posts
