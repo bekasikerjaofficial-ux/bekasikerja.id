@@ -22,42 +22,61 @@ export default function MemberResetPassword() {
     const safeNext = getSafeInternalPath(requestedNext, '/member/login');
     setReturnPath(safeNext);
 
+    let active = true;
+    let recoveryEventReceived = false;
+    const recoveryListener = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') recoveryEventReceived = true;
+    });
+
     const verifyResetLink = async () => {
       const query = new URLSearchParams(window.location.search);
       const hash = new URLSearchParams(window.location.hash.substring(1));
       const error = query.get('error_description') || query.get('error') || hash.get('error_description') || hash.get('error');
       if (error) throw new Error('Link reset password tidak valid atau sudah kedaluwarsa.');
 
-      // PKCE returns ?code=..., while implicit flow returns #access_token=....
       const code = query.get('code');
+      const tokenHash = query.get('token_hash') || hash.get('token_hash');
+      const tokenType = query.get('type') || hash.get('type');
       const accessToken = hash.get('access_token');
-      if (!code && !accessToken) throw new Error('Token reset password tidak ditemukan. Pastikan Anda membuka link dari email.');
+      const hasRecoveryParams = Boolean(code || tokenHash || accessToken || tokenType === 'recovery');
       const { data: existing, error: existingError } = await supabase.auth.getSession();
       if (existingError) throw existingError;
-      if (code) {
-        // detectSessionInUrl may have consumed the code during client startup.
-        if (!existing.session) {
-          const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-          if (exchangeError) throw exchangeError;
-        }
+
+      if (tokenHash && tokenType === 'recovery') {
+        const { error: verifyError } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' });
+        if (verifyError) throw verifyError;
+      } else if (code && !existing.session) {
+        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+        if (exchangeError) throw exchangeError;
       } else if (accessToken) {
         const { error: sessionError } = await supabase.auth.setSession({
           access_token: accessToken,
           refresh_token: hash.get('refresh_token') || '',
         });
         if (sessionError) throw sessionError;
+      } else if (!hasRecoveryParams && !existing.session) {
+        // The Supabase browser client may consume the URL before this effect runs.
+        await new Promise((resolve) => setTimeout(resolve, 300));
       }
 
       const { data, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) throw sessionError;
-      if (!data.session) throw new Error('Token reset password tidak ditemukan. Pastikan Anda membuka link dari email.');
-      setStatus('ready');
+      if (!data.session || (!hasRecoveryParams && !recoveryEventReceived)) {
+        throw new Error('Token reset password tidak ditemukan. Pastikan Anda membuka link dari email.');
+      }
+      if (active) setStatus('ready');
     };
 
     verifyResetLink().catch((verifyError) => {
+      if (!active) return;
       setStatus('error');
       setMessage('Gagal memverifikasi: ' + verifyError.message);
     });
+
+    return () => {
+      active = false;
+      recoveryListener.data.subscription.unsubscribe();
+    };
   }, []);
 
   const handleSubmit = async (e) => {
