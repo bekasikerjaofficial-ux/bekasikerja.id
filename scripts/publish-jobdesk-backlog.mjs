@@ -38,10 +38,7 @@ const posts = [
       '- Jelaskan pengalaman menjalankan SOP, quality control, dan keselamatan kerja.',
       '- Siapkan contoh masalah produksi yang pernah diselesaikan.',
       '- Cantumkan pengalaman menggunakan sistem produksi atau laporan operasional jika ada.', '',
-      '## Sumber',
-      'Rincian topik dan lokasi dibandingkan dengan listing Production Leader di Cikarang pada JobStreet Indonesia. Detail listing tersebut saat pengecekan menyatakan lowongan tidak lagi diiklankan, sehingga artikel ini merupakan panduan job desk, bukan salinan lowongan aktif.',
-      'Sumber lowongan: https://id.jobstreet.com/id/job/87983458',
-      'Sumber tugas pekerjaan: https://www.onetonline.org/link/details/51-1011.00',
+
     ].join('\\n'),
   },
   {
@@ -80,10 +77,7 @@ const posts = [
       '- Cantumkan pengalaman SAP/WMS, stock opname, dan inventory reconciliation.',
       '- Tunjukkan pemahaman tentang keselamatan, 5S, dan pengendalian material.',
       '- Gunakan contoh pencapaian yang terukur tanpa mengarang angka.', '',
-      '## Sumber',
-      'Artikel ini disusun berdasarkan poster rekrutmen Warehouse Supervisor PT. Haier Electrical Appliance Indonesia untuk penempatan EJIP–Cikarang dan dibandingkan dengan panduan tanggung jawab Warehouse Supervisor dari Indeed. Artikel merupakan panduan job desk, bukan salinan poster atau jaminan lowongan masih aktif.',
-      'Sumber panduan tugas: https://indeed.com/hire/job-description/warehouse-supervisor',
-      'Konteks lowongan Haier: poster rekrutmen PT. Haier Electrical Appliance Indonesia yang diterima BekasiKerja.id.',
+
     ].join('\\n'),
   },
 ];

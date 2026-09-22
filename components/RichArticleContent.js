@@ -41,9 +41,13 @@ function renderInline(text) {
   });
 }
 
-export default function RichArticleContent({ content, hideApplyLinks = false }) {
-  const lines = String(content || '').replace(/\\+n/g, '\n').split(/\r?\n/)
-    .filter((line) => !(hideApplyLinks && /cara melamar:/i.test(line)));
+export default function RichArticleContent({ content, hideApplyLinks = false, hideSourceSection = false }) {
+  let lines = String(content || '').replace(/\\+n/g, '\n').split(/\r?\n/);
+  if (hideSourceSection) {
+    const sourceIndex = lines.findIndex((line) => /^##\s+sumber\s*$/i.test(line.trim()));
+    if (sourceIndex >= 0) lines = lines.slice(0, sourceIndex);
+  }
+  lines = lines.filter((line) => !(hideApplyLinks && /cara melamar:/i.test(line)));
   const blocks = [];
   let paragraph = [];
   let list = [];

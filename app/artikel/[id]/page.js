@@ -106,7 +106,10 @@ export default function ArtikelPage() {
         <ShareButtons inline title={post?.title ? `${post.title} — BekasiKerja.id` : ''} />
 
         <article className="panel" style={{ marginTop: 24, padding: '28px 30px', color: 'var(--gray-700)' }}>
-          <RichArticleContent content={post.content} />
+          <RichArticleContent
+            content={post.content}
+            hideSourceSection={post.category === 'Lifestyle & Tips Karir'}
+          />
         </article>
 
         {latestPosts.length > 0 && (
