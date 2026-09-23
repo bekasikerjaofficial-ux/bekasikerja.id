@@ -16,8 +16,8 @@ import {
 // ---------- helpers ----------
 const CONTENT_CATEGORIES = [
   { value: 'Lowongan Kerja', label: 'Lowongan Kerja' },
-  { value: 'Tips (Jobdesk)', label: 'Tips (Jobdesk)' },
-  { value: 'Berita', label: 'Berita (Upah & informasi)' },
+  { value: 'Lifestyle & Tips Karir', label: 'Lifestyle & Tips Karir (Job Desk)' },
+  { value: 'Berita UMP/UMK & Ketenagakerjaan', label: 'Berita UMP/UMK & Ketenagakerjaan' },
 ];
 
 const POSTS_PER_PAGE = 10;
@@ -57,19 +57,29 @@ export default function AdminDashboard() {
   // UI toggles
   const [tab, setTab] = useState('posts'); // posts | settings | categories | tags
 
-  // Fetch all data
+  // Fetch all data — fail-closed per source so a missing table doesn't blank the whole dashboard
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const { data: st } = await supabase.from('site_settings').select('*').eq('id', 1).single();
-    if (st) setSettings(st);
-    const { data: ps } = await supabase.from('posts').select('*').order('created_at', { ascending: false });
-    if (ps) setPosts(ps);
-    const { data: cats } = await supabase.from('categories').select('*').order('name');
-    if (cats) setCategories(cats);
-    const { data: tgs } = await supabase.from('tags').select('*').order('name');
-    if (tgs) setTags(tgs);
-    const { data: metrics, error: metricsError } = await supabase.rpc('get_admin_analytics', { p_days: 30 });
-    if (!metricsError && metrics) setAnalytics(metrics);
+    try {
+      const { data: st } = await supabase.from('site_settings').select('*').eq('id', 1).single();
+      if (st) setSettings(st);
+    } catch (e) { console.warn('site_settings unavailable:', e.message); }
+    try {
+      const { data: ps } = await supabase.from('posts').select('*').order('created_at', { ascending: false });
+      if (ps) setPosts(ps);
+    } catch (e) { console.warn('posts unavailable:', e.message); }
+    try {
+      const { data: cats } = await supabase.from('categories').select('*').order('name');
+      if (cats) setCategories(cats);
+    } catch (e) { console.warn('categories unavailable:', e.message); }
+    try {
+      const { data: tgs } = await supabase.from('tags').select('*').order('name');
+      if (tgs) setTags(tgs);
+    } catch (e) { console.warn('tags unavailable:', e.message); }
+    try {
+      const { data: metrics } = await supabase.rpc('get_admin_analytics', { p_days: 30 });
+      if (metrics) setAnalytics(metrics);
+    } catch (e) { console.warn('analytics unavailable:', e.message); }
     setLoading(false);
   }, []);
 
@@ -79,9 +89,15 @@ export default function AdminDashboard() {
       const { data } = await supabase.auth.getUser();
       if (!data.user) { window.location.href = '/nyosor/login'; return; }
       // Keep the UI guard aligned with the database RLS policy.
-      const { data: isAdmin } = await supabase.rpc('is_admin');
-      if (!isAdmin) {
-        window.location.href = '/';
+      try {
+        const { data: isAdmin } = await supabase.rpc('is_admin');
+        if (!isAdmin) {
+          window.location.href = '/';
+          return;
+        }
+      } catch (e) {
+        console.error('Admin verification failed:', e.message);
+        window.location.href = '/nyosor/login';
         return;
       }
       if (active) await fetchData();

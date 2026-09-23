@@ -15,6 +15,9 @@ export default function SiteHeader({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState('light');
 
+  // Check if user is admin for menu visibility
+  const [isAdmin, setIsAdmin] = useState(false);
+
   useEffect(() => {
     const saved = localStorage.getItem('theme') || 'light';
     setTheme(saved);
@@ -32,10 +35,25 @@ export default function SiteHeader({
     const init = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data.user || null);
+      if (data.user) {
+        try {
+          const { data: adminCheck } = await supabase.rpc('is_admin');
+          setIsAdmin(!!adminCheck);
+        } catch {
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
     };
     init();
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
+      if (session?.user) {
+        supabase.rpc('is_admin').then(({ data }) => setIsAdmin(!!data));
+      } else {
+        setIsAdmin(false);
+      }
     });
     return () => listener.subscription.unsubscribe();
   }, []);
@@ -81,6 +99,9 @@ export default function SiteHeader({
           {navLinks.map(link => (
             <a key={link.key} href={link.href} className={active === link.key ? 'active' : ''}>{link.label}</a>
           ))}
+          {isAdmin && (
+            <a href="/admin" className={active === '/admin' ? 'active' : ''} style={{ color: 'var(--hl-blue)', fontWeight: 700 }}>Admin</a>
+          )}
         </nav>
 
         <div className="header-actions">
@@ -109,6 +130,9 @@ export default function SiteHeader({
           <div className="auth-btns">
             {user ? (
               <>
+                {isAdmin && (
+                  <a href="/admin" className="btn-primary btn-pill btn-daftar">Admin</a>
+                )}
                 <a href="/member/dashboard" className="btn-outline btn-pill btn-daftar">Dashboard</a>
                 <button onClick={handleLogout} className="btn-login btn-pill btn-login-mobile">Logout</button>
               </>
@@ -154,6 +178,11 @@ export default function SiteHeader({
           ))}
         </div>
         <div className="mobile-auth-btns">
+          {isAdmin && (
+            <a href="/admin" className="btn-primary btn-pill" onClick={closeMobileMenu} style={{ textDecoration: 'none', textAlign: 'center' }}>
+              Admin Dashboard
+            </a>
+          )}
           <a href="/employer/register" className="btn-primary btn-pill" onClick={closeMobileMenu} style={{ textDecoration: 'none', textAlign: 'center' }}>
             Pasang Lowongan
           </a>
