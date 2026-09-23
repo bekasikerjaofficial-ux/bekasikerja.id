@@ -48,7 +48,7 @@ on conflict (id) do nothing;
 -- yang dibuat oleh Auth Admin API/CI. app_metadata tidak bisa diubah user biasa.
 create or replace function public.admin_emails()
 returns text[] language sql stable as $$
-  select array['admin@bekasikerja.id'];
+  select array['bekasikerja.official@gmail.com'];
 $$;
 
 create or replace function public.is_admin()
