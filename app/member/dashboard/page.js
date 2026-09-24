@@ -5,7 +5,8 @@ import { supabase } from '../../../lib/supabase';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
 import { packageDisplayName } from '../../../lib/packages';
-import { User, FileText, Trophy, CreditCard, Settings, LogOut, ChevronRight, Calendar, Target } from 'lucide-react';
+import { User, FileText, Trophy, CreditCard, Settings, LogOut, ChevronRight, Calendar, Target, Shield } from 'lucide-react';
+import { isAdminEmail } from '../../../lib/admin-check';
 
 export default function MemberDashboard() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function MemberDashboard() {
   const [profileForm, setProfileForm] = useState({ full_name: '', phone: '', address: '', birth_date: '', bio: '' });
   const [savingProfile, setSavingProfile] = useState(false);
   const [msg, setMsg] = useState('');
+  const isAdmin = isAdminEmail(user?.email);
 
   useEffect(() => {
     let active = true;
@@ -115,9 +117,16 @@ export default function MemberDashboard() {
             <h1 className="h-display" style={{ fontSize: 24, margin: 0 }}>Dashboard Member</h1>
             <p className="text-muted" style={{ fontSize: 13, margin: 0 }}>Selamat datang, {profile?.full_name || user?.email}</p>
           </div>
-          <button onClick={handleLogout} className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <LogOut size={16} /> Logout
-          </button>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            {isAdmin && (
+              <button onClick={() => router.push('/admin')} className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, padding: '6px 14px', background: '#e8a817', borderColor: '#e8a817' }}>
+                <Shield size={16} /> Dashboard Admin
+              </button>
+            )}
+            <button onClick={handleLogout} className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <LogOut size={16} /> Logout
+            </button>
+          </div>
         </div>
 
         {/* Membership Badge */}
