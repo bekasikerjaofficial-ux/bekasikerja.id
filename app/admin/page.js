@@ -6,6 +6,7 @@ import FormInput from '../../components/FormInput';
 import FormSelect from '../../components/FormSelect';
 import TagInput from '../../components/TagInput';
 import ImageUpload from '../../components/ImageUpload';
+import { isAdminEmail } from '../../lib/admin-check';
 import {
   Settings, Plus, ClipboardList, Image, Save, Trash2,
   Edit2, Tag as TagIcon, FolderOpen, CheckCircle2, X,
@@ -88,16 +89,10 @@ export default function AdminDashboard() {
     const guard = async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user) { window.location.href = '/nyosor/login'; return; }
-      // Keep the UI guard aligned with the database RLS policy.
-      try {
-        const { data: isAdmin } = await supabase.rpc('is_admin');
-        if (!isAdmin) {
-          window.location.href = '/';
-          return;
-        }
-      } catch (e) {
-        console.error('Admin verification failed:', e.message);
-        window.location.href = '/nyosor/login';
+      // Client-side admin check via email allowlist (matches admin_emails in SQL schema)
+      const admin = isAdminEmail(data.user.email);
+      if (!admin) {
+        window.location.href = '/';
         return;
       }
       if (active) await fetchData();

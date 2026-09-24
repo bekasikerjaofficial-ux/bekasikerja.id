@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Briefcase, Search, Menu, X, Moon, Sun } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import Image from 'next/image';
+import { isAdminEmail } from '../lib/admin-check';
 
 export default function SiteHeader({
   brand = 'BekasiKerja.id',
@@ -36,12 +36,7 @@ export default function SiteHeader({
       const { data } = await supabase.auth.getUser();
       setUser(data.user || null);
       if (data.user) {
-        try {
-          const { data: adminCheck } = await supabase.rpc('is_admin');
-          setIsAdmin(!!adminCheck);
-        } catch {
-          setIsAdmin(false);
-        }
+        setIsAdmin(isAdminEmail(data.user.email));
       } else {
         setIsAdmin(false);
       }
@@ -49,11 +44,7 @@ export default function SiteHeader({
     init();
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
-      if (session?.user) {
-        supabase.rpc('is_admin').then(({ data }) => setIsAdmin(!!data));
-      } else {
-        setIsAdmin(false);
-      }
+      setIsAdmin(isAdminEmail(session?.user?.email));
     });
     return () => listener.subscription.unsubscribe();
   }, []);
