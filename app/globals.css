@@ -411,6 +411,7 @@ html.dark .theme-toggle:hover { background: var(--gray-300); }
   }
   .mobile-auth-btns {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--sp-2);
     padding: var(--sp-4) var(--sp-6);
     padding-bottom: calc(var(--sp-4) + env(safe-area-inset-bottom, 0px));
@@ -419,11 +420,14 @@ html.dark .theme-toggle:hover { background: var(--gray-300); }
   }
   .mobile-auth-btns a,
   .mobile-auth-btns button {
-    flex: 1;
+    flex: 1 1 calc(50% - var(--sp-2));
+    min-width: 0;
     text-align: center;
-    padding: var(--sp-2) var(--sp-4);
-    font-size: var(--fs-base);
+    padding: var(--sp-2) var(--sp-3);
+    font-size: var(--fs-sm);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
