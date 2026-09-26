@@ -25,101 +25,53 @@ const DRY = process.env.DRY_RUN === '1' || process.env.DRY_RUN === 'true';
 const CATEGORY = 'Lifestyle & Tips Karir';
 
 /* ------------------------------------------------------------------ *
- * Topic bank. One entry = one publishable job-desk explainer.
- * `city` must be Bekasi, Cikarang, or Karawang (hard rule).
+ * Topic bank lives in scripts/jobdesk-topics.mjs so the list can grow
+ * without touching publishing logic. It is required, not optional: the
+ * publisher fails closed rather than falling back to a stale seed, so a
+ * missing or empty bank can never silently publish less than expected.
  * ------------------------------------------------------------------ */
-const BANK = [
-  {
-    role: 'Operator Produksi',
-    city: 'Cikarang',
-    intro:
-      'Operator Produksi bekerja langsung di lantai manufaktur untuk mengubah bahan baku menjadi produk jadi dengan mesin dan prosedur kerja yang sudah ditentukan. Posisi ini termasuk job desk yang paling banyak-lowongan di kawasan industri Cikarang.',
-    tugas: [
-      'Mengoperasikan mesin produksi sesuai jadwal, target, dan prosedur kerja yang berlaku.',
-      'Memastikan jumlah, jenis, dan kondisi produk yang dihasilkan sesuai standar.',
-      'Melakukan pemeriksaan ringan pada mesin dan melaporkan kerusakan sejak awal.',
-      'Mencatat hasil produksi, waktu berhenti mesin, dan pemakaian material setiap shift.',
-      'Menjaga kebersihan area kerja serta kebersihan alat ukur yang digunakan.',
-      'Berkoordinasi dengan operator lain saat pergantian shift.',
-    ],
-    skill: [
-      'Konsisten mengikuti prosedur kerja dan standar keselamatan kerja.',
-      'Terbiasa bekerja dengan sistem shift, termasuk shift malam.',
-      'Mampu membaca instruksi kerja sederhana dan diagram alur proses.',
-      'Teliti dalam penghitungan dan pencatatan hasil produksi.',
-      'Mampu bekerja dalam tim di bawah tekanan target harian.',
-      'Mampu berdiri lama dan bergerak aktif selama satu shift kerja.',
-    ],
-    lingkungan:
-      'Area produksi umumnya bising, berdebu, dan sesekali lembap. Lokasi kerja berada di dalam kawasan industri dengan jalur menuju fasilitas umum yang perlu ditempuh berjalan kaki. Alat pelindung diri seperti sepatu safety, helm, dan pelindung telinga wajib dipakai selama shift.',
-    tips: [
-      'Sebutkan pengalaman kerja di lini produksi dan jenis mesin yang pernah dipakai.',
-      'Jelaskan sistem shift yang pernah ditangani beserta jam kerjanya.',
-      'Tunjukkan pemahaman prosedur kerja dan K3 meskipun pengalaman belum lama.',
-      'Cantumkan kondisi fisik yang relevan karena pekerjaan melibatkan berdiri lama.',
-    ],
-  },
-  {
-    role: 'Operator Packaging',
-    city: 'Bekasi',
-    intro:
-      'Operator Packaging menjadi tahap terakhir sebelum produk dikirim ke pelanggan. Posisi ini memastikan produk dikemas, diberi label, dan disegel dengan benar sesuai standar yang berlaku.',
-    tugas: [
-      'Mengemas produk sesuai ukuran, berat, dan format yang telah ditentukan.',
-      'Memastikan label, tanggal produksi, nomor batch, dan kode produk tercetak dan terbaca.',
-      'Menghitung ulang hasil pengemasan pada setiap akhir batch.',
-      'Membersihkan mesin pengemas dan area kerja sebelum pergantian shift.',
-      'Melaporkan kekurangan atau kerusakan bahan kemasan kepada supervisor.',
-      'Menysusun kemasan produk jadi di lokasi penyimpanan yang ditentukan.',
-    ],
-    skill: [
-      'Teliti pada detail label dan hasil pencetakan.',
-      'Terbiasa bekerja dengan mesin pengemas semi-otomatis.',
-      'Mampu melakukan penghitungan fisik dengan akurat.',
-      'Memahami prosedur FIFO pada bahan kemasan.',
-      'Bekerja cepat namun tetap teliti mengikuti ritme produksi.',
-      'Mampu bekerja dengan sistem shift tanpa kehilangan ketelitian.',
-    ],
-    lingkungan:
-      'Lokasi kerja umumnya berada di area dalam ruangan dengan ventilasi yang baik. Pekerjaan berdiri dengan perpindahan posisi minimal, tetapi lantai yang licin dan penggunaan mesin pemotong memerlukan kewaspadaan ekstra.',
-    tips: [
-      'Sebutkan pengalaman mengemas produk dan jenis kemasan yang pernah ditangani.',
-      'Telaskan kemampuan mengikuti ritme kerja produksi yang cepat dan konsisten.',
-      'Tunjukkan ketelitian pada pencetakan label dan tanggal produksi.',
-      'Jelaskan ketersediaan untuk bekerja sistem shift.',
-    ],
-  },
-  {
-    role: 'Staff Gudang dan Logistik',
-    city: 'Karawang',
-    intro:
-      'Staff gudang dan logistik menjadi tulang punggung perpindahan barang dari pabrik ke distributor maupun pelanggan akhir di wilayah Bekasi, Cikarang, dan Karawang. Banyak lowongan di Karawang berada di kawasan pergudangan seperti Cikarang dan surrounding sentra industri.',
-    tugas: [
-      'Menerima, memeriksa, dan mencatat barang masuk sesuai dokumen pengiriman.',
-      'Menyusun dan menata stok berdasarkan lokasi rak yang telah ditentukan.',
-      'Menerbitkan surat jalan dan mencatat barang keluar.',
-      'Memastikan keakuratan stok fisik dengan pemeriksaan berkala.',
-      'Mencatat kondisi barang yang rusak atau tidak sesuai saat diterima.',
-      'Membantu proses picking dan packing untuk pesanan pelanggan.',
-    ],
-    skill: [
-      'Memahami alur barang masuk, penyimpanan, dan barang keluar.',
-      'Mampu mengoperasikan scanner atau sistem pencatatan stok.',
-      'Teliti dan konsisten dalam melakukan pencatatan barang.',
-      'Mampu bekerja dengan sistem shift dan target harian.',
-      'Terbiasa menggunakan alat berat seperti hand pallet truck.',
-      'Memahami aturan FIFO pada penyimpanan barang.',
-    ],
-    lingkungan:
-      'Pekerjaan berada di dalam gudang dengan lantai yang dapat licin, area yang bising, dan penggunaan alat berat yang membebani tulang belakang. Sebagian pekerjaan dapat memerlukan menaiki tangga atau pemindahan bobot secara manual.',
-    tips: [
-      'Sebutkan pengalaman sebagai operator gudang, checker, atau helper logistik.',
-      'Tunjukkan kemampuan menghitung dan mencocokkan data barang.',
-      'Jelaskan pengalaman menggunakan hand pallet truck atau alat berat lain.',
-      'Sebutkan ketersediaan untuk bekerja sistem shift.',
-    ],
-  },
-];
+let BANK = [];
+try {
+  const mod = await import('./jobdesk-topics.mjs');
+  if (Array.isArray(mod.TOPICS)) BANK = mod.TOPICS;
+} catch (err) {
+  console.error(
+    `[jobdesk] GAGAL: scripts/jobdesk-topics.mjs tidak terbaca (${err.message}). ` +
+      'Bank topik wajib ada; tidak ada tulisan yang dilakukan.'
+  );
+  process.exit(1);
+}
+if (!BANK.length) {
+  console.error('[jobdesk] GAGAL: bank topik kosong. Tidak ada tulisan yang dilakukan.');
+  process.exit(1);
+}
+
+/* Validate the bank up front so bad data fails before any write: a
+ * half-published article is worse than a loud non-zero exit. */
+const VALID_CITIES = new Set(['Bekasi', 'Cikarang', 'Karawang']);
+for (const t of BANK) {
+  if (!t || typeof t.role !== 'string' || !VALID_CITIES.has(t.city)) {
+    console.error(
+      '[jobdesk] GAGAL: topik tidak valid (' +
+        'role=' + (t && t.role) +
+        ', city=' + (t && t.city) +
+        '). Tidak ada tulisan yang dilakukan.'
+    );
+    process.exit(1);
+  }
+  const wanted = { tugas: 6, skill: 6, tips: 4 };
+  for (const key of Object.keys(wanted)) {
+    const list = t[key];
+    if (!Array.isArray(list) || list.length !== wanted[key]) {
+      console.error(
+        '[jobdesk] GAGAL: ' + t.role + '/' + key + ' harus ' + wanted[key] +
+        ' item, dapat ' + (list ? list.length : 'non-array') +
+        '. Tidak ada tulisan yang dilakukan.'
+      );
+      process.exit(1);
+    }
+  }
+}
 
 /* --------------------- content composition --------------------- */
 function rot(arr, n) {
@@ -147,7 +99,7 @@ function compose(topic, n) {
     content: [
       `# ${title}`,
       '',
-      topic.intro,
+      introFor(topic),
       '',
       `## Apa Itu ${topic.role}?`,
       `${topic.role} adalah posisi yang bekerja di lingkungan industri, gudang, atau titik layanan di wilayah ${topic.city}. Posisi ini bagian dari rantai kerja harian yang menjaga agar aktivitas operasional berjalan tanpa hambatan.`,
@@ -159,7 +111,7 @@ function compose(topic, n) {
       ...rot(topic.skill, n).map((s) => `- ${s}`),
       '',
       `## Lingkungan Kerja di ${topic.city}`,
-      topic.lingkungan,
+      envFor(topic),
       '',
       '## Tips Melamar',
       ...rot(topic.tips, n).map((t) => `- ${t}`),
@@ -198,6 +150,26 @@ if (!base || !key) {
 
 const endpoint = `${base}/rest/v1/posts`;
 const headers = { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' };
+
+/* Bank entries stay terse (short phrases only). Prose is expanded here so
+ * adding topics never requires rewriting paragraph text. */
+function introFor(t) {
+  const area = t.bunch || 'operasional';
+  return (
+    `${t.role} di ${t.city} bekerja di lingkungan ${area}. ` +
+    `Posisi ini menjadi bagian dari rantai kerja harian yang menjaga agar ` +
+    `kegiatan di wilayah ${t.city} berjalan tanpa hambatan.`
+  );
+}
+
+function envFor(t) {
+  const area = t.bunch || 'operasional';
+  return (
+    `Pekerjaan ${t.role} di ${t.city} berlangsung di lingkungan ${area} ` +
+    `yang bekerja mengikuti ritme terstruktur dan aturan keselamatan kerja. ` +
+    `Kebersihan, kerapian, dan keselamatan kerja menjadi bagian dari penilaian.`
+  );
+}
 
 /* --------------------- pick next unused topic --------------------- */
 /* PostgREST `or=(...)` cannot parse titles containing spaces, so fetch the
