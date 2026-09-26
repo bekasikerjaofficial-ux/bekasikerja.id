@@ -116,17 +116,17 @@ export default function CvBuilderPage() {
     win.document.write(`
       <!DOCTYPE html><html><head><title>CV - ${form.full_name}</title>
       <style>
-        body { font-family: 'Open Sans', Arial, sans-serif; padding: 40px; color: #212529; line-height: 1.6; }
-        h1 { font-size: 28px; margin: 0 0 4px; color: #005cab; }
-        h2 { font-size: 16px; text-transform: uppercase; letter-spacing: 1px; color: #005cab; border-bottom: 2px solid #005cab; padding-bottom: 4px; margin-top: 24px; }
-        .contact { font-size: 13px; color: #6c757d; margin-bottom: 16px; }
+        body { font-family: 'Open Sans', Arial, sans-serif; padding: 40px; color: #0f172a; line-height: 1.6; }
+        h1 { font-size: 28px; margin: 0 0 4px; color: #1e3a8a; }
+        h2 { font-size: 16px; text-transform: uppercase; letter-spacing: 1px; color: #1e3a8a; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; margin-top: 24px; }
+        .contact { font-size: 13px; color: #475569; margin-bottom: 16px; }
         .summary { font-size: 14px; margin-bottom: 16px; }
         .item { margin-bottom: 12px; }
         .item-title { font-weight: 700; font-size: 14px; }
-        .item-sub { font-size: 13px; color: #6c757d; }
+        .item-sub { font-size: 13px; color: #475569; }
         .item-desc { font-size: 13px; margin-top: 4px; }
         .skills-list { display: flex; flex-wrap: wrap; gap: 8px; }
-        .skill-tag { background: #e8f0fe; color: #005cab; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+        .skill-tag { background: #e0e7ff; color: #1e3a8a; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
         @media print { body { padding: 20px; } }
       </style></head><body>${content.innerHTML}</body></html>
     `);
@@ -474,23 +474,23 @@ export default function CvBuilderPage() {
 function MinimalTemplate({ form }) {
   return (
     <div>
-      <h1 style={{ fontSize: 28, margin: 0, color: '#005cab' }}>{form.full_name || 'Nama Anda'}</h1>
-      <div style={{ fontSize: 13, color: '#6c757d', marginTop: 4 }}>
+      <h1 style={{ fontSize: 28, margin: 0, color: '#1e3a8a' }}>{form.full_name || 'Nama Anda'}</h1>
+      <div style={{ fontSize: 13, color: '#475569', marginTop: 4 }}>
         {[form.email, form.phone, form.address].filter(Boolean).join(' | ')}
       </div>
       {form.summary && (
  <>
-          <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: '#005cab', borderBottom: '2px solid #005cab', paddingBottom: 4, marginTop: 24 }}>Ringkasan</h2>
+          <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: '#1e3a8a', borderBottom: '2px solid #1e3a8a', paddingBottom: 4, marginTop: 24 }}>Ringkasan</h2>
           <p style={{ fontSize: 14, marginTop: 8 }}>{form.summary}</p>
         </>
       )}
       {form.experience.some(e => e.company || e.position) && (
         <>
-          <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: '#005cab', borderBottom: '2px solid #005cab', paddingBottom: 4, marginTop: 24 }}>Pengalaman</h2>
+          <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: '#1e3a8a', borderBottom: '2px solid #1e3a8a', paddingBottom: 4, marginTop: 24 }}>Pengalaman</h2>
           {form.experience.filter(e => e.company || e.position).map((e, i) => (
             <div key={i} style={{ marginBottom: 12 }}>
               <div style={{ fontWeight: 700, fontSize: 14 }}>{e.position} - {e.company}</div>
-              <div style={{ fontSize: 12, color: '#6c757d' }}>{e.start_date} - {e.end_date}</div>
+              <div style={{ fontSize: 12, color: '#475569' }}>{e.start_date} - {e.end_date}</div>
               {e.description && <div style={{ fontSize: 13, marginTop: 4 }}>{e.description}</div>}
             </div>
           ))}
@@ -498,28 +498,28 @@ function MinimalTemplate({ form }) {
       )}
       {form.education.some(e => e.school) && (
         <>
-          <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: '#005cab', borderBottom: '2px solid #005cab', paddingBottom: 4, marginTop: 24 }}>Pendidikan</h2>
+          <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: '#1e3a8a', borderBottom: '2px solid #1e3a8a', paddingBottom: 4, marginTop: 24 }}>Pendidikan</h2>
           {form.education.filter(e => e.school).map((e, i) => (
             <div key={i} style={{ marginBottom: 8 }}>
               <div style={{ fontWeight: 700, fontSize: 14 }}>{e.school}</div>
-              <div style={{ fontSize: 12, color: '#6c757d' }}>{e.degree} {e.start_year && `(${e.start_year}-${e.end_year})`}</div>
+              <div style={{ fontSize: 12, color: '#475569' }}>{e.degree} {e.start_year && `(${e.start_year}-${e.end_year})`}</div>
             </div>
           ))}
         </>
       )}
       {form.skills.some(s => s) && (
         <>
-          <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: '#005cab', borderBottom: '2px solid #005cab', paddingBottom: 4, marginTop: 24 }}>Keahlian</h2>
+          <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: '#1e3a8a', borderBottom: '2px solid #1e3a8a', paddingBottom: 4, marginTop: 24 }}>Keahlian</h2>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
             {form.skills.filter(Boolean).map((s, i) => (
-              <span key={i} style={{ background: '#e8f0fe', color: '#005cab', padding: '4px 12px', borderRadius: 9999, fontSize: 12, fontWeight: 600 }}>{s}</span>
+              <span key={i} style={{ background: '#e0e7ff', color: '#1e3a8a', padding: '4px 12px', borderRadius: 9999, fontSize: 12, fontWeight: 600 }}>{s}</span>
             ))}
           </div>
         </>
       )}
       {form.certifications.some(c => c.name) && (
         <>
-          <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: '#005cab', borderBottom: '2px solid #005cab', paddingBottom: 4, marginTop: 24 }}>Sertifikasi</h2>
+          <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: '#1e3a8a', borderBottom: '2px solid #1e3a8a', paddingBottom: 4, marginTop: 24 }}>Sertifikasi</h2>
           {form.certifications.filter(c => c.name).map((c, i) => (
             <div key={i} style={{ fontSize: 13, marginBottom: 4 }}>{c.name} - {c.issuer} {c.year && `(${c.year})`}</div>
           ))}
@@ -527,7 +527,7 @@ function MinimalTemplate({ form }) {
       )}
       {form.languages.some(l => l.name) && (
         <>
-          <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: '#005cab', borderBottom: '2px solid #005cab', paddingBottom: 4, marginTop: 24 }}>Bahasa</h2>
+          <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: '#1e3a8a', borderBottom: '2px solid #1e3a8a', paddingBottom: 4, marginTop: 24 }}>Bahasa</h2>
           {form.languages.filter(l => l.name).map((l, i) => (
             <div key={i} style={{ fontSize: 13, marginBottom: 4 }}>{l.name} - {l.level}</div>
           ))}
@@ -540,7 +540,7 @@ function MinimalTemplate({ form }) {
 function ModernTemplate({ form }) {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: 0 }}>
-      <div style={{ background: '#005cab', color: '#fff', padding: '32px 20px' }}>
+      <div style={{ background: '#1e3a8a', color: '#fff', padding: '32px 20px' }}>
         <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,.2)', margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800 }}>
           {form.full_name ? form.full_name.charAt(0).toUpperCase() : '?'}
         </div>
@@ -566,16 +566,16 @@ function ModernTemplate({ form }) {
         )}
       </div>
       <div style={{ padding: '32px 28px' }}>
-        <h1 style={{ fontSize: 26, margin: 0, color: '#005cab' }}>{form.full_name || 'Nama Anda'}</h1>
-        {form.summary && <p style={{ fontSize: 13, color: '#6c757d', marginTop: 8, lineHeight: 1.7 }}>{form.summary}</p>}
+        <h1 style={{ fontSize: 26, margin: 0, color: '#1e3a8a' }}>{form.full_name || 'Nama Anda'}</h1>
+        {form.summary && <p style={{ fontSize: 13, color: '#475569', marginTop: 8, lineHeight: 1.7 }}>{form.summary}</p>}
         {form.experience.some(e => e.company || e.position) && (
           <>
-            <h2 style={{ fontSize: 14, fontWeight: 700, color: '#005cab', marginTop: 24, marginBottom: 8 }}>Pengalaman Kerja</h2>
+            <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1e3a8a', marginTop: 24, marginBottom: 8 }}>Pengalaman Kerja</h2>
             {form.experience.filter(e => e.company || e.position).map((e, i) => (
-              <div key={i} style={{ marginBottom: 14, paddingLeft: 12, borderLeft: '3px solid #005cab' }}>
+              <div key={i} style={{ marginBottom: 14, paddingLeft: 12, borderLeft: '3px solid #1e3a8a' }}>
                 <div style={{ fontWeight: 700, fontSize: 14 }}>{e.position}</div>
-                <div style={{ fontSize: 12, color: '#005cab' }}>{e.company}</div>
-                <div style={{ fontSize: 11, color: '#6c757d' }}>{e.start_date} - {e.end_date}</div>
+                <div style={{ fontSize: 12, color: '#1e3a8a' }}>{e.company}</div>
+                <div style={{ fontSize: 11, color: '#475569' }}>{e.start_date} - {e.end_date}</div>
                 {e.description && <div style={{ fontSize: 12, marginTop: 4 }}>{e.description}</div>}
               </div>
             ))}
@@ -583,18 +583,18 @@ function ModernTemplate({ form }) {
         )}
         {form.education.some(e => e.school) && (
           <>
-            <h2 style={{ fontSize: 14, fontWeight: 700, color: '#005cab', marginTop: 24, marginBottom: 8 }}>Pendidikan</h2>
+            <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1e3a8a', marginTop: 24, marginBottom: 8 }}>Pendidikan</h2>
             {form.education.filter(e => e.school).map((e, i) => (
-              <div key={i} style={{ marginBottom: 10, paddingLeft: 12, borderLeft: '3px solid #005cab' }}>
+              <div key={i} style={{ marginBottom: 10, paddingLeft: 12, borderLeft: '3px solid #1e3a8a' }}>
                 <div style={{ fontWeight: 700, fontSize: 14 }}>{e.school}</div>
-                <div style={{ fontSize: 12, color: '#6c757d' }}>{e.degree} {e.start_year && `(${e.start_year}-${e.end_year})`}</div>
+                <div style={{ fontSize: 12, color: '#475569' }}>{e.degree} {e.start_year && `(${e.start_year}-${e.end_year})`}</div>
               </div>
             ))}
           </>
         )}
         {form.certifications.some(c => c.name) && (
           <>
-            <h2 style={{ fontSize: 14, fontWeight: 700, color: '#005cab', marginTop: 24, marginBottom: 8 }}>Sertifikasi</h2>
+            <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1e3a8a', marginTop: 24, marginBottom: 8 }}>Sertifikasi</h2>
             {form.certifications.filter(c => c.name).map((c, i) => (
               <div key={i} style={{ fontSize: 12, marginBottom: 4 }}>{c.name} - {c.issuer} {c.year && `(${c.year})`}</div>
             ))}
@@ -608,26 +608,26 @@ function ModernTemplate({ form }) {
 function ProfessionalTemplate({ form }) {
   return (
     <div style={{ fontFamily: "'Open Sans', Arial, sans-serif" }}>
-      <div style={{ textAlign: 'center', borderBottom: '3px solid #212529', paddingBottom: 16, marginBottom: 20 }}>
+      <div style={{ textAlign: 'center', borderBottom: '3px solid #0f172a', paddingBottom: 16, marginBottom: 20 }}>
         <h1 style={{ fontSize: 28, margin: 0, letterSpacing: 2, textTransform: 'uppercase' }}>{form.full_name || 'Nama Anda'}</h1>
-        <div style={{ fontSize: 12, color: '#6c757d', marginTop: 6 }}>
+        <div style={{ fontSize: 12, color: '#475569', marginTop: 6 }}>
           {[form.address, form.phone, form.email].filter(Boolean).join(' | ')}
         </div>
       </div>
       {form.summary && (
         <>
-          <h2 style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: 2, borderBottom: '1px solid #212529', paddingBottom: 4, marginBottom: 12 }}>Profil Profesional</h2>
+          <h2 style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: 2, borderBottom: '1px solid #0f172a', paddingBottom: 4, marginBottom: 12 }}>Profil Profesional</h2>
           <p style={{ fontSize: 13, lineHeight: 1.8, marginBottom: 20 }}>{form.summary}</p>
         </>
       )}
       {form.experience.some(e => e.company || e.position) && (
         <>
-          <h2 style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: 2, borderBottom: '1px solid #212529', paddingBottom: 4, marginBottom: 12 }}>Pengalaman Kerja</h2>
+          <h2 style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: 2, borderBottom: '1px solid #0f172a', paddingBottom: 4, marginBottom: 12 }}>Pengalaman Kerja</h2>
           {form.experience.filter(e => e.company || e.position).map((e, i) => (
             <div key={i} style={{ marginBottom: 14 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <div style={{ fontWeight: 700, fontSize: 14 }}>{e.position}</div>
-                <div style={{ fontSize: 11, color: '#6c757d' }}>{e.start_date} - {e.end_date}</div>
+                <div style={{ fontSize: 11, color: '#475569' }}>{e.start_date} - {e.end_date}</div>
               </div>
               <div style={{ fontSize: 13, fontStyle: 'italic', color: '#495057' }}>{e.company}</div>
               {e.description && <div style={{ fontSize: 12, marginTop: 4, lineHeight: 1.6 }}>{e.description}</div>}
@@ -637,12 +637,12 @@ function ProfessionalTemplate({ form }) {
       )}
       {form.education.some(e => e.school) && (
         <>
-          <h2 style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: 2, borderBottom: '1px solid #212529', paddingBottom: 4, marginBottom: 12 }}>Pendidikan</h2>
+          <h2 style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: 2, borderBottom: '1px solid #0f172a', paddingBottom: 4, marginBottom: 12 }}>Pendidikan</h2>
           {form.education.filter(e => e.school).map((e, i) => (
             <div key={i} style={{ marginBottom: 10 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <div style={{ fontWeight: 700, fontSize: 14 }}>{e.school}</div>
-                <div style={{ fontSize: 11, color: '#6c757d' }}>{e.start_year}-{e.end_year}</div>
+                <div style={{ fontSize: 11, color: '#475569' }}>{e.start_year}-{e.end_year}</div>
               </div>
               <div style={{ fontSize: 12 }}>{e.degree}</div>
             </div>
@@ -651,13 +651,13 @@ function ProfessionalTemplate({ form }) {
       )}
       {form.skills.some(s => s) && (
         <>
-          <h2 style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: 2, borderBottom: '1px solid #212529', paddingBottom: 4, marginBottom: 12 }}>Keahlian</h2>
+          <h2 style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: 2, borderBottom: '1px solid #0f172a', paddingBottom: 4, marginBottom: 12 }}>Keahlian</h2>
           <p style={{ fontSize: 12, lineHeight: 1.8 }}>{form.skills.filter(Boolean).join(', ')}</p>
         </>
       )}
       {form.certifications.some(c => c.name) && (
         <>
-          <h2 style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: 2, borderBottom: '1px solid #212529', paddingBottom: 4, marginBottom: 12 }}>Sertifikasi</h2>
+          <h2 style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: 2, borderBottom: '1px solid #0f172a', paddingBottom: 4, marginBottom: 12 }}>Sertifikasi</h2>
           {form.certifications.filter(c => c.name).map((c, i) => (
             <div key={i} style={{ fontSize: 12, marginBottom: 4 }}>{c.name} - {c.issuer} {c.year && `(${c.year})`}</div>
           ))}
@@ -665,7 +665,7 @@ function ProfessionalTemplate({ form }) {
       )}
       {form.languages.some(l => l.name) && (
         <>
-          <h2 style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: 2, borderBottom: '1px solid #212529', paddingBottom: 4, marginBottom: 12 }}>Bahasa</h2>
+          <h2 style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: 2, borderBottom: '1px solid #0f172a', paddingBottom: 4, marginBottom: 12 }}>Bahasa</h2>
           <p style={{ fontSize: 12, lineHeight: 1.8 }}>{form.languages.filter(l => l.name).map(l => `${l.name} (${l.level})`).join(', ')}</p>
         </>
       )}

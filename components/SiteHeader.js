@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Briefcase, Search, Menu, X, Moon, Sun } from 'lucide-react';
+import Image from 'next/image';
 import { supabase } from '../lib/supabase';
 import { isAdminEmail } from '../lib/admin-check';
 
@@ -47,6 +48,15 @@ export default function SiteHeader({
       setIsAdmin(isAdminEmail(session?.user?.email));
     });
     return () => listener.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => {
+      document.querySelector('header.header')?.classList.toggle('is-scrolled', window.scrollY > 4);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
@@ -129,7 +139,7 @@ export default function SiteHeader({
               </>
             ) : (
               <>
-                <a href="/member/register" className="btn-outline btn-pill btn-daftar">Daftar</a>
+                <a href="/member/register" className="btn-link-plain">Daftar</a>
                 <a href="/member/login" className="btn-login btn-pill btn-login-mobile">Login</a>
               </>
             )}

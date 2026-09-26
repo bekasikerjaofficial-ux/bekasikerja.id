@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
         <link rel="preload" href="/logo.png" as="image" type="image/png" />
         <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml" />
         <link rel="preload" href="/placeholder.svg" as="image" type="image/svg+xml" />
-        <meta name="theme-color" content="#005cab" />
+        <meta name="theme-color" content="#1e3a8a" />
       </head>
       <body style={{ fontFamily: 'var(--font-sans)' }}>
         <AnalyticsTracker />

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
-import { MapPin } from 'lucide-react'
+import { MapPin, AlertTriangle } from 'lucide-react'
 import ShareButtons from '../../../components/ShareButtons';
 import RichArticleContent from '../../../components/RichArticleContent';
 import LatestNewsLinks from '../../../components/LatestNewsLinks';
@@ -140,10 +140,27 @@ export default function PostDetailPage() {
         )}
 
         {isJob && (
-          <div style={{ marginTop: 24, padding: 16, background: 'rgba(0,92,171,.06)', border: '1px solid rgba(0,92,171,.2)', borderRadius: 16, fontSize: 13, color: 'var(--hl-blue-dark)' }}>
+          <div style={{ marginTop: 24, padding: 16, background: 'var(--gray-100)', border: '1px solid var(--gray-200)', borderRadius: 16, fontSize: 13, color: 'var(--gray-800)' }}>
             <strong>Cara melamar:</strong> Kirim CV &amp; berkas ke email HRD perusahaan, atau datang
             langsung ke alamat kawasan industri tertera. Pastikan melengkapi persyaratan sebelum
             batas waktu lamaran.
+          </div>
+        )}
+
+        {isJob && (
+          <div className="scam-alert" role="note">
+            <AlertTriangle size={20} aria-hidden="true" />
+            <div>
+              <strong>Hati-hati terhadap penipuan lowongan kerja</strong>
+              Bekasikerja.id tidak pernah meminta biaya pendaftaran, uang jaminan, atau transfer
+              dalam bentuk apa pun. Tim rekrutmen resmi juga tidak menghubungi kandidat lewat
+              WhatsApp/Telegram untuk meminta data pribadi seperti nomor KTP, PIN, atau kode OTP.
+              <ul>
+                <li>Selalu cek ulang perusahaan lewat halaman profil perusahaan yang terverifikasi.</li>
+                <li>Waspadai lowongan yang meminta uang di muka dengan alasan apa pun.</li>
+                <li>Laporkan lewat tombol &ldquo;Laporkan&rdquo; agar tim kami menindaklanjuti.</li>
+              </ul>
+            </div>
           </div>
         )}
 
