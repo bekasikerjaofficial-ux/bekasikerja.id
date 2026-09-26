@@ -106,7 +106,10 @@ export default function SiteHeader({
         </nav>
 
         <div className="header-actions">
-          <a href="/employer/register" className="btn-primary btn-pill" style={{ textDecoration: 'none', fontSize: 12, padding: '9px 14px', whiteSpace: 'nowrap' }}>
+          {/* Employer CTA is the header's single dominant action: solid teal,
+              slightly larger than the auth buttons. "Daftar" stays a plain
+              text link and "Login" an outline, so only one button is loud. */}
+          <a href="/employer/register" className="btn-primary btn-pill btn-cta-main">
             Pasang Lowongan
           </a>
           <button
@@ -184,7 +187,7 @@ export default function SiteHeader({
               Admin Dashboard
             </a>
           )}
-          <a href="/employer/register" className="btn-primary btn-pill" onClick={closeMobileMenu} style={{ textDecoration: 'none', textAlign: 'center' }}>
+          <a href="/employer/register" className="btn-primary btn-pill btn-cta-main" onClick={closeMobileMenu} style={{ textDecoration: 'none', textAlign: 'center' }}>
             Pasang Lowongan
           </a>
           {user ? (

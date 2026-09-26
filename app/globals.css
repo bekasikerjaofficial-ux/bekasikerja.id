@@ -299,15 +299,16 @@ body {
   font-size: var(--fs-base);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
 
-/* Smooth scroll for in-page anchor nav (Lowongan / Lifestyle) */
+/* Smooth scroll for in-page anchor nav (Lowongan / Lifestyle).
+ * `clip` (not `hidden`) so position:sticky headers keep working. */
 html { scroll-behavior: smooth; overflow-x: clip; }
+body { overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 .container { max-width: var(--container); margin: 0 auto; padding: 0 var(--sp-6); }
@@ -320,11 +321,22 @@ html { scroll-behavior: smooth; overflow-x: clip; }
 .text-muted { color: var(--gray-500); }
 
 /* ============ PROMO STRIP (HeyLaw top strip) ============ */
+/* Announcement strip: a soft, tinted band ABOVE the white header. Solid navy
+ * made it compete with the brand/CTA; a tinted surface reads as a separate
+ * layer and keeps the header edge legible. */
 .promo-strip {
-  background: var(--hl-blue); color: #fff; text-align: center;
-  font-size: var(--fs-sm); padding: var(--sp-2) var(--sp-4);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px;
+  background: var(--gray-100);
+  border-bottom: 1px solid var(--gray-200);
+  color: var(--gray-700);
+  text-align: center;
+  font-size: var(--fs-sm);
+  padding: var(--sp-2) var(--sp-4);
 }
-.promo-strip a { font-weight: 700; text-decoration: underline; }
+html.dark .promo-strip { background: var(--gray-200); border-bottom-color: var(--gray-300); color: var(--gray-800); }
+.promo-strip a { color: var(--hl-blue); font-weight: 700; text-decoration: none; border-bottom: 1px solid currentColor; }
+.promo-strip a:hover { color: var(--hl-accent-dark); }
+html.dark .promo-strip a { color: var(--hl-accent); }
 
 /* ============ HEADER / NAVBAR ============ */
 /* Header: clean white with a soft shadow instead of a hard rule, so the
@@ -481,6 +493,12 @@ html.dark .theme-toggle:hover { background: var(--gray-300); }
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  /* Employer CTA spans the full drawer width so the primary action is
+   * unambiguous on phones, where the auth buttons sit side by side. */
+  .mobile-auth-btns .btn-cta-main {
+    flex: 1 1 100%;
+    order: -1;
+  }
 }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .btn-login {
@@ -529,6 +547,46 @@ html.dark .chip { background: var(--gray-50); }
 .chip:hover, .chip:focus { border-color: var(--hl-blue); color: var(--hl-blue); background: var(--gray-100); }
 .chip svg { color: var(--hl-blue); }
 .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--hl-blue); flex-shrink: 0; }
+
+/* Quick-access rail: icon buttons on phones, icon+label chips on wider screens. */
+.chips .chips-rail { scroll-snap-type: x proximity; }
+.chip-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; flex: 0 0 auto;
+}
+.chip:focus-visible { outline: 2px solid var(--hl-blue); outline-offset: 2px; }
+
+@media (max-width: 600px) {
+  .chips { position: sticky; top: 60px; z-index: 40; box-shadow: 0 2px 6px rgba(16, 24, 40, .06); }
+  /* 4 equal columns: every shortcut stays fully visible, no horizontal scroll. */
+  .chips .chips-rail {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px; padding: 8px 10px; overflow: visible;
+  }
+  .chip {
+    flex-direction: column; gap: 4px;
+    min-width: 0; min-height: 68px;
+    padding: 8px 4px; font-size: 11px; line-height: 1.2;
+    text-align: center; border-radius: var(--r-md);
+    white-space: normal;
+  }
+  .chip .chip-icon { width: 24px; height: 24px; }
+  .chip:active { background: var(--gray-100); }
+  /* Two-line labels ("Pasang Lowongan") must fit: clamp instead of clipping. */
+  .chip-label {
+    max-width: 100%; overflow-wrap: anywhere;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+}
+@media (max-width: 380px) {
+  .chips .chips-rail { gap: 4px; padding: 7px 8px; }
+  .chip { min-height: 58px; padding: 7px 4px; font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chips-rail { scroll-behavior: auto; }
+}
 
 
 /* ============ HERO ============ */
@@ -730,6 +788,24 @@ html.dark .search-card { background: var(--gray-50); }
 /* Primary action (CTA) = teal accent; navy reserved for brand/identity surfaces */
 .btn-primary { background: var(--hl-accent); color: #fff; font-weight: 600; padding: var(--sp-3) var(--sp-6); border-radius: var(--r-md); border: none; cursor: pointer; transition: background .15s; font-size: var(--fs-base); }
 .btn-primary:hover { background: var(--hl-accent-dark); }
+
+/* Header employer CTA: the loudest control in the header. Solid accent fill
+ * plus a ring shadow so it separates from the white bar, and a slightly
+ * smaller radius than .btn-pill so it does not read as a peer of the pill
+ * auth buttons next to it. */
+.btn-cta-main {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: .01em;
+  padding: 10px 18px;
+  border-radius: var(--r-md);
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .12);
+}
+.btn-cta-main:hover { box-shadow: 0 2px 8px rgba(13, 148, 136, .35); }
+.btn-cta-main:active { transform: translateY(1px); }
+html.dark .btn-cta-main { color: #fff; }
 .btn-secondary { background: #fff; color: var(--hl-blue); border: 1px solid var(--hl-blue); font-weight: 600; padding: var(--sp-3) var(--sp-6); border-radius: var(--r-md); cursor: pointer; transition: .15s; font-size: var(--fs-base); }
 html.dark .btn-secondary { background: var(--gray-50); }
 .btn-secondary:hover { background: var(--hl-blue); color: #fff; }
