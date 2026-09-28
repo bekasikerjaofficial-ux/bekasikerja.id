@@ -256,15 +256,18 @@ html.dark .scam-alert svg { color: var(--hl-amber); }
   --font-body: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
-  /* TYPE SCALE (ratio 1.25) */
-  --fs-xs: 12px; --fs-sm: 13px; --fs-base: 14px; --fs-md: 16px;
-  --fs-lg: 18px; --fs-xl: 20px; --fs-2xl: 24px; --fs-3xl: 30px;
-  --fs-4xl: 38px; --fs-5xl: 48px;
+  /* TYPE SCALE (ratio ~1.25) — display sizes cut to ~60% of their previous
+   * values so hero and section headings stop dominating the viewport.
+   * xs/sm/base stay put: shrinking them 40% would drop body copy to ~8px,
+   * below a readable minimum. */
+  --fs-xs: 12px; --fs-sm: 13px; --fs-base: 14px; --fs-md: 14px;
+  --fs-lg: 15px; --fs-xl: 16px; --fs-2xl: 19px; --fs-3xl: 23px;
+  --fs-4xl: 29px; --fs-5xl: 37px;
 
-  /* SPACING (4px base) */
-  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
-  --sp-5: 20px; --sp-6: 24px; --sp-7: 28px; --sp-8: 32px; --sp-10: 40px;
-  --sp-12: 48px; --sp-16: 64px; --sp-20: 80px; --sp-24: 96px;
+  /* SPACING (3px base) — vertical rhythm tightened so more content fits per
+   * screen; the container narrows for the same reason. */
+  --sp-1: 3px; --sp-2: 6px; --sp-3: 9px; --sp-4: 12px;
+  --sp-5: 14px; --sp-6: 16px; --sp-7: 18px; --sp-8: 20px; --sp-10: 24px; --sp-12: 28px; --sp-16: 38px; --sp-20: 46px; --sp-24: 54px;
 
   /* RADII */
   --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px; --r-pill: 9999px;
@@ -273,7 +276,7 @@ html.dark .scam-alert svg { color: var(--hl-amber); }
   --shadow-card: 0 1px 3px rgba(0,0,0,.1);
   --shadow-card-hover: 0 8px 24px rgba(0,0,0,.12);
 
-  --container: 1280px;
+  --container: 1180px;
 }
 
 /* Dark mode variables */
@@ -349,7 +352,7 @@ html.dark .promo-strip a { color: var(--hl-accent); }
 }
 .header.is-scrolled { box-shadow: 0 4px 12px rgba(16, 24, 40, .08); }
 html.dark .header { background: var(--gray-50); }
-.header .container { display: flex; align-items: center; gap: var(--sp-6); height: 68px; }
+.header .container { display: flex; align-items: center; gap: var(--sp-6); height: 54px; }
 .logo { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-2xl); color: var(--hl-blue); display: flex; align-items: center; gap: var(--sp-2); flex: 0 0 auto; }
 .nav { display: flex; gap: var(--sp-6); flex: 1 1 auto; justify-content: center; }
 .nav a { font-size: var(--fs-base); font-weight: 500; color: var(--gray-700); transition: color .15s; position: relative; padding: var(--sp-2) 0; }
@@ -619,7 +622,7 @@ html.dark .chip { background: var(--gray-50); }
   .hero { padding: 24px 0; }
   .hero .container { grid-template-columns: 1fr; gap: var(--sp-6); text-align: center; }
   .hero .badge { margin-bottom: 10px; font-size: 10px; }
-  .hero h1 { font-size: clamp(22px, 7vw, 28px); margin-bottom: 10px; }
+  .hero h1 { font-size: clamp(19px, 5.2vw, 23px); margin-bottom: var(--sp-2); }
   .hero p { margin: 0 auto 14px; font-size: 13px; line-height: 1.45; }
   .hero .stats { display: none; }
   .hero .stat { flex: 1; padding: 0 var(--sp-2); }
