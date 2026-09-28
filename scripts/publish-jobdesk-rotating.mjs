@@ -199,7 +199,7 @@ for (let i = 0; i < BANK.length; i += 1) {
 if (!picked) {
   console.error(
     `[jobdesk] GAGAL: bank topik habis. Semua ${BANK.length} topik sudah dipublikasikan. ` +
-      'Tambahkan topik baru ke scripts/publish-jobdesk-rotating.mjs sebelum jadwal berikutnya.'
+      'Tambahkan topik baru ke scripts/jobdesk-topics.mjs sebelum jadwal berikutnya.'
   );
   process.exit(1);
 }
