@@ -73,7 +73,7 @@ export default function PostDetailPage() {
   const isJob = post.type === 'job';
   const isEmployerJob = String(post.id).startsWith('employer-');
   const applyUrl = isJob
-    ? post.content?.match(/https?:\/\/(?:id\.jobstreet\.com|www\.linkedin\.com|nyarigawe\.jabarprov\.go\.id)\/[^\s)\\\\]+/)?.[0]
+    ? post.content?.match(/https?:\/\/(?:id\.jobstreet\.com|www\.linkedin\.com|nyarigawe\.jabarprov\.go\.id)(?:\/[^\s)\\\\]*)?/)?.[0]
     : '';
 
   return (
