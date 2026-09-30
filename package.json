@@ -24,7 +24,8 @@
     "publish:omron-ic-do": "node scripts/publish-omron-internal-control-digitalization.mjs",
     "backfill:ump-images": "node scripts/backfill-ump-images.mjs",
     "cleanup:examples": "node scripts/delete-example-posts.mjs",
-    "diag:storage": "node scripts/diag-storage.mjs"
+    "diag:storage": "node scripts/diag-storage.mjs",
+    "test:testhistory": "node scripts/test-testhistory.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.8",

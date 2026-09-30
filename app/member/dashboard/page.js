@@ -5,7 +5,8 @@ import { supabase } from '../../../lib/supabase';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
 import { packageDisplayName } from '../../../lib/packages';
-import { User, FileText, Trophy, CreditCard, Settings, LogOut, ChevronRight, Calendar, Target, Shield } from 'lucide-react';
+import TestHistory, { moduleTitle } from '../../../components/TestHistory';
+import { User, FileText, Trophy, CreditCard, Settings, LogOut, ChevronRight, Calendar, Target, Shield, Award } from 'lucide-react';
 import { isAdminEmail } from '../../../lib/admin-check';
 
 export default function MemberDashboard() {
@@ -48,8 +49,10 @@ export default function MemberDashboard() {
     const { data: cvData } = await supabase.from('member_cvs').select('*').eq('user_id', userId).order('updated_at', { ascending: false });
     if (cvData) setCvs(cvData);
 
-    // Psikotes Results
-    const { data: resData } = await supabase.from('psikotes_results').select('*').eq('user_id', userId).order('completed_at', { ascending: false }).limit(5);
+    // Psikotes Results — dimuat SEMUA, bukan 5 terakhir. Tab "Hasil Tes"
+    // menampilkan jumlah tes, tren, dan progres per modul, yang semuanya
+    // butuh riwayat penuh; limit(5) membuat angkanya salah.
+    const { data: resData } = await supabase.from('psikotes_results').select('*').eq('user_id', userId).order('completed_at', { ascending: false });
     if (resData) setResults(resData);
 
     // Membership
@@ -191,6 +194,13 @@ export default function MemberDashboard() {
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>Rata-rata Nilai</div>
               </div>
+              <div className="card" style={{ padding: 20, textAlign: 'center' }}>
+                <Award size={28} color="var(--hl-teal)" style={{ margin: '0 auto 8px' }} />
+                <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--gray-900)' }}>
+                  {results.length > 0 ? Math.max(...results.map((r) => r.score)) : 0}
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>Nilai Tertinggi</div>
+              </div>
             </div>
 
             {/* Quick Actions */}
@@ -225,17 +235,22 @@ export default function MemberDashboard() {
             </div>
 
             {/* Recent Results */}
-            {results.length > 0 && (
-              <div className="panel" style={{ padding: 20 }}>
-                <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>Hasil Tes Terbaru</h3>
-                {results.slice(0, 3).map((r) => (
-                  <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--gray-100)' }}>
-                    <span style={{ fontSize: 13, fontWeight: 600 }}>{r.module_slug.replace('_', ' ').toUpperCase()}</span>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: r.score >= 70 ? 'var(--hl-teal)' : 'var(--hl-red)' }}>{r.score} ({r.correct_answers}/{r.total_questions})</span>
-                  </div>
-                ))}
-              </div>
-            )}
+                        {results.length > 0 && (
+                          <div className="panel" style={{ padding: 20 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                              <h3 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>Hasil Tes Terbaru</h3>
+                              <button onClick={() => setActiveTab('results')} className="btn-secondary" style={{ fontSize: 12 }}>
+                                Lihat Semua ({results.length})
+                              </button>
+                            </div>
+                            {results.slice(0, 3).map((r) => (
+                              <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--gray-100)' }}>
+                                <span style={{ fontSize: 13, fontWeight: 600 }}>{moduleTitle(r.module_slug)}</span>
+                                <span style={{ fontSize: 13, fontWeight: 700, color: r.score >= 70 ? 'var(--hl-teal)' : 'var(--hl-red)' }}>{r.score} ({r.correct_answers}/{r.total_questions})</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
           </div>
         )}
 
@@ -271,37 +286,70 @@ export default function MemberDashboard() {
         )}
 
         {/* Results Tab */}
-        {activeTab === 'results' && (
-          <div>
-            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Riwayat Hasil Tes ({results.length})</h3>
-            {results.length === 0 ? (
-              <div className="panel" style={{ padding: 40, textAlign: 'center' }}>
-                <Trophy size={40} color="var(--gray-300)" style={{ margin: '0 auto 12px' }} />
-                <p className="text-muted" style={{ fontSize: 14 }}>Belum ada hasil tes. Mulai kerjakan soal psikotes!</p>
-                <button onClick={() => router.push('/psikotes')} className="btn-primary" style={{ marginTop: 12 }}>Mulai Tes</button>
-              </div>
-            ) : (
-              <div style={{ display: 'grid', gap: 8 }}>
-                {results.map((r) => (
-                  <div key={r.id} className="card" style={{ padding: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: 14 }}>{r.module_slug.replace(/_/g, ' ').toUpperCase()}</div>
-                      <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>
-                        <Calendar size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />
-                        {new Date(r.completed_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
-                        &middot; {r.time_spent_seconds ? `${Math.floor(r.time_spent_seconds / 60)}m ${r.time_spent_seconds % 60}s` : '-'}
+                {activeTab === 'results' && (
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
+                      <h3 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>Riwayat Hasil Tes ({results.length})</h3>
+                      <button onClick={() => router.push('/psikotes')} className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                        <Trophy size={16} /> Kerjakan Tes
+                      </button>
+                    </div>
+                    {results.length === 0 ? (
+                      <div className="panel" style={{ padding: 40, textAlign: 'center' }}>
+                        <Trophy size={40} color="var(--gray-300)" style={{ margin: '0 auto 12px' }} />
+                        <p className="text-muted" style={{ fontSize: 14 }}>Belum ada hasil tes. Mulai kerjakan soal psikotes!</p>
+                        <button onClick={() => router.push('/psikotes')} className="btn-primary" style={{ marginTop: 12 }}>Mulai Tes</button>
                       </div>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: 24, fontWeight: 800, color: r.score >= 70 ? 'var(--hl-teal)' : 'var(--hl-red)' }}>{r.score}</div>
-                      <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>{r.correct_answers}/{r.total_questions} benar</div>
-                    </div>
+                    ) : (
+                      <div style={{ display: 'grid', gap: 16 }}>
+                        {/* Ringkasan + tren + progres per modul */}
+                        <TestHistory attempts={results} />
+
+                        {/* Daftar attempt lengkap, terbaru ke terlama */}
+                        <div className="panel" style={{ padding: 20 }}>
+                          <h3 style={{ fontSize: 15, fontWeight: 700, margin: '0 0 4px' }}>Semua Riwayat</h3>
+                          <p className="text-muted" style={{ fontSize: 12, margin: '0 0 14px' }}>
+                            {results.length} tes tercatat, dari yang terbaru.
+                          </p>
+                          <div style={{ display: 'grid', gap: 8 }}>
+                            {results.map((r, idx) => {
+                              const prev = results[idx + 1];
+                              const delta = prev ? (r.score ?? 0) - (prev.score ?? 0) : null;
+                              return (
+                                <div key={r.id} className="card" style={{ padding: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                                  <div>
+                                    <div style={{ fontWeight: 600, fontSize: 14 }}>{moduleTitle(r.module_slug)}</div>
+                                    <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>
+                                      <Calendar size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                                      {new Date(r.completed_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                      &middot; {r.time_spent_seconds ? `${Math.floor(r.time_spent_seconds / 60)}m ${r.time_spent_seconds % 60}s` : '-'}
+                                    </div>
+                                  </div>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                                    {delta !== null && delta !== 0 && (
+                                      <span style={{
+                                        fontSize: 12, fontWeight: 700,
+                                        color: delta > 0 ? 'var(--hl-teal)' : 'var(--hl-red)',
+                                        background: delta > 0 ? '#e8f7ee' : '#fff0f0',
+                                        padding: '3px 8px', borderRadius: 6,
+                                      }}>
+                                        {delta > 0 ? '▲' : '▼'} {Math.abs(delta)}
+                                      </span>
+                                    )}
+                                    <div style={{ textAlign: 'right' }}>
+                                      <div style={{ fontSize: 24, fontWeight: 800, color: r.score >= 70 ? 'var(--hl-teal)' : 'var(--hl-red)' }}>{r.score}</div>
+                                      <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>{r.correct_answers}/{r.total_questions} benar</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+                )}
 
         {/* Profile Tab */}
         {activeTab === 'profile' && (
