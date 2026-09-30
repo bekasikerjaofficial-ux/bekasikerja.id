@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Lowongan Industrial Relations Associate Specialist</title>
+  <desc id="desc">Featured image original BekasiKerja.id untuk lowongan PT Contemporary Amperex Technology Indonesia Battery di Karawang.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#182b49"/><stop offset="1" stop-color="#0b7395"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff9f1c"/><stop offset="1" stop-color="#ffd166"/></linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1060" cy="120" r="240" fill="#fff" opacity=".06"/>
+  <circle cx="1120" cy="560" r="260" fill="#ff9f1c" opacity=".08"/>
+  <rect x="72" y="72" width="130" height="12" rx="6" fill="url(#accent)"/>
+  <text x="72" y="150" fill="#fff" font-family="Arial, sans-serif" font-size="30" font-weight="700" letter-spacing="3">LOWONGAN KERJA</text>
+  <text x="72" y="235" fill="#fff" font-family="Arial, sans-serif" font-size="54" font-weight="800">Industrial Relations</text>
+  <text x="72" y="302" fill="#fff" font-family="Arial, sans-serif" font-size="54" font-weight="800">Associate Specialist</text>
+  <text x="72" y="365" fill="#d7ebff" font-family="Arial, sans-serif" font-size="24">PT Contemporary Amperex Technology Indonesia Battery</text>
+  <rect x="72" y="425" width="330" height="74" rx="16" fill="#fff" opacity=".12"/>
+  <text x="102" y="470" fill="#fff" font-family="Arial, sans-serif" font-size="28" font-weight="700">Karawang, Jawa Barat</text>
+  <g transform="translate(900 285)">
+    <circle cx="0" cy="0" r="112" fill="#fff" opacity=".12"/>
+    <path d="M-55 40h110M-40 40V-35h80v75M-62-35h124M-20-60h40v25M-23-10h12M11-10h12M-23 15h12M11 15h12" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="0" cy="-86" r="17" fill="#ff9f1c"/>
+  </g>
+  <text x="72" y="570" fill="#b9d8f2" font-family="Arial, sans-serif" font-size="20">bekasikerja.id • Peluang karier sektor industri</text>
+</svg>
