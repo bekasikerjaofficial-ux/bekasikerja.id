@@ -73,7 +73,7 @@ export default function PostDetailPage() {
   const isJob = post.type === 'job';
   const isEmployerJob = String(post.id).startsWith('employer-');
   const applyUrl = isJob
-    ? post.content?.match(/https?:\/\/(?:id\.jobstreet\.com|www\.linkedin\.com)\/[^\s)\\\\]+/)?.[0]
+    ? post.content?.match(/https?:\/\/(?:id\.jobstreet\.com|www\.linkedin\.com|nyarigawe\.jabarprov\.go\.id)\/[^\s)\\\\]+/)?.[0]
     : '';
 
   return (
@@ -139,7 +139,7 @@ export default function PostDetailPage() {
           </a>
         )}
 
-        {isJob && (
+        {isJob && !applyUrl && (
           <div style={{ marginTop: 24, padding: 16, background: 'var(--gray-100)', border: '1px solid var(--gray-200)', borderRadius: 16, fontSize: 13, color: 'var(--gray-800)' }}>
             <strong>Cara melamar:</strong> Kirim CV &amp; berkas ke email HRD perusahaan, atau datang
             langsung ke alamat kawasan industri tertera. Pastikan melengkapi persyaratan sebelum
