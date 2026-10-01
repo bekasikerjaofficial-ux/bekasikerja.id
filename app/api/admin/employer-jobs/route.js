@@ -1,16 +1,19 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { requireAdmin } from '../../../../lib/server-auth';
-import { normalizeSupabaseUrl } from '../../../../lib/supabase-url';
+// Imported under an alias because the GET handler below declares a local
+// `const serviceDb` for the resolved client.
+import { serviceDb as serviceDbClient, serviceDbMissingResponse } from '../../../../lib/service-db';
 
 function db() {
-  return createClient(normalizeSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL), process.env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+  return serviceDbClient();
 }
 
 export async function GET(request) {
   const auth = await requireAdmin(request);
   if (auth.error) return auth.error;
   const serviceDb = db();
+  if (!serviceDb) return serviceDbMissingResponse();
   const { data, error } = await serviceDb.from('employer_jobs').select('*, companies(id,name,verification_status)').order('created_at', { ascending: false });
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   return NextResponse.json({ jobs: data || [] });
