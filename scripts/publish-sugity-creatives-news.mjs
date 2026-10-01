@@ -69,7 +69,7 @@ const articles = [
     position: 'Fresh Graduate Material Engineering',
     content: [
       '# PT Sugity Creatives Rekrut Fresh Graduate Material Engineering, Maksimal Usia 25 Tahun', '',
-      'PT Sugity Creatives membuka lowongan Fresh Graduate Material Engineering untuk lulusan Teknik Material. Kandidat yang tersedia adalah sarjana dan vokasional dengan ipk minimal 3,00 serta batas usia maksimal 25 tahun. Lokasi kerja berada di Cikarang, Jawa Barat.', '',
+      'PT Sugity Creatives membuka lowongan Fresh Graduate Material Engineering untuk lulusan Teknik Material. Kandidat diminta memiliki ijazah jenjang associate atau bachelor degree dengan ipk minimal 3,00 serta batas usia maksimal 25 tahun. Lokasi kerja berada di Cikarang, Jawa Barat.', '',
       '## Ringkasan Posisi',
       '- Posisi: Fresh Graduate Material Engineering',
       '- Pendidikan: Material Engineering, jenjang Associate dan Bachelor degree',
