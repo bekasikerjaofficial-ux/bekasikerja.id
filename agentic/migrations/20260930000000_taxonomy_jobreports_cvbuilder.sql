@@ -190,7 +190,62 @@ on conflict (slug) do nothing;
 
 
 -- ============================================================================
--- BLOCK 4 — verification
+-- BLOCK 4 — storage RLS for the images bucket
+--
+-- BLOCK 0: bucket 'images' exists and is public, but every storage.objects
+-- insert was rejected with:
+--     403 {"code":"AccessDenied","message":"new row violates row-level security
+--          policy"}
+-- i.e. the bucket has no permissive insert policy, so supabase.storage
+-- .from('images').upload(...) from app/admin/page.js, app/nyosor/dashboard,
+-- and components/ImageUpload.js could never succeed.
+--
+-- Uploads are done from the browser with the anon key, so the policy has to
+-- permit the anon role. Scope is deliberately tight: insert only, and only
+-- into the images bucket — nothing grants read/write on other objects.
+-- Unauthenticated users can therefore upload files, which was already true
+-- by design (there is no upload auth check in the app), but could not
+-- actually happen until this policy existed.
+--
+-- Reads stay public (bucket is public). Updates/deletes stay restricted to
+-- authenticated users, matching the fact that only logged-in staff edit
+-- existing posts.
+-- ============================================================================
+
+-- Path scope matches what the code actually does: every caller uploads to the
+-- bucket root with a name like '1712abc_xyz.png' (no folder prefix). ImageUpload
+-- accepts an optional `folder` prop, but neither call site passes one, so the
+-- policy must not require a folder or all real uploads are rejected.
+insert into storage.objects (bucket_id, name)
+select 'images', '.policy-anchor'
+where not exists (
+  select 1 from storage.objects
+  where bucket_id = 'images' and name = '.policy-anchor'
+);
+
+drop policy if exists "images_public_read" on storage.objects;
+create policy "images_public_read" on storage.objects
+  for select using (bucket_id = 'images');
+
+-- Insert only. anon is required because all three upload sites run in the
+-- browser with the public anon key (app/admin/page.js, app/nyosor/dashboard,
+-- components/ImageUpload.js) — the app has no upload auth gate.
+drop policy if exists "images_anon_upload" on storage.objects;
+create policy "images_anon_upload" on storage.objects
+  for insert with check (bucket_id = 'images');
+
+-- Update/delete restricted to logged-in users; only staff edit existing posts.
+drop policy if exists "images_authenticated_manage" on storage.objects;
+create policy "images_authenticated_manage" on storage.objects
+  for all using (
+    bucket_id = 'images' and auth.role() = 'authenticated'
+  ) with check (
+    bucket_id = 'images' and auth.role() = 'authenticated'
+  );
+
+
+-- ============================================================================
+-- BLOCK 5 — verification
 -- Read the output after running. All three must report ok.
 -- ============================================================================
 
@@ -223,7 +278,17 @@ begin
     raise exception 'VERIFY FAILED — post_tags row level security is not enabled';
   end if;
 
-  raise notice 'VERIFY OK — 6 tables present, post_tags RLS enabled';
+  -- Upload fix: without this policy every image upload from the admin panel
+  -- fails with 403 'new row violates row-level security policy'.
+  if not exists (select 1 from pg_policies
+                 where schemaname = 'storage'
+                   and tablename = 'objects'
+                   and policyname = 'images_anon_upload') then
+    raise exception 'VERIFY FAILED — images_anon_upload storage policy missing, '
+                    'image upload will still return 403';
+  end if;
+
+  raise notice 'VERIFY OK — 6 tables present, post_tags RLS enabled, storage upload policy present';
 end;
 $$;
 
