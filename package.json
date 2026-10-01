@@ -18,6 +18,7 @@
     "publish:advantis-hrbp": "node scripts/publish-advantis-hrbp-job.mjs",
     "publish:shinto-ga-ehs": "node scripts/publish-shinto-ga-ehs-job.mjs",
     "publish:aditya-birla-hr-ir": "node scripts/publish-aditya-birla-section-head-hr-ir-job.mjs",
+    "publish:bsu-900-ribu": "node scripts/publish-bsu-900-ribu-pekerja-2027.mjs",
     "publish:hyundai-maintenance-technician-news": "node scripts/publish-hyundai-maintenance-technician-news.mjs",
     "publish:hyundai-maintenance-technician": "node scripts/publish-hyundai-maintenance-technician-job.mjs",
     "publish:tokai-rika-purchasing": "node scripts/publish-tokai-rika-purchasing.mjs",
