@@ -18,6 +18,9 @@ function formatTime(seconds) {
   return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`;
 }
 
+// Marks that this browser consumed its single free anonymous attempt.
+const FREE_TEST_ATTEMPT_KEY = 'bk_free_test_attempted';
+
 export default function FreeTestPage() {
   const [questions, setQuestions] = useState([]);
   const [started, setStarted] = useState(false);
@@ -27,6 +30,20 @@ export default function FreeTestPage() {
   const [timeLeft, setTimeLeft] = useState(7 * 60);
   const [timedOut, setTimedOut] = useState(false);
   const [memberLoggedIn, setMemberLoggedIn] = useState(false);
+  // Tracks whether this browser has already burned its one anonymous attempt.
+  // Persisted to sessionStorage (not just React state) so the intro screen's
+  // "Mulai Tes Gratis" button cannot be used to start attempt #2 anonymously
+  // by reloading the page.
+  const [hasAttempted, setHasAttempted] = useState(false);
+
+  useEffect(() => {
+    try {
+      setHasAttempted(window.sessionStorage.getItem(FREE_TEST_ATTEMPT_KEY) === '1');
+    } catch {
+      // Private browsing with storage disabled: fall back to "not attempted",
+      // which only makes the gate more permissive, never less.
+    }
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -59,6 +76,20 @@ export default function FreeTestPage() {
   ), 0), [answers, questions]);
 
   const startTest = () => {
+    // The first attempt is free and anonymous; every later attempt requires a
+    // member session. Without this check a visitor could reload the intro and
+    // start a second attempt (and thus unlimited new question sets) by
+    // bypassing the result screen's retake button.
+    if (hasAttempted && !memberLoggedIn) {
+      window.location.href = `/member/login?next=${encodeURIComponent('/tes-gratis')}`;
+      return;
+    }
+    setHasAttempted(true);
+    try {
+      window.sessionStorage.setItem(FREE_TEST_ATTEMPT_KEY, '1');
+    } catch {
+      // Storage unavailable: the in-memory flag still guards this page view.
+    }
     setQuestions(shuffle(FREE_TEST_QUESTIONS).slice(0, 15));
     setAnswers([]);
     setCurrent(0);
