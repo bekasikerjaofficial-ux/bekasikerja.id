@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../../lib/supabase';
 import SiteHeader from '../../../components/SiteHeader';
+import { isAdminUser } from '../../../lib/admin-check';
 import { Plus, Save, Trash2, Edit2, Package as PackageIcon, Star } from 'lucide-react';
 
 // CRUD paket (mirip app/admin posts). Guard admin via Supabase Auth.
@@ -22,8 +23,10 @@ export default function AdminPaket() {
     const guard = async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user) { window.location.href = '/nyosor/login'; return; }
-      const { data: isAdmin } = await supabase.rpc('is_admin');
-      if (!isAdmin) { window.location.href = '/'; return; }
+      // Same fix as app/nyosor/dashboard: the is_admin() RPC is not exposed on
+      // this project's PostgREST schema, so it resolved falsy and bounced
+      // every admin to the homepage.
+      if (!isAdminUser(data.user)) { window.location.href = '/'; return; }
       if (active) await fetchData();
     };
     guard();

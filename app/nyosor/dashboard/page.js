@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '../../../lib/supabase';
+import { isAdminUser } from '../../../lib/admin-check';
 import { Image, CheckCircle2, Loader2 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -22,9 +23,12 @@ export default function AdminDashboard() {
     const guard = async () => {
       const { data } = await supabase.auth.getUser();
       if (!active) return;
-      if (!data.user) router.replace('/nyosor/login');
-      const { data: isAdmin } = await supabase.rpc('is_admin');
-      if (!isAdmin) router.replace('/');
+      if (!data.user) { router.replace('/nyosor/login'); return; }
+      // Resolve admin from the verified user object, not the is_admin() RPC:
+      // that RPC is not exposed on this project's PostgREST schema, so it
+      // always resolved falsy and bounced every user (including real admins)
+      // back to the homepage.
+      if (!isAdminUser(data.user)) router.replace('/');
     };
     guard();
     return () => { active = false; };

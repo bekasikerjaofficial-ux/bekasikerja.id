@@ -14,8 +14,11 @@ export async function POST(request) {
     if (!REASONS.has(reason)) return NextResponse.json({ error: 'Kategori laporan tidak valid.' }, { status: 400 });
     const url = normalizeSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!url || !anonKey || !serviceKey) return NextResponse.json({ error: 'Fitur laporan belum dikonfigurasi.' }, { status: 503 });
+    // No service key: SUPABASE_SERVICE_ROLE_KEY is absent from the Vercel
+    // deployment, and requiring it here made every report POST fail with a
+    // misleading 503 "Fitur laporan belum dikonfigurasi". The caller's own JWT
+    // is forwarded instead, so the job_reports RLS policy decides who may write.
+    if (!url || !anonKey) return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
 
     let reporterId = null;
     const token = request.headers.get('authorization')?.match(/^Bearer\s+(.+)$/i)?.[1];
@@ -24,7 +27,10 @@ export async function POST(request) {
       const { data } = await authClient.auth.getUser(token);
       reporterId = data.user?.id || null;
     }
-    const db = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } });
+    const db = createClient(url, anonKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: { headers: { Authorization: `Bearer ${token || ''}` } },
+    });
     const { error } = await db.from('job_reports').insert({ job_ref: jobRef, reporter_id: reporterId, reason, details: details || null });
     if (error) {
       if (error.code === '42P01' || error.code === 'PGRST205') return NextResponse.json({ error: 'Fitur laporan sedang disiapkan.' }, { status: 503 });
