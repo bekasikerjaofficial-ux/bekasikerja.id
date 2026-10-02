@@ -27,10 +27,13 @@ export async function POST(request) {
       const { data } = await authClient.auth.getUser(token);
       reporterId = data.user?.id || null;
     }
-    const db = createClient(url, anonKey, {
-      auth: { persistSession: false, autoRefreshToken: false },
-      global: { headers: { Authorization: `Bearer ${token || ''}` } },
-    });
+    const dbOptions = { auth: { persistSession: false, autoRefreshToken: false } };
+    // Only attach Authorization when a real token exists. Sending
+    // "Authorization: Bearer " with an empty token makes PostgREST reject the
+    // request as an invalid JWT instead of falling back to the anon role,
+    // which broke anonymous report submissions.
+    if (token) dbOptions.global = { headers: { Authorization: `Bearer ${token}` } };
+    const db = createClient(url, anonKey, dbOptions);
     const { error } = await db.from('job_reports').insert({ job_ref: jobRef, reporter_id: reporterId, reason, details: details || null });
     if (error) {
       if (error.code === '42P01' || error.code === 'PGRST205') return NextResponse.json({ error: 'Fitur laporan sedang disiapkan.' }, { status: 503 });
