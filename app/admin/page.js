@@ -67,7 +67,28 @@ export default function AdminDashboard() {
     } catch (e) { console.warn('site_settings unavailable:', e.message); }
     try {
       const { data: ps } = await supabase.from('posts').select('*').order('created_at', { ascending: false });
-      if (ps) setPosts(ps);
+      if (ps) {
+        // Hydrate each post's tags from the junction table; `posts` has no tags column.
+        const ids = ps.map((p) => p.id);
+        let byPost = new Map();
+        if (ids.length) {
+          const { data: links } = await supabase.from('post_tags').select('post_id,tag_id').in('post_id', ids);
+          const tagIds = [...new Set((links || []).map((l) => l.tag_id))];
+          let nameById = new Map();
+          if (tagIds.length) {
+            const { data: tg } = await supabase.from('tags').select('id,name').in('id', tagIds);
+            nameById = new Map((tg || []).map((t) => [t.id, t.name]));
+          }
+          byPost = new Map();
+          for (const l of links || []) {
+            const name = nameById.get(l.tag_id);
+            if (!name) continue;
+            if (!byPost.has(l.post_id)) byPost.set(l.post_id, []);
+            byPost.get(l.post_id).push(name);
+          }
+        }
+        setPosts(ps.map((p) => ({ ...p, tags: byPost.get(p.id) || [] })));
+      }
     } catch (e) { console.warn('posts unavailable:', e.message); }
     try {
       const { data: cats } = await supabase.from('categories').select('*').order('name');
@@ -143,10 +164,59 @@ export default function AdminDashboard() {
   };
 
   // ---------- Post CRUD ----------
+  // POST_COLUMNS is the real `posts` signature. Never spread the form state into a
+  // write payload: `tagInput` is a UI-only field and PostgREST rejects unknown keys,
+  // which broke every post update with "Could not find the 'tagInput' column".
+  const POST_COLUMNS = ['type', 'title', 'company', 'location', 'category', 'deadline', 'image_url', 'content'];
+
+  const buildPostPayload = (form) => {
+    const payload = {};
+    for (const col of POST_COLUMNS) {
+      if (form[col] !== undefined) payload[col] = form[col];
+    }
+    return payload;
+  };
+
+  // Tags live in `tags` + the `post_tags` junction, not as a column on `posts`.
+  const syncPostTags = async (postId, tagNames) => {
+    if (!postId) return;
+    const names = (tagNames || []).map((t) => String(t).trim()).filter(Boolean);
+    const slugOf = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    if (names.length === 0) {
+      await supabase.from('post_tags').delete().eq('post_id', postId);
+      return;
+    }
+    const slugs = [...new Set(names.map(slugOf))].filter(Boolean);
+    if (slugs.length === 0) {
+      await supabase.from('post_tags').delete().eq('post_id', postId);
+      return;
+    }
+
+    const { data: existing } = await supabase.from('tags').select('id,name,slug').in('slug', slugs);
+    const bySlug = new Map((existing || []).map((t) => [t.slug, t]));
+    const missing = slugs.filter((s) => !bySlug.has(s));
+    if (missing.length) {
+      const { data: created } = await supabase
+        .from('tags')
+        .insert(missing.map((s) => ({ name: names.find((n) => slugOf(n) === s) || s, slug: s })))
+        .select('id,name,slug');
+      for (const t of created || []) bySlug.set(t.slug, t);
+    }
+    const tagIds = slugs.map((s) => bySlug.get(s)?.id).filter(Boolean);
+    if (tagIds.length === 0) {
+      await supabase.from('post_tags').delete().eq('post_id', postId);
+      return;
+    }
+
+    await supabase.from('post_tags').delete().eq('post_id', postId);
+    await supabase.from('post_tags').insert(tagIds.map((tag_id) => ({ post_id: postId, tag_id })));
+  };
+
   const handleCreatePost = async (e) => {
     e.preventDefault();
-    const payload = { ...postForm, tags: postForm.tagInput };
-    await supabase.from('posts').insert([payload]);
+    const { data, error } = await supabase.from('posts').insert([buildPostPayload(postForm)]).select('id').single();
+    if (error) { alert('Gagal publikasikan: ' + error.message); return; }
+    await syncPostTags(data.id, postForm.tagInput);
     alert('Postingan berhasil dipublikasikan!');
     setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Lowongan Kerja', deadline: '', image_url: '', content: '', tagInput: [] });
     fetchData();
@@ -154,9 +224,9 @@ export default function AdminDashboard() {
 
   const handleUpdatePost = async (e) => {
     e.preventDefault();
-    const payload = { ...postForm, tags: postForm.tagInput };
-    const { error } = await supabase.from('posts').update(payload).eq('id', editingPostId);
+    const { error } = await supabase.from('posts').update(buildPostPayload(postForm)).eq('id', editingPostId);
     if (error) { alert('Gagal update postingan: ' + error.message); return; }
+    await syncPostTags(editingPostId, postForm.tagInput);
     alert('Postingan berhasil diperbarui!');
     setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Lowongan Kerja', deadline: '', image_url: '', content: '', tagInput: [] });
     setEditingPostId(null);
@@ -174,7 +244,7 @@ export default function AdminDashboard() {
       deadline: post.deadline || '',
       image_url: post.image_url || '',
       content: post.content || '',
-      tagInput: post.tags || post.tagInput || [],
+      tagInput: Array.isArray(post.tags) ? post.tags : [],
     });
   };
 
