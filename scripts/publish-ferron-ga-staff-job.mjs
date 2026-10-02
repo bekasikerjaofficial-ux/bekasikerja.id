@@ -39,7 +39,7 @@ const post = {
   content: [
     '# Lowongan Kerja General Affairs Staff Ferron Pharma – Cikarang, Bekasi',
     '',
-    'Ferron Pharma membuka lowongan General Affairs Staff untuk penempatan di Cikarang, Bekasi. Posisi ini-putus menjaga operasional kantor, aset dan fasilitas, sistem keamanan, serta layanan umum dan housekeeping agar berjalan optimal.',
+    'Ferron Pharma membuka lowongan General Affairs Staff untuk penempatan di Cikarang, Bekasi. Posisi ini bertugas menjaga operasional kantor, aset dan fasilitas, sistem keamanan, serta layanan umum dan housekeeping agar berjalan optimal.',
     '',
     '## Deskripsi Pekerjaan',
     '- Monitoring pengelolaan operasional kantor, perangkat, fasilitas kantor, asuransi, contingency, serta pengelolaan limit non-BJ',
