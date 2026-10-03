@@ -53,12 +53,12 @@
   justify-content: center;
   margin: 18px auto 4px;
   border-radius: 14px;
-  background: var(--hl-accent);
+  background: var(--hl-accent-solid);
   color: #fff;
   font-size: 16px;
   font-weight: 800;
   text-decoration: none;
-  box-shadow: 0 8px 18px rgba(13, 148, 136, .22);
+  box-shadow: 0 8px 18px rgba(14, 165, 164, .22);
   transition: transform .15s ease, background-color .15s ease, box-shadow .15s ease;
 }
 
@@ -66,7 +66,7 @@
   background: var(--hl-accent-dark);
   color: #fff;
   transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(13, 148, 136, .3);
+  box-shadow: 0 10px 22px rgba(14, 165, 164, .3);
 }
 
 @media (max-width: 640px) {
@@ -190,7 +190,7 @@ html.dark .scam-alert svg { color: var(--hl-amber); }
 .free-test-question { margin: 0 0 24px; color: var(--gray-900); font-size: 24px; line-height: 1.4; }
 .free-test-options { display: grid; gap: 10px; margin-bottom: 24px; }
 .free-test-option { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 10px; background: #fff; color: var(--gray-800); cursor: pointer; font: inherit; text-align: left; transition: border-color .15s ease, background .15s ease; }
-.free-test-option:hover, .free-test-option.selected { border-color: var(--hl-blue); background: rgba(0, 92, 171, .06); }
+.free-test-option:hover, .free-test-option.selected { border-color: var(--hl-blue); background: rgba(18, 59, 102, .06); }
 .free-test-option > span { display: inline-flex; width: 28px; height: 28px; align-items: center; justify-content: center; flex: 0 0 28px; border-radius: 50%; background: var(--gray-100); color: var(--hl-blue); font-weight: 800; }
 .free-test-option.selected > span { background: var(--hl-blue); color: #fff; }
 .free-test-result { text-align: center; }
@@ -217,16 +217,25 @@ html.dark .scam-alert svg { color: var(--hl-amber); }
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-  /* Brand — Industrial & Professional Trust (navy + teal) */
-  --hl-blue: #1e3a8a;          /* corporate navy — primary */
-  --hl-blue-dark: #0f172a;     /* deep slate navy — hover/gradient end */
-  --hl-blue-light: #3b5bc0;    /* lighter navy for borders/tints */
-  --hl-blue-grad: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+  /* Brand — Industrial & Professional Trust (navy + teal).
+   * Palette brief: bg #F8FAFC, teks #0F172A, navy #123B66, CTA #0EA5A4,
+   * border #E2E8F0. Navy is deliberately deeper than the old #1e3a8a so
+   * headings keep contrast against the lighter #f8fafc background. */
+  --hl-blue: #123b66;          /* corporate navy — primary */
+  --hl-blue-dark: #0a2438;     /* deeper navy — hover/gradient end */
+  --hl-blue-light: #2c5a8f;    /* lighter navy for borders/tints */
+  --hl-blue-grad: linear-gradient(135deg, #123b66 0%, #0a2438 100%);
 
-  /* Accent — teal/emerald: CTA, growth, fresh */
-  --hl-accent: #0d9488;
-  --hl-accent-dark: #059669;
-  --hl-accent-light: #14b8a6;
+  /* Accent — teal: CTA, growth, fresh */
+  --hl-accent: #0ea5a4;
+  --hl-accent-dark: #0b8483;
+  --hl-accent-light: #2dd4bf;
+
+  /* Solid accent for filled buttons carrying WHITE text. Brand teal #0ea5a4
+   * only reaches 3.03:1 against white, below WCAG AA 4.5:1 for body text, so
+   * filled CTAs use this darker step (4.52:1) while #0ea5a4 stays the brand
+   * colour for borders, icons, charts and large decorative fills. */
+  --hl-accent-solid: #0b8483;
 
   /* Alert / disclaimer */
   --hl-amber: #f59e0b;
@@ -236,8 +245,8 @@ html.dark .scam-alert svg { color: var(--hl-amber); }
 
   --hl-red: #dc2626;
   --hl-red-dark: #b91c1c;
-  --hl-teal: #0d9488;
-  --hl-navy: #0f172a;
+  --hl-teal: #0ea5a4;
+  --hl-navy: #123b66;
   --hl-gold: #f59e0b;
 
   /* Neutral — cool slate scale (off-white backgrounds) */
@@ -296,7 +305,7 @@ html.dark {
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
-  background-color: var(--gray-100);
+  background-color: var(--gray-50);   /* #f8fafc — palette brief */
   color: var(--gray-700);
   font-family: var(--font-body);
   font-size: var(--fs-base);
@@ -792,7 +801,7 @@ html.dark .search-card { background: var(--gray-50); }
 
 /* ============ BUTTONS ============ */
 /* Primary action (CTA) = teal accent; navy reserved for brand/identity surfaces */
-.btn-primary { background: var(--hl-accent); color: #fff; font-weight: 600; padding: var(--sp-3) var(--sp-6); border-radius: var(--r-md); border: none; cursor: pointer; transition: background .15s; font-size: var(--fs-base); }
+.btn-primary { background: var(--hl-accent-solid); color: #fff; font-weight: 600; padding: var(--sp-3) var(--sp-6); border-radius: var(--r-md); border: none; cursor: pointer; transition: background .15s; font-size: var(--fs-base); }
 .btn-primary:hover { background: var(--hl-accent-dark); }
 
 /* Header employer CTA: the loudest control in the header. Solid accent fill
@@ -807,9 +816,12 @@ html.dark .search-card { background: var(--gray-50); }
   border-radius: var(--r-md);
   text-decoration: none;
   white-space: nowrap;
+  /* Solid teal, not the brand #0ea5a4: white text on the brand teal is only
+   * 3.03:1. See --hl-accent-solid. */
+  background: var(--hl-accent-solid);
   box-shadow: 0 1px 2px rgba(15, 23, 42, .12);
 }
-.btn-cta-main:hover { box-shadow: 0 2px 8px rgba(13, 148, 136, .35); }
+.btn-cta-main:hover { box-shadow: 0 2px 8px rgba(14, 165, 164, .35); }
 .btn-cta-main:active { transform: translateY(1px); }
 html.dark .btn-cta-main { color: #fff; }
 .btn-secondary { background: #fff; color: var(--hl-blue); border: 1px solid var(--hl-blue); font-weight: 600; padding: var(--sp-3) var(--sp-6); border-radius: var(--r-md); cursor: pointer; transition: .15s; font-size: var(--fs-base); }
@@ -824,7 +836,7 @@ html.dark .btn-secondary { background: var(--gray-50); }
   width: 100%; padding: var(--sp-3) var(--sp-4); border: 1px solid var(--gray-300); border-radius: var(--r-md); font-size: var(--fs-base); font-family: var(--font-body);
 }
 html.dark .field input, html.dark .field select, html.dark .field textarea { background: var(--gray-50); color: var(--gray-700); }
-.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--hl-blue); box-shadow: 0 0 0 3px rgba(0,92,171,.15); }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--hl-blue); box-shadow: 0 0 0 3px rgba(18,59,102,.15); }
 
 /* ============ FOOTER ============ */
 .footer { background: var(--gray-900); color: var(--gray-400); padding: var(--sp-16) 0 var(--sp-8); font-size: var(--fs-base); }
@@ -855,8 +867,8 @@ html.dark .panel { background: var(--gray-50); }
   font-size: var(--fs-sm); border-top: 1px solid rgba(255,255,255,.1);
 }
 .cookie span { line-height: 1.4; }
-.cookie button { background: var(--hl-blue); color: #fff; border: none; padding: var(--sp-2) var(--sp-5); border-radius: var(--r-md); font-weight: 600; cursor: pointer; flex-shrink: 0; }
-.cookie button:hover { background: var(--hl-blue-light); }
+.cookie button { background: var(--hl-accent-solid); color: #fff; border: none; padding: var(--sp-2) var(--sp-5); border-radius: var(--r-md); font-weight: 600; cursor: pointer; flex-shrink: 0; }
+.cookie button:hover { background: var(--hl-accent-dark); }
 @media (max-width: 600px) { .cookie { flex-direction: column; gap: var(--sp-2); text-align: center; padding: var(--sp-3) var(--sp-4); } }
 
 /* ============ HERO SEARCH (inside hero, not floating) ============ */
@@ -980,7 +992,7 @@ html.dark .panel { background: var(--gray-50); }
   transition: transform .15s, box-shadow .15s;
 }
 .pkg-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card-hover); }
-.pkg-card.popular { border: 2px solid var(--hl-blue); box-shadow: 0 8px 24px rgba(0,92,171,.18); }
+.pkg-card.popular { border: 2px solid var(--hl-blue); box-shadow: 0 8px 24px rgba(18,59,102,.18); }
 .pkg-badge {
   position: absolute; z-index: 2; top: 12px; right: 12px;
   background: #fff; color: var(--hl-blue); font-size: var(--fs-xs); font-weight: 700;
@@ -993,16 +1005,16 @@ html.dark .panel { background: var(--gray-50); }
   overflow: hidden;
   padding: 20px;
   color: #fff;
-  background: linear-gradient(135deg, #1e3a8a, #0d9488);
+  background: linear-gradient(135deg, #123b66, #0ea5a4);
 }
 .pkg-card-visual::after {
   content: '';
   position: absolute; width: 150px; height: 150px; right: -46px; bottom: -66px;
   border: 22px solid rgba(255,255,255,.16); border-radius: 50%;
 }
-.pkg-card-visual-hemat { background: linear-gradient(135deg, #1e3a8a, #3b5bc0); }
-.pkg-card-visual-sultan { background: linear-gradient(135deg, #0f172a, #0d9488); }
-.pkg-card-visual-have { background: linear-gradient(135deg, #1e3a8a, #059669); }
+.pkg-card-visual-hemat { background: linear-gradient(135deg, #123b66, #2c5a8f); }
+.pkg-card-visual-sultan { background: linear-gradient(135deg, #0a2438, #0ea5a4); }
+.pkg-card-visual-have { background: linear-gradient(135deg, #123b66, #0b8483); }
 .pkg-category-badge {
   position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 5px;
   padding: 6px 9px; border-radius: var(--r-pill); background: rgba(255,255,255,.18);
@@ -1030,7 +1042,7 @@ html.dark .panel { background: var(--gray-50); }
 .employer-shell { min-height: 100vh; display: grid; grid-template-columns: 250px 1fr; background: var(--gray-100); }
 .employer-sidebar { background: #fff; border-right: 1px solid var(--gray-200); padding: 24px 16px; }
 .employer-nav { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--r-md); color: var(--gray-700); text-decoration: none; font-size: 13px; font-weight: 600; cursor: pointer; background: transparent; }
-.employer-nav:hover, .employer-nav.active { color: var(--hl-blue); background: rgba(0,92,171,.08); }
+.employer-nav:hover, .employer-nav.active { color: var(--hl-blue); background: rgba(18,59,102,.08); }
 .employer-main { min-width: 0; padding: 28px clamp(16px, 4vw, 48px); }
 .employer-topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
 .employer-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -1079,7 +1091,7 @@ html.dark .panel { background: var(--gray-50); }
 .package-faq-heading p { margin: 0; color: var(--gray-500); }
 .faq-list { display: grid; gap: 10px; }
 .faq-item { overflow: hidden; border: 1px solid var(--gray-200); border-radius: var(--r-md); background: #fff; }
-.faq-item.open { border-color: rgba(0,92,171,.35); box-shadow: 0 5px 18px rgba(0,0,0,.05); }
+.faq-item.open { border-color: rgba(18,59,102,.35); box-shadow: 0 5px 18px rgba(0,0,0,.05); }
 .faq-question { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; padding: 17px 18px; border: 0; background: transparent; color: var(--gray-900); cursor: pointer; text-align: left; font: inherit; font-weight: 700; }
 .faq-question svg { flex-shrink: 0; color: var(--hl-blue); transition: transform .2s; }
 .faq-item.open .faq-question svg { transform: rotate(180deg); }
