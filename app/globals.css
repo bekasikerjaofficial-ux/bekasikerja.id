@@ -602,7 +602,10 @@ html.dark .chip { background: var(--gray-50); }
 
 
 /* ============ HERO ============ */
-.hero { background: var(--hl-blue-grad); color: #fff; padding: var(--sp-16) 0; }
+/* Hero runs its own brand-blue gradient: #29abd4 is the requested brand colour
+ * but only reaches 2.67:1 against white text, so the far stop darkens to
+ * #0d6b8f (5.97:1) and the gradient midpoint keeps body copy readable. */
+.hero { background: linear-gradient(135deg, #29abd4 0%, #0d6b8f 100%); color: #fff; padding: var(--sp-16) 0; }
 .hero .container { display: grid; grid-template-columns: 1.1fr .9fr; gap: var(--sp-12); align-items: center; }
 .hero .badge {
   display: inline-block; background: rgba(255,255,255,.22); border: 1px solid rgba(255,255,255,.65);
