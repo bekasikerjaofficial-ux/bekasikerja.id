@@ -187,45 +187,88 @@ export default function AdminDashboard() {
   };
 
   // Tags live in `tags` + the `post_tags` junction, not as a column on `posts`.
+  // Returns { ok, error } so callers can surface a real failure instead of
+  // reporting success while tags were silently dropped.
   const syncPostTags = async (postId, tagNames) => {
-    if (!postId) return;
+    if (!postId) return { ok: true };
     const names = (tagNames || []).map((t) => String(t).trim()).filter(Boolean);
     const slugOf = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    // Empty input is an explicit "clear all tags", which is a legitimate delete.
     if (names.length === 0) {
-      await supabase.from('post_tags').delete().eq('post_id', postId);
-      return;
-    }
-    const slugs = [...new Set(names.map(slugOf))].filter(Boolean);
-    if (slugs.length === 0) {
-      await supabase.from('post_tags').delete().eq('post_id', postId);
-      return;
+      const { error } = await supabase.from('post_tags').delete().eq('post_id', postId);
+      if (error) return { ok: false, error: error.message };
+      return { ok: true };
     }
 
-    const { data: existing } = await supabase.from('tags').select('id,name,slug').in('slug', slugs);
+    const slugs = [...new Set(names.map(slugOf))].filter(Boolean);
+    if (slugs.length === 0) return { ok: true };
+
+    const { data: existing, error: readErr } = await supabase.from('tags').select('id,name,slug').in('slug', slugs);
+    if (readErr) return { ok: false, error: readErr.message };
+
     const bySlug = new Map((existing || []).map((t) => [t.slug, t]));
     const missing = slugs.filter((s) => !bySlug.has(s));
     if (missing.length) {
-      const { data: created } = await supabase
+      const { data: created, error: createErr } = await supabase
         .from('tags')
         .insert(missing.map((s) => ({ name: names.find((n) => slugOf(n) === s) || s, slug: s })))
         .select('id,name,slug');
-      for (const t of created || []) bySlug.set(t.slug, t);
-    }
-    const tagIds = slugs.map((s) => bySlug.get(s)?.id).filter(Boolean);
-    if (tagIds.length === 0) {
-      await supabase.from('post_tags').delete().eq('post_id', postId);
-      return;
+      if (createErr) {
+        // 23505: another admin created the same tag between our SELECT and INSERT.
+        // Re-read once and carry on; otherwise the write would be rejected forever.
+        if (createErr.code === '23505') {
+          const { data: retry, error: retryErr } = await supabase.from('tags').select('id,name,slug').in('slug', missing);
+          if (!retryErr) {
+            for (const t of retry || []) bySlug.set(t.slug, t);
+          }
+        } else {
+          return { ok: false, error: createErr.message };
+        }
+      } else {
+        for (const t of created || []) bySlug.set(t.slug, t);
+      }
     }
 
-    await supabase.from('post_tags').delete().eq('post_id', postId);
-    await supabase.from('post_tags').insert(tagIds.map((tag_id) => ({ post_id: postId, tag_id })));
+    const tagIds = slugs.map((s) => bySlug.get(s)?.id).filter(Boolean);
+    // Partial resolution means the tags were not all persisted. Abort WITHOUT
+    // deleting: the post keeps the tags it already had, which is strictly
+    // better than wiping them on a write that never completed.
+    if (tagIds.length !== slugs.length) {
+      return { ok: false, error: `Sebagian tag gagal disimpan (${tagIds.length}/${slugs.length}). Tag lama tidak diubah.` };
+    }
+
+    // Insert before deleting so a rejected insert cannot empty the post.
+    const desired = new Set(tagIds);
+    const { data: current, error: linkReadErr } = await supabase.from('post_tags').select('tag_id').eq('post_id', postId);
+    if (linkReadErr) return { ok: false, error: linkReadErr.message };
+
+    const currentIds = (current || []).map((r) => r.tag_id);
+    const toAdd = tagIds.filter((id) => !currentIds.includes(id));
+    const toRemove = currentIds.filter((id) => !desired.has(id));
+
+    if (toAdd.length) {
+      const { error: addErr } = await supabase.from('post_tags').insert(toAdd.map((tag_id) => ({ post_id: postId, tag_id })));
+      if (addErr) return { ok: false, error: addErr.message };
+    }
+    if (toRemove.length) {
+      const { error: delErr } = await supabase.from('post_tags').delete().eq('post_id', postId).in('tag_id', toRemove);
+      if (delErr) return { ok: false, error: delErr.message };
+    }
+    return { ok: true };
   };
 
   const handleCreatePost = async (e) => {
     e.preventDefault();
     const { data, error } = await supabase.from('posts').insert([buildPostPayload(postForm)]).select('id').single();
     if (error) { alert('Gagal publikasikan: ' + error.message); return; }
-    await syncPostTags(data.id, postForm.tagInput);
+    const tagResult = await syncPostTags(data.id, postForm.tagInput);
+    if (!tagResult.ok) {
+      alert('Postingan tersimpan, tetapi tag gagal: ' + tagResult.error);
+      setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Lowongan Kerja', deadline: '', image_url: '', content: '', tagInput: [] });
+      fetchData();
+      return;
+    }
     alert('Postingan berhasil dipublikasikan!');
     setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Lowongan Kerja', deadline: '', image_url: '', content: '', tagInput: [] });
     fetchData();
@@ -235,7 +278,14 @@ export default function AdminDashboard() {
     e.preventDefault();
     const { error } = await supabase.from('posts').update(buildPostPayload(postForm)).eq('id', editingPostId);
     if (error) { alert('Gagal update postingan: ' + error.message); return; }
-    await syncPostTags(editingPostId, postForm.tagInput);
+    const tagResult = await syncPostTags(editingPostId, postForm.tagInput);
+    if (!tagResult.ok) {
+      alert('Isi postingan tersimpan, tetapi tag gagal: ' + tagResult.error);
+      setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Lowongan Kerja', deadline: '', image_url: '', content: '', tagInput: [] });
+      setEditingPostId(null);
+      fetchData();
+      return;
+    }
     alert('Postingan berhasil diperbarui!');
     setPostForm({ type: 'job', title: '', company: '', location: '', category: 'Lowongan Kerja', deadline: '', image_url: '', content: '', tagInput: [] });
     setEditingPostId(null);

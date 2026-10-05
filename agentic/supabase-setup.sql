@@ -229,8 +229,18 @@ create policy "tags_public_read" on public.tags for select using (true);
 drop policy if exists "tags_admin_write" on public.tags;
 create policy "tags_admin_write" on public.tags for all using (public.is_admin()) with check (public.is_admin());
 
+-- SECURITY: post_tags must have RLS switched ON, otherwise the policy below is
+-- inert and the table stays world-readable and world-writable through PostgREST.
+-- The migration agentic/migrations/20260930000000_taxonomy_jobreports_cvbuilder.sql
+-- enables it, but a fresh provision that runs only this file would leave the hole.
+alter table public.post_tags enable row level security;
+
+drop policy if exists "post_tags_public_read" on public.post_tags;
+create policy "post_tags_public_read" on public.post_tags
+  for select using (true);
 drop policy if exists "post_tags_admin_write" on public.post_tags;
-create policy "post_tags_admin_write" on public.post_tags for all using (public.is_admin());
+create policy "post_tags_admin_write" on public.post_tags
+  for all using (public.is_admin()) with check (public.is_admin());
 
 
 -- BekasiKerja analytics: visitor harian, member count, dan pembaca artikel.
