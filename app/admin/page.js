@@ -6,6 +6,7 @@ import FormInput from '../../components/FormInput';
 import FormSelect from '../../components/FormSelect';
 import TagInput from '../../components/TagInput';
 import ImageUpload from '../../components/ImageUpload';
+import ImageLibrary from '../../components/ImageLibrary';
 import { isAdminEmail } from '../../lib/admin-check';
 import {
   Settings, Plus, ClipboardList, Image, Save, Trash2,
@@ -123,11 +124,19 @@ export default function AdminDashboard() {
   }, []);
 
   // ---------- Upload ----------
+  // Files are content-addressed (sha256 prefix) so re-uploading an identical image
+  // overwrites the same storage object instead of accumulating duplicates. The old
+  // timestamp+random naming produced byte-identical copies every time.
+  const hashFile = (file) =>
+    file.arrayBuffer().then((buf) => crypto.subtle.digest('SHA-256', buf))
+      .then((digest) => Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join(''));
+
   const uploadImage = async (file) => {
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage.from('images').upload(fileName, file);
+      const fileExt = (file.name.split('.').pop() || 'png').toLowerCase();
+      const hash = await hashFile(file);
+      const fileName = `${hash.slice(0, 32)}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage.from('images').upload(fileName, file, { upsert: true });
       if (uploadError) throw uploadError;
       const { data } = supabase.storage.from('images').getPublicUrl(fileName);
       return data.publicUrl;
@@ -381,6 +390,7 @@ export default function AdminDashboard() {
                     </span>
                     <input type="file" accept="image/*" onChange={handlePostImageUpload} style={{ fontSize: 12 }} />
                     {uploadingPostImg && <span style={{ fontSize: 11, color: 'var(--hl-blue)', fontWeight: 700 }}>Mengunggah gambar...</span>}
+                    <ImageLibrary value={postForm.image_url} onSelect={(url) => setPostForm({ ...postForm, image_url: url })} />
                     <input type="text" placeholder="Atau tempel link URL gambar" value={postForm.image_url} onChange={(e) => setPostForm({ ...postForm, image_url: e.target.value })} style={{ fontSize: 12 }} />
                     {postForm.image_url && (<img src={postForm.image_url} alt="Preview" style={{ height: 64, width: 'auto', borderRadius: 8, border: '1px solid var(--gray-200)' }} />)}
                   </div>
@@ -512,6 +522,7 @@ export default function AdminDashboard() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16 }}>
                 <div className="field" style={{ margin: 0 }}>
                   <label>Atau Link URL Logo</label>
+                  <ImageLibrary value={settings.logo_url || ''} onSelect={(url) => setSettings({ ...settings, logo_url: url })} />
                   <input type="text" placeholder="https://..." value={settings.logo_url || ''} onChange={(e) => setSettings({ ...settings, logo_url: e.target.value })} />
                 </div>
               </div>
