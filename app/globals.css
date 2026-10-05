@@ -618,9 +618,6 @@ html.dark .chip { background: var(--gray-50); }
   font-weight: 700; padding: var(--sp-3) var(--sp-8); border-radius: var(--r-md); font-size: var(--fs-base); transition: transform .15s;
 }
 .hero .cta:hover { transform: translateY(-2px); }
-.hero .stats { display: flex; gap: var(--sp-6); margin-top: var(--sp-8); flex-wrap: wrap; }
-.hero .stat .num { font-family: var(--font-display); font-size: var(--fs-3xl); font-weight: 800; }
-.hero .stat .lbl { font-size: var(--fs-sm); opacity: .95; font-weight: 600; }
 .hero .illus { width: 100%; border-radius: var(--r-xl); }
 /* Hero entrance — plays once on load (children rise in sequence) */
 .hero .container > div { opacity: 0; transform: translateY(18px); animation: heroIn .7s cubic-bezier(.22,.61,.36,1) forwards; }
@@ -636,11 +633,6 @@ html.dark .chip { background: var(--gray-50); }
   .hero .badge { margin-bottom: 10px; font-size: 10px; }
   .hero h1 { font-size: clamp(19px, 5.2vw, 23px); margin-bottom: var(--sp-2); }
   .hero p { margin: 0 auto 14px; font-size: 13px; line-height: 1.45; }
-  .hero .stats { display: none; }
-  .hero .stat { flex: 1; padding: 0 var(--sp-2); }
-  .hero .stat + .stat { border-left: 1px solid rgba(255,255,255,.25); }
-  .hero .stat .num { font-size: var(--fs-2xl); }
-  .hero .stat .lbl { font-size: 11px; line-height: 1.3; }
   .hero-search { margin-top: 0; }
   .hero .illus { max-width: 260px; margin: 12px auto 0; }
 }

@@ -68,20 +68,6 @@ export default function HomePageClient({ initialSettings = null, initialJobs = [
               <span className="badge">{settings?.badge_text || 'PORTAL KARIR TERVERIFIKASI'}</span>
               <h1>{settings?.hero_title || 'Temukan Karir Impianmu di Kawasan Industri'}</h1>
               <p>{settings?.hero_subtitle || 'Update lowongan kerja operator, admin, hingga engineering terpercaya setiap hari.'}</p>
-              <div className="stats">
-                <div className="stat">
-                  <div className="num">{jobs.length}+</div>
-                  <div className="lbl">Lowongan Aktif</div>
-                </div>
-                <div className="stat">
-                  <div className="num">{news.length}+</div>
-                  <div className="lbl">Artikel &amp; Tips</div>
-                </div>
-                <div className="stat">
-                  <div className="num">3</div>
-                  <div className="lbl">Kawasan Industri</div>
-                </div>
-              </div>
               <div className="hero-search">
                 <SearchBar value={query} onChange={setQuery} placeholder="Cari lowongan, perusahaan, atau artikel..." />
               </div>
